@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+require '../lib/carrot_rpc'
+require '../lib/carrot_rpc/cli'
+
+CarrotRpc::CLI.parse_options(ARGV)
+
+config = CarrotRpc::Config.instance
+runner = CarrotRpc::ServerRunner.new(rails_path: config.rails_path, pidfile: config.pidfile,
+                                     runloop_sleep: config.runloop_sleep, daemonize: config.daemonize)
+runner.run!
+
+#require File.expand_path('../lib/carrot_rpc/server_runner', File.dirname(__FILE__))
+#puts "Options Passed to ServerRunner #{options}" if $DEBUG
+
+#CarrotRpc::ServerRunner.new(options).run!
