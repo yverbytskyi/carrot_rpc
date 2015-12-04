@@ -3,6 +3,8 @@ require "bunny"
 require "carrot_rpc/cli"
 require "carrot_rpc/configuration"
 require "carrot_rpc/tagged_log"
+require "carrot_rpc/rpc_client"
+require "carrot_rpc/rpc_server"
 
 module CarrotRpc
   class << self

@@ -89,6 +89,7 @@ describe CarrotRpc::ServerRunner do
         subject.instance_variable_set(:@pidfile, path)
         subject.write_pid
         expect(subject.pid_status(path)).to eq :running
+        File.delete(path)
       end
     end
   end
@@ -99,7 +100,8 @@ describe CarrotRpc::ServerRunner do
 
     it "creates a pidfile for a running process" do
       subject.instance_variable_set(:@pidfile, path)
-      expect(subject.write_pid).to eq true
+      expect(subject.write_pid).to be_a Proc
+      File.delete(path)
     end
   end
 
@@ -164,9 +166,6 @@ describe CarrotRpc::ServerRunner do
 
   describe "#run!" do
     before :each do
-      allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:logger) do
-        instance_double(Logger, info: "")
-      end
       # setting quit flag so that runloop stops immediately
       subject.shutdown
     end
@@ -198,9 +197,6 @@ describe CarrotRpc::ServerRunner do
 
   describe "#stop_servers" do
     before :each do
-      allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:logger) do
-        instance_double(Logger, info: "")
-      end
       @channel = double("Channel", close: "")
       @connection = double("Connection", close: "")
       @name = double("Name", name: "fake")
@@ -216,12 +212,6 @@ describe CarrotRpc::ServerRunner do
   end
 
   describe "#run_servers" do
-    before :each do
-      allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:logger) do
-        instance_double(Logger, info: "")
-      end
-    end
-
     it "loads the servers" do
       servers = subject.run_servers(dirs: %w(spec dummy app servers))
       expect(servers.first.class).to eq(FooServer)
