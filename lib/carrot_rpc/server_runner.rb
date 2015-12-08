@@ -46,7 +46,7 @@ module CarrotRpc
     # @param path [String] relative path to rpc servers
     # @param dirs [Array] directories where RpcServers can be loaded
     # @return [Array] of RpcServers loaded and initialized
-    def run_servers(path: "../../", dirs: ["app", "servers"])
+    def run_servers(path: ".", dirs: ["app", "servers"])
       # Load each server defined in the project dir
       path = "#{path}#{dirs.join("/")}/*.rb"
       Dir[File.expand_path(path, File.dirname(__FILE__))].each do |file|

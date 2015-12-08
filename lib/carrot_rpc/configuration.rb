@@ -11,7 +11,7 @@ module CarrotRpc
       @daemonize = false
       @pidfile = nil
       @runloop_sleep = 0
-      @rails_path = "../../"
+      @rails_path = "."
     end
   end
 end

@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'carrot_rpc/server_runner'
-#require File.expand_path '../../dummy/app/servers/foo_server', __FILE__
 
 describe CarrotRpc::ServerRunner do
   let(:args) { {} }
@@ -213,7 +212,7 @@ describe CarrotRpc::ServerRunner do
 
   describe "#run_servers" do
     it "loads the servers" do
-      servers = subject.run_servers(dirs: %w(spec dummy app servers))
+      servers = subject.run_servers(dirs: %w(spec dummy app servers), path: '../../')
       expect(servers.first.class).to eq(FooServer)
     end
   end

@@ -17,7 +17,7 @@ describe CarrotRpc::Configuration do
   end
 
   it 'defaults rails path' do
-    expect(subject.rails_path).to eq "../../"
+    expect(subject.rails_path).to eq "."
   end
 
   it "defaults log file" do
