@@ -31,9 +31,10 @@ module CarrotRpc
     # See http://www.jsonrpc.org/specification for more information on responses.
     # Method does not account for error messages. Need better handling to send proper errors.
     def reply(request_message:, result:, properties:)
-      response_message = { id: request_message[:id], result: result, json_rpc: '2.0' }
+      response_message = { id: request_message[:id], result: result, jsonrpc: '2.0' }
       logger.debug "Publishing result: #{result} to #{response_message}"
       @exchange.publish(response_message.to_json, routing_key: properties.reply_to,
                         correlation_id: properties.correlation_id)
     end
+  end
 end
