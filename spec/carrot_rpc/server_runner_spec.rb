@@ -221,4 +221,17 @@ describe CarrotRpc::ServerRunner do
       expect(servers.first.class).to eq(FooServer)
     end
   end
+
+  describe "#set_logger" do
+    let(:args) { {rails_path: nil } }
+    context "when config is set to use a logfile" do
+      it "a logger is created" do
+        CarrotRpc::CLI.parse_options(["--logfile=../rpc.log"])
+        logger = instance_double(Logger, level: 1)
+        expect(logger).to receive(:level=)
+        expect(Logger).to receive(:new).with(CarrotRpc.configuration.logfile){ logger }
+        subject.send(:set_logger)
+      end
+    end
+  end
 end

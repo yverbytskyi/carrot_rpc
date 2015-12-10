@@ -185,21 +185,24 @@ module CarrotRpc
 
     private
 
-    # Determine how to create logger.
+    # Determine how to create logger. Config can specify log file.
     def set_logger
-      # when rails is defined, use that logger by default.
-      # otherwise use the logger from the config
-      if CarrotRpc.configuration.logfile
-        logger = Logger.new(CarrotRpc.configuration.logfile)
-        logger.level = CarrotRpc.configuration.loglevel
-      elsif defined?(::Rails)
-        logger = Rails.logger
-        CarrotRpc::TaggedLog.new(logger: use_or_create_logger, tags: ["Carrot RPC"])
+      # always try to create a logger from file
+      logger = log_from_file
+
+      if defined?(::Rails)
+        logger = Rails.logger if logger.nil?
+        CarrotRpc::TaggedLog.new(logger: logger, tags: ["Carrot RPC"])
       else
-        logger = Logger.new(STDOUT)
-        logger.level = CarrotRpc.configuration.loglevel
+        logger = Logger.new(STDOUT) if logger.nil?
       end
+      logger.level = CarrotRpc.configuration.loglevel
       logger
+    end
+
+    def log_from_file
+      return nil unless CarrotRpc.configuration.logfile
+      Logger.new(CarrotRpc.configuration.logfile)
     end
   end
 end

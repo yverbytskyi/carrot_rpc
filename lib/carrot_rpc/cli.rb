@@ -20,7 +20,7 @@ module CarrotRpc
         debug_help          = "set $DEBUG to true"
         warn_help           = "enable warnings"
         rails_path_help     = "relative path to root dir of rails app. Uses Rails Logger by default."
-        logfile_help        = "relative path and name for Log file. Overrides all defaults."
+        logfile_help        = "relative path and name for Log file. Overrides Rails logger."
         loglevel_help       = "levels of loggin: DEBUG < INFO < WARN < ERROR < FATAL < UNKNOWN"
         rabbitmq_url_help   = "connection string to RabbitMQ 'amqp://user:pass@host:10000/vhost'"
 
