@@ -8,6 +8,13 @@ describe CarrotRpc::ServerRunner do
   before :each do
     @logger = instance_double(Logger, info: "", warn: "")
     allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:logger) { @logger }
+
+    bunny = double("bunny")
+    @channel = double("channel", close: true)
+    @connection = double("connection", close: true, create_channel: @channel)
+
+    allow(bunny).to receive("connection") { @connection }
+    allow_any_instance_of(CarrotRpc::Configuration).to receive(:bunny) { bunny }
   end
 
   describe "initialize" do
@@ -196,8 +203,6 @@ describe CarrotRpc::ServerRunner do
 
   describe "#stop_servers" do
     before :each do
-      @channel = double("Channel", close: "")
-      @connection = double("Connection", close: "")
       @name = double("Name", name: "fake")
       @mock_server = double("RpcServer", queue: @name, channel: @channel, connection: @connection)
       subject.instance_variable_set(:@servers, [@mock_server, @mock_server])
@@ -205,7 +210,7 @@ describe CarrotRpc::ServerRunner do
 
     it "server receives shutdown methods" do
       expect(@channel).to receive("close").exactly(2).times
-      expect(@connection).to receive("close").exactly(2).times
+      expect(@connection).to receive("close").exactly(1).times
       subject.stop_servers
     end
   end

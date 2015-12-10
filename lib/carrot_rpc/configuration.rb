@@ -1,6 +1,6 @@
 module CarrotRpc
   class Configuration
-    attr_accessor :logger, :logfile, :loglevel, :daemonize, :pidfile, :runloop_sleep, :rails_path
+      attr_accessor :logger, :logfile, :loglevel, :daemonize, :pidfile, :runloop_sleep, :rails_path, :bunny
 
     # logfile - set logger to a file. overrides rails logger.
 
@@ -12,6 +12,7 @@ module CarrotRpc
       @pidfile = nil
       @runloop_sleep = 0
       @rails_path = "."
+      @bunny = nil
     end
   end
 end

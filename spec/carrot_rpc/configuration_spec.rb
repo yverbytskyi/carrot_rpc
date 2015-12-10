@@ -23,4 +23,8 @@ describe CarrotRpc::Configuration do
   it "defaults log file" do
     expect(subject.logfile).to eq nil
   end
+
+  it "defaults bunny" do
+    expect(subject.bunny).to eq nil
+  end
 end

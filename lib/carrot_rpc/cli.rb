@@ -1,3 +1,4 @@
+require 'bunny'
 require 'optparse'
 
 module CarrotRpc
@@ -21,6 +22,7 @@ module CarrotRpc
         rails_path_help     = "relative path to root dir of rails app. Uses Rails Logger by default."
         logfile_help        = "relative path and name for Log file. Overrides all defaults."
         loglevel_help       = "levels of loggin: DEBUG < INFO < WARN < ERROR < FATAL < UNKNOWN"
+        rabbitmq_url_help   = "connection string to RabbitMQ 'amqp://user:pass@host:10000/vhost'"
 
         op = OptionParser.new
         op.banner =  "RPC Server Runner for RabbitMQ RPC Services."
@@ -53,6 +55,11 @@ module CarrotRpc
         op.on(" ", "--loglevel VALUE", loglevel_help) do |value|
           level = eval(["Logger", value].join("::")) || 0
           CarrotRpc.configuration.loglevel = level
+        end
+
+        # Optional. Defaults to using the ENV['RABBITMQ_URL']
+        op.on(" ", "--rabbitmq_url VALUE", rabbitmq_url_help) do |value|
+          CarrotRpc.configuration.bunny = Bunny.new(value)
         end
 
         op.separator ""

@@ -44,4 +44,10 @@ describe CarrotRpc::CLI do
     expect(CarrotRpc.configuration).to receive("logfile=")
     CarrotRpc::CLI.parse_options(["--logfile=rpc"])
   end
+
+  it "initializes a Bunny object from the connection string" do
+    expect(CarrotRpc.configuration).to receive("bunny=")
+    expect(Bunny).to receive(:new).with "amqp://guest:guest@rabbitmq:5672"
+    CarrotRpc::CLI.parse_options(["--rabbitmq_url=amqp://guest:guest@rabbitmq:5672"])
+  end
 end

@@ -38,8 +38,9 @@ module CarrotRpc
       @servers.each do |s|
         logger.info "Shutting Down Server Queue: #{s.queue.name}"
         s.channel.close
-        s.connection.close
       end
+      # Close the connection once all the other servers are shutdown
+      CarrotRpc.configuration.bunny.connection.close
     end
 
     # Find and require all servers in the app/servers dir.
