@@ -4,21 +4,12 @@ module CarrotRpc
     attr_reader :connection, :channel, :queue
     # method_reciver => object that receives the method. can be a class or anything responding to send
     attr_accessor :logger
-    # Documentation advises not to share a channel connection. Create new channel for each server instance.
-    # def initialize(connection: nil, channel: nil, queue_name: nil, block: true)
-    #   # create a channel and exchange that both client and server know about
-    #   @connection = connection || BunnyConn.connection
-    #   @channel = channel || BunnyConn.connection.create_channel
-    #   @queue_name = queue_name || self.class.to_s.gsub('Server','')
-    #   @block = block
-    #   @queue = @channel.queue(@queue_name || self.class.to_s.gsub('Server', ''))
-    #   @exchange  = @channel.default_exchange
-    # end
 
+    # Documentation advises not to share a channel connection. Create new channel for each server instance.
     def initialize(config: nil, queue_name: nil, block: true)
       # create a channel and exchange that both client and server know about
       config ||= CarrotRpc.configuration
-      @channel = config.bunny.connection.create_channel
+      @channel = config.bunny.create_channel
       @queue_name = queue_name || self.class.to_s.gsub('Server','')
       @block = block
       @queue = @channel.queue(@queue_name || self.class.to_s.gsub('Server', ''))

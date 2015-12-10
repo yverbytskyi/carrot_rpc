@@ -40,24 +40,30 @@ module CarrotRpc
         s.channel.close
       end
       # Close the connection once all the other servers are shutdown
-      CarrotRpc.configuration.bunny.connection.close
+      CarrotRpc.configuration.bunny.close
     end
 
     # Find and require all servers in the app/servers dir.
-    # @param path [String] relative path to rpc servers
-    # @param dirs [Array] directories where RpcServers can be loaded
+    # @param dirs [Array] directories relative to root of host application where RpcServers can be loaded
     # @return [Array] of RpcServers loaded and initialized
-    def run_servers(path: ".", dirs: ["app", "servers"])
+    def run_servers(dirs: ["app", "servers"])
+      regex = /\A\/.*\/#{dirs.join("/")}\z/
+      server_path = $:.select do |p|
+        p.match(regex)
+      end.first + "/*.rb"
+
+      files = Dir[server_path]
+      fail "No servers found!" if files.empty?
+
       # Load each server defined in the project dir
-      path = "#{path}#{dirs.join("/")}/*.rb"
-      Dir[File.expand_path(path, File.dirname(__FILE__))].each do |file|
+      files.each do |file|
         require file
         server_klass = eval file.to_s.split('/').last.gsub('.rb', '').split("_").collect!{ |w| w.capitalize}.join
         logger.info "Starting #{server_klass}..."
 
         server = server_klass.new(block: false)
-        server.start
         server.logger = logger
+        server.start
         @servers << server
       end
       @servers
@@ -65,7 +71,6 @@ module CarrotRpc
 
     # Convenience method to wrap the logger object.
     def logger
-      puts @logger
       @logger ||= set_logger
     end
 
@@ -73,6 +78,7 @@ module CarrotRpc
     def load_rails_app(path)
       rails_path = File.join(path, 'config/environment.rb')
       if File.exists?(rails_path)
+        logger.info "Rails app found at: #{rails_path}"
         ENV['RACK_ENV'] ||= ENV['RAILS_ENV'] || 'development'
         require rails_path
         ::Rails.application.eager_load!
