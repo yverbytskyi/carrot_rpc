@@ -14,6 +14,6 @@ end
 config = CarrotRpc.configuration
 config.bunny.start
 
-runner = CarrotRpc::ServerRunner.new(rails_path: config.rails_path, pidfile: config.pidfile,
-                                     runloop_sleep: config.runloop_sleep, daemonize: config.daemonize)
+runner = CarrotRpc::ServerRunner.new(pidfile: config.pidfile, runloop_sleep: config.runloop_sleep,
+                                     daemonize: config.daemonize)
 runner.run!
