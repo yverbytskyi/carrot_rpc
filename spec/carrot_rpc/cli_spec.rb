@@ -34,11 +34,10 @@ describe CarrotRpc::CLI do
     CarrotRpc::CLI.parse_options(["--pid=snarg"])
   end
 
-  it 'sets rails_path value with long swtich' do
-    expect(CarrotRpc.configuration).to receive('rails_path=')
-    CarrotRpc::CLI.parse_options(["--rails_path=stuff/snarg"])
+  it 'sets autoload_rails value with long swtich' do
+    expect(CarrotRpc.configuration).to receive('autoload_rails=')
+    CarrotRpc::CLI.parse_options(["--autoload_rails=false"])
   end
-
 
   it "sets the name of the logfile" do
     expect(CarrotRpc.configuration).to receive("logfile=")

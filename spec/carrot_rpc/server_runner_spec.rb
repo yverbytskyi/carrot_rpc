@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'carrot_rpc/server_runner'
 
 describe CarrotRpc::ServerRunner do
-  let(:args) { {} }
+  let(:args) { { rails_path: File.expand_path("../../dummy", __FILE__) } }
   subject{ CarrotRpc::ServerRunner.new(**args) }
 
   before :each do
@@ -34,7 +34,9 @@ describe CarrotRpc::ServerRunner do
     end
 
     context "passing params" do
-      let(:args) { { pidfile: 'foo', runloop_sleep: 5, daemonize: true } }
+      let(:args) do
+        { rails_path: File.expand_path("../../dummy", __FILE__), pidfile: 'foo', runloop_sleep: 5, daemonize: true }
+      end
 
       it "sets instance vars to the params passed" do
         expect(subject.instance_variable_get(:@pidfile)).to_not eq nil
@@ -115,7 +117,7 @@ describe CarrotRpc::ServerRunner do
     end
 
     context "with params" do
-      let(:args) { { pidfile: "stuff" } }
+      let(:args) { { rails_path: File.expand_path("../../dummy", __FILE__), pidfile: "stuff" } }
 
       it "is set by parameter" do
         expect(subject.pidfile).to match("stuff")
@@ -125,7 +127,7 @@ describe CarrotRpc::ServerRunner do
 
   describe "#runloop_sleep" do
     context "with valid params" do
-      let(:args) { { runloop_sleep: 10 } }
+      let(:args) { { rails_path: File.expand_path("../../dummy", __FILE__), runloop_sleep: 10 } }
       it "can be set" do
         expect(subject.instance_variable_get(:@runloop_sleep)).to eq 10
       end
@@ -153,14 +155,14 @@ describe CarrotRpc::ServerRunner do
     end
 
     context "with true" do
-      let(:args){ { daemonize: true } }
+      let(:args){ { rails_path: File.expand_path("../../dummy", __FILE__), daemonize: true } }
       it "true when set" do
         expect(subject.daemonize?).to eq true
       end
     end
 
     context "with false" do
-      let(:args){ { daemonize: false } }
+      let(:args){ { rails_path: File.expand_path("../../dummy", __FILE__), daemonize: false } }
 
       it "false when set" do
         expect(subject.daemonize?).to eq false
@@ -192,7 +194,7 @@ describe CarrotRpc::ServerRunner do
     end
 
     context "daemonize set" do
-      let(:args) { { daemonize: true } }
+      let(:args) { { rails_path: File.expand_path("../../dummy", __FILE__), daemonize: true } }
       it "calls daemonize" do
         expect(subject).to receive(:daemonize)
         subject.run!
@@ -232,6 +234,14 @@ describe CarrotRpc::ServerRunner do
 
   describe "#set_logger" do
     let(:args) { {rails_path: nil } }
+    before :each do
+      CarrotRpc.configuration.autoload_rails = false
+    end
+
+    after :each do
+      CarrotRpc.configuration.autoload_rails = true
+    end
+
     context "when config is set to use a logfile" do
       it "a logger is created" do
         CarrotRpc::CLI.parse_options(["--logfile=../rpc.log"])

@@ -5,11 +5,11 @@ module CarrotRpc
     attr_reader :quit, :servers
 
     # Instantiate the ServerRunner.
-    def initialize(rails_path: nil, pidfile: nil, runloop_sleep: 0, daemonize: false)
+    def initialize(rails_path: ".", pidfile: nil, runloop_sleep: 0, daemonize: false)
       @runloop_sleep = runloop_sleep
       @daemonize = daemonize
       @servers = []
-      load_rails_app(rails_path) if rails_path
+      load_rails_app(rails_path) if CarrotRpc.configuration.autoload_rails
       trap_signals
 
       # daemonization will change CWD so expand relative paths now

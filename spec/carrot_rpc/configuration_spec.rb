@@ -16,8 +16,8 @@ describe CarrotRpc::Configuration do
     expect(subject.runloop_sleep).to eq 0
   end
 
-  it 'defaults rails path' do
-    expect(subject.rails_path).to eq "."
+  it 'defaults to load rails' do
+    expect(subject.autoload_rails).to eq true
   end
 
   it "defaults log file" do
