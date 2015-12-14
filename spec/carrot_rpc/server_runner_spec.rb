@@ -240,6 +240,11 @@ describe CarrotRpc::ServerRunner do
         expect(Logger).to receive(:new).with(CarrotRpc.configuration.logfile){ logger }
         subject.send(:set_logger)
       end
+
+      it "sets a logger for the config" do
+        expect(CarrotRpc.configuration).to receive(:logger=)
+        subject.send(:set_logger)
+      end
     end
   end
 end

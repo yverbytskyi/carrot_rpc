@@ -5,16 +5,16 @@ require_relative "concerns/client_server"
 # All subclasses should have the following naming convention: <Name>RpcConsumer  ex: PostRpcConsumer
 module CarrotRpc
   class RpcClient
-    attr_reader :channel, :server_queue
+    attr_reader :channel, :server_queue, :logger
 
     extend ClientServer::ClassMethods
 
     # Use defaults for application level connection to RabbitMQ
     # All RPC data goes over the same queue. I think that's ok....
-    def initialize(config: nil, channel: nil)
+    def initialize(config: nil)
       config ||= CarrotRpc.configuration
       @channel = config.bunny.create_channel
-
+      @logger = config.logger
       # auto_delete => false keeps the queue around until RabbitMQ restarts or explicitly deleted
       @server_queue  = @channel.queue(self.class.get_queue_name, auto_delete: false)
 

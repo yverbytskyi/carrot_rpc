@@ -4,9 +4,8 @@ require_relative "concerns/client_server"
 module CarrotRpc
   # Base RPC Server class. Other Servers should inherit from this.
   class RpcServer
-    attr_reader :channel, :server_queue
+    attr_reader :channel, :server_queue, :logger
     # method_reciver => object that receives the method. can be a class or anything responding to send
-    attr_accessor :logger
 
     extend ClientServer::ClassMethods
 
@@ -15,6 +14,7 @@ module CarrotRpc
       # create a channel and exchange that both client and server know about
       config ||= CarrotRpc.configuration
       @channel = config.bunny.create_channel
+      @logger = config.logger
       @block = block
       @server_queue = @channel.queue(self.class.get_queue_name)
       @exchange  = @channel.default_exchange

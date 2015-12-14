@@ -203,7 +203,9 @@ module CarrotRpc
       else
         logger = Logger.new(STDOUT) if logger.nil?
       end
+
       logger.level = CarrotRpc.configuration.loglevel
+      CarrotRpc.configuration.logger = logger
       logger
     end
 
