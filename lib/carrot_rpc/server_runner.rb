@@ -1,4 +1,5 @@
 require "carrot_rpc"
+
 module CarrotRpc
   class ServerRunner
     attr_reader :quit, :servers

@@ -1,18 +1,22 @@
-# Maybe a foundation for RPC Producers across apps.  Perhaps we can stuff it into a gem???
+require_relative "concerns/client_server"
+
+# CarrotRpc gem base module.
 module CarrotRpc
+  # Base RPC Server class. Other Servers should inherit from this.
   class RpcServer
-    attr_reader :connection, :channel, :queue
+    attr_reader :channel, :server_queue
     # method_reciver => object that receives the method. can be a class or anything responding to send
     attr_accessor :logger
 
+    extend ClientServer::ClassMethods
+
     # Documentation advises not to share a channel connection. Create new channel for each server instance.
-    def initialize(config: nil, queue_name: nil, block: true)
+    def initialize(config: nil, block: true)
       # create a channel and exchange that both client and server know about
       config ||= CarrotRpc.configuration
       @channel = config.bunny.create_channel
-      @queue_name = queue_name || self.class.to_s.gsub('Server','')
       @block = block
-      @queue = @channel.queue(@queue_name || self.class.to_s.gsub('Server', ''))
+      @server_queue = @channel.queue(self.class.get_queue_name)
       @exchange  = @channel.default_exchange
     end
 
@@ -20,7 +24,7 @@ module CarrotRpc
     # method => object that receives the method. can be a class or anything responding to send
     def start
       # subscribe is like a callback
-      @queue.subscribe(block: @block) do |delivery_info, properties, payload|
+      @server_queue.subscribe(block: @block) do |delivery_info, properties, payload|
         logger.debug "Receiving message: #{payload}"
         request_message = JSON.parse(payload).with_indifferent_access
         result = self.send(request_message[:method], request_message[:params])

@@ -9,12 +9,10 @@ describe CarrotRpc::ServerRunner do
     @logger = instance_double(Logger, info: "", warn: "")
     allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:logger) { @logger }
 
-    bunny = double("bunny")
     @channel = double("channel", close: true)
-    @connection = double("connection", close: true, create_channel: @channel)
+    @bunny = double("bunny", close: true, create_channel: @channel)
 
-    allow(bunny).to receive("connection") { @connection }
-    allow_any_instance_of(CarrotRpc::Configuration).to receive(:bunny) { bunny }
+    allow_any_instance_of(CarrotRpc::Configuration).to receive(:bunny) { @bunny }
   end
 
   describe "initialize" do
@@ -174,6 +172,7 @@ describe CarrotRpc::ServerRunner do
     before :each do
       # setting quit flag so that runloop stops immediately
       subject.shutdown
+      allow(subject).to receive(:run_servers)
     end
 
     it "always calls essential methods" do
@@ -204,20 +203,29 @@ describe CarrotRpc::ServerRunner do
   describe "#stop_servers" do
     before :each do
       @name = double("Name", name: "fake")
-      @mock_server = double("RpcServer", queue: @name, channel: @channel, connection: @connection)
+      @mock_server = double("RpcServer", queue: @name, channel: @channel, connection: @bunny)
       subject.instance_variable_set(:@servers, [@mock_server, @mock_server])
     end
 
     it "server receives shutdown methods" do
       expect(@channel).to receive("close").exactly(2).times
-      expect(@connection).to receive("close").exactly(1).times
+      expect(@bunny).to receive("close").exactly(1).times
       subject.stop_servers
     end
   end
 
   describe "#run_servers" do
+    before :all do
+      path = $:.first
+      $:.unshift([path, "dummy", "app", "servers"].join("/"))
+    end
+
+    after :all do
+      $:.shift
+    end
+
     it "loads the servers" do
-      servers = subject.run_servers(dirs: %w(spec dummy app servers), path: '../../')
+      servers = subject.run_servers(dirs: %w(spec dummy app servers))
       expect(servers.first.class).to eq(FooServer)
     end
   end

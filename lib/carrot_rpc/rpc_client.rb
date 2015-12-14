@@ -1,20 +1,22 @@
+require_relative "concerns/client_server"
+
 # Generic class for all RPC Consumers. Use as a base class to build other RPC Consumers for related functionality.
 # Let's define a naming convention here for subclasses becuase I don't want to write a Confluence doc.
 # All subclasses should have the following naming convention: <Name>RpcConsumer  ex: PostRpcConsumer
 module CarrotRpc
   class RpcClient
-    attr_reader :connection, :channel, :server_queue
+    attr_reader :channel, :server_queue
+
+    extend ClientServer::ClassMethods
 
     # Use defaults for application level connection to RabbitMQ
     # All RPC data goes over the same queue. I think that's ok....
-    def initialize(connection: nil, channel: nil, server_queue_name: nil)
-      @connection = connection || BunnyConn.connection
-      @channel = channel || BunnyConn.default_channel
+    def initialize(config: nil, channel: nil)
+      config ||= CarrotRpc.configuration
+      @channel = config.bunny.create_channel
 
       # auto_delete => false keeps the queue around until RabbitMQ restarts or explicitly deleted
-      # set the queue name to the class name with 'Client' removed
-      server_queue_name = self.class.to_s.gsub('Client','') if server_queue_name.nil?
-      @server_queue  = @channel.queue(queue_name(server_queue_name), auto_delete: false)
+      @server_queue  = @channel.queue(self.class.get_queue_name, auto_delete: false)
 
       # Setup a direct exchange.
       @exchange = @channel.default_exchange
@@ -87,14 +89,6 @@ module CarrotRpc
     # @param params [Hash] the arguments for the method being called.
     def update(params)
       remote_call('update', params)
-    end
-
-    private
-
-    # Logic to return a queue name or generate one from the class name
-    # name [String] optional
-    def queue_name(name = nil)
-      name || self.class.to_s.gsub('Consumer', '')
     end
   end
 end
