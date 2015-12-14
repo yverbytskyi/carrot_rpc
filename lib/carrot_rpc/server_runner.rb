@@ -63,7 +63,6 @@ module CarrotRpc
         logger.info "Starting #{server_klass}..."
 
         server = server_klass.new(block: false)
-        server.logger = logger
         server.start
         @servers << server
       end
