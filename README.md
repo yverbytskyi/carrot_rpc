@@ -60,7 +60,7 @@ CarrotRpc.configure do |config|
   # Bunny defaults to connecting to ENV['RABBITMQ_URL']. See Bunny docs.
   config.bunny = Bunny.new.start
   # Set the log level. Ruby Logger Docs http://ruby-doc.org/stdlib-2.2.0/libdoc/logger/rdoc/Logger.html
-  config.loglevel = Logger::Info
+  config.loglevel = Logger::INFO
   # Create a new logger or use the Rails logger. 
   # When using Rails, use a tagged log to make it easier to track RPC.
   config.logger = CarrotRpc::TaggedLog.new(logger: Rails.logger, tags: ["Carrot RPC Client"])
