@@ -1,7 +1,7 @@
 # Common functionality for Client and Server.
 module ClientServer
   module ClassMethods
-    # Allows for override of the default queue name.
+    # Allows for class level definition of queue name. Default naming not performed. Class must pass queue name.
     def queue_name(name)
       @queue_name = name
     end

@@ -2,6 +2,8 @@
 
 An opinionated approach to doing Remote Procedure Call (RPC) with RabbitMQ and the bunny gem. CarrotRpc serves as a way to streamline the RPC workflow so developers can focus on the implementation and not the plumbing when working with RabbitMQ.
 
+[![Circle CI](https://circleci.com/gh/C-S-D/carrot_rpc.svg?style=svg)](https://circleci.com/gh/C-S-D/carrot_rpc)
+
 ## Installation
 
 Add this line to your application's Gemfile:
