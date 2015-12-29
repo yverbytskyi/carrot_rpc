@@ -1,15 +1,19 @@
 #!/usr/bin/env ruby
-require '../lib/carrot_rpc'
-require '../lib/carrot_rpc/cli'
+require 'bunny'
+require_relative '../lib/carrot_rpc'
+require_relative '../lib/carrot_rpc/cli'
+require_relative '../lib/carrot_rpc/server_runner'
 
 CarrotRpc::CLI.parse_options(ARGV)
 
-config = CarrotRpc::Config.instance
-runner = CarrotRpc::ServerRunner.new(rails_path: config.rails_path, pidfile: config.pidfile,
-                                     runloop_sleep: config.runloop_sleep, daemonize: config.daemonize)
+CarrotRpc.configure do |config|
+  # Defaults to using ENV['RABBITMQ_URL'] for connection string.
+  config.bunny = Bunny.new if config.bunny.nil?
+end
+
+config = CarrotRpc.configuration
+config.bunny.start
+
+runner = CarrotRpc::ServerRunner.new(pidfile: config.pidfile, runloop_sleep: config.runloop_sleep,
+                                     daemonize: config.daemonize)
 runner.run!
-
-#require File.expand_path('../lib/carrot_rpc/server_runner', File.dirname(__FILE__))
-#puts "Options Passed to ServerRunner #{options}" if $DEBUG
-
-#CarrotRpc::ServerRunner.new(options).run!

@@ -43,3 +43,5 @@ Gemfile.lock
 # Ignore Mac Dir files
 .DS_Store
 *./DS_Store
+
+*.log

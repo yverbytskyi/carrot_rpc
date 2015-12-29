@@ -1,14 +1,15 @@
 require "carrot_rpc"
+
 module CarrotRpc
   class ServerRunner
     attr_reader :quit, :servers
 
     # Instantiate the ServerRunner.
-    def initialize(rails_path: nil, pidfile: nil, runloop_sleep: 0, daemonize: false)
+    def initialize(rails_path: ".", pidfile: nil, runloop_sleep: 0, daemonize: false)
       @runloop_sleep = runloop_sleep
       @daemonize = daemonize
       @servers = []
-      load_rails_app(rails_path) if rails_path
+      load_rails_app(rails_path) if CarrotRpc.configuration.autoload_rails
       trap_signals
 
       # daemonization will change CWD so expand relative paths now
@@ -38,25 +39,31 @@ module CarrotRpc
       @servers.each do |s|
         logger.info "Shutting Down Server Queue: #{s.queue.name}"
         s.channel.close
-        s.connection.close
       end
+      # Close the connection once all the other servers are shutdown
+      CarrotRpc.configuration.bunny.close
     end
 
     # Find and require all servers in the app/servers dir.
-    # @param path [String] relative path to rpc servers
-    # @param dirs [Array] directories where RpcServers can be loaded
+    # @param dirs [Array] directories relative to root of host application where RpcServers can be loaded
     # @return [Array] of RpcServers loaded and initialized
-    def run_servers(path: "../../", dirs: ["app", "servers"])
+    def run_servers(dirs: ["app", "servers"])
+      regex = /\A\/.*\/#{dirs.join("/")}\z/
+      server_path = $:.select do |p|
+        p.match(regex)
+      end.first + "/*.rb"
+
+      files = Dir[server_path]
+      fail "No servers found!" if files.empty?
+
       # Load each server defined in the project dir
-      path = "#{path}#{dirs.join("/")}/*.rb"
-      Dir[File.expand_path(path, File.dirname(__FILE__))].each do |file|
+      files.each do |file|
         require file
         server_klass = eval file.to_s.split('/').last.gsub('.rb', '').split("_").collect!{ |w| w.capitalize}.join
         logger.info "Starting #{server_klass}..."
 
         server = server_klass.new(block: false)
         server.start
-        server.logger = logger
         @servers << server
       end
       @servers
@@ -64,7 +71,6 @@ module CarrotRpc
 
     # Convenience method to wrap the logger object.
     def logger
-      puts @logger
       @logger ||= set_logger
     end
 
@@ -72,6 +78,7 @@ module CarrotRpc
     def load_rails_app(path)
       rails_path = File.join(path, 'config/environment.rb')
       if File.exists?(rails_path)
+        logger.info "Rails app found at: #{rails_path}"
         ENV['RACK_ENV'] ||= ENV['RAILS_ENV'] || 'development'
         require rails_path
         ::Rails.application.eager_load!
@@ -184,21 +191,26 @@ module CarrotRpc
 
     private
 
-    # Determine how to create logger.
+    # Determine how to create logger. Config can specify log file.
     def set_logger
-      # when rails is defined, use that logger by default.
-      # otherwise use the logger from the config
-      if CarrotRpc.configuration.logfile
-        logger = Logger.new(CarrotRpc.configuration.logfile)
-        logger.level = CarrotRpc.configuration.loglevel
-      elsif defined?(::Rails)
-        logger = Rails.logger
-        CarrotRpc::TaggedLog.new(logger: use_or_create_logger, tags: ["Carrot RPC"])
+      # always try to create a logger from file
+      logger = log_from_file
+
+      if defined?(::Rails)
+        logger = Rails.logger if logger.nil?
+        CarrotRpc::TaggedLog.new(logger: logger, tags: ["Carrot RPC"])
       else
-        logger = Logger.new(STDOUT)
-        logger.level = CarrotRpc.configuration.loglevel
+        logger = Logger.new(STDOUT) if logger.nil?
       end
+
+      logger.level = CarrotRpc.configuration.loglevel
+      CarrotRpc.configuration.logger = logger
       logger
+    end
+
+    def log_from_file
+      return nil unless CarrotRpc.configuration.logfile
+      Logger.new(CarrotRpc.configuration.logfile)
     end
   end
 end

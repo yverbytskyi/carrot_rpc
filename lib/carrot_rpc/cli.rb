@@ -1,3 +1,4 @@
+require 'bunny'
 require 'optparse'
 
 module CarrotRpc
@@ -18,9 +19,10 @@ module CarrotRpc
         include_help        = "an additional $LOAD_PATH"
         debug_help          = "set $DEBUG to true"
         warn_help           = "enable warnings"
-        rails_path_help     = "relative path to root dir of rails app. Uses Rails Logger by default."
-        logfile_help        = "relative path and name for Log file. Overrides all defaults."
+        autoload_rails_help = "loads rails env by default. Uses Rails Logger by default."
+        logfile_help        = "relative path and name for Log file. Overrides Rails logger."
         loglevel_help       = "levels of loggin: DEBUG < INFO < WARN < ERROR < FATAL < UNKNOWN"
+        rabbitmq_url_help   = "connection string to RabbitMQ 'amqp://user:pass@host:10000/vhost'"
 
         op = OptionParser.new
         op.banner =  "RPC Server Runner for RabbitMQ RPC Services."
@@ -41,9 +43,9 @@ module CarrotRpc
           CarrotRpc.configuration.runloop_sleep = value
         end
 
-        # Expand path here because this file is not likely to move.
-        op.on(" ", "--rails_path PATH", rails_path_help) do |value|
-          CarrotRpc.configuration.rails_path = File.expand_path(value, __FILE__)
+        op.on(" ", "--autoload_rails value", autoload_rails_help) do |value|
+          pv = value == "false" ? false : true
+          CarrotRpc.configuration.autoload_rails = pv
         end
 
         op.on(" ", "--logfile VALUE", logfile_help) do |value|
@@ -53,6 +55,11 @@ module CarrotRpc
         op.on(" ", "--loglevel VALUE", loglevel_help) do |value|
           level = eval(["Logger", value].join("::")) || 0
           CarrotRpc.configuration.loglevel = level
+        end
+
+        # Optional. Defaults to using the ENV['RABBITMQ_URL']
+        op.on(" ", "--rabbitmq_url VALUE", rabbitmq_url_help) do |value|
+          CarrotRpc.configuration.bunny = Bunny.new(value)
         end
 
         op.separator ""
