@@ -1,10 +1,14 @@
-require_relative "concerns/client_server"
-require_relative "rpc_server/error"
+require "carrot_rpc/concerns/client_server"
+require "carrot_rpc/rpc_server/error"
+require "carrot_rpc/rpc_server/error/code"
+require "carrot_rpc/concerns/hash_extensions"
 
 # CarrotRpc gem base module.
 module CarrotRpc
   # Base RPC Server class. Other Servers should inherit from this.
   class RpcServer
+    using HashExtensions
+
     attr_reader :channel, :server_queue, :logger
     # method_reciver => object that receives the method. can be a class or anything responding to send
 
@@ -27,11 +31,13 @@ module CarrotRpc
       # subscribe is like a callback
       @server_queue.subscribe(block: @block) do |delivery_info, properties, payload|
         logger.debug "Receiving message: #{payload}"
-        request_message = JSON.parse(payload).with_indifferent_access
+
+        request_message = JSON.parse(payload).rename_keys('-', '_')
+                          .with_indifferent_access
 
         begin
           result = self.send(request_message[:method], request_message[:params])
-        rescue RpcServer::Error => rpc_server_error
+        rescue Error => rpc_server_error
           logger.error(rpc_server_error)
 
           reply_error rpc_server_error.serialized_message,
@@ -46,6 +52,7 @@ module CarrotRpc
     end
 
     private
+
     def reply(properties:, response_message:)
       @exchange.publish response_message.to_json,
                         correlation_id: properties.correlation_id,

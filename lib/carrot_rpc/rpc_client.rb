@@ -1,10 +1,13 @@
-require_relative "concerns/client_server"
+require "carrot_rpc/concerns/client_server"
+require "carrot_rpc/concerns/hash_extensions"
 
 # Generic class for all RPC Consumers. Use as a base class to build other RPC Consumers for related functionality.
 # Let's define a naming convention here for subclasses becuase I don't want to write a Confluence doc.
 # All subclasses should have the following naming convention: <Name>RpcConsumer  ex: PostRpcConsumer
 module CarrotRpc
   class RpcClient
+    using HashExtensions
+
     attr_reader :channel, :server_queue, :logger
 
     extend ClientServer::ClassMethods
@@ -34,7 +37,7 @@ module CarrotRpc
       # setup subscribe block to Service
       # block => false is a non blocking IO option.
       @reply_queue.subscribe(block: false) do |delivery_info, properties, payload|
-        result = JSON.parse(payload).with_indifferent_access
+        result = JSON.parse(payload).rename_keys('-', '_').with_indifferent_access
         @results[properties[:correlation_id]].push(result[:result])
       end
     end
