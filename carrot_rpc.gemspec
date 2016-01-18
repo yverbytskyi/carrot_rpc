@@ -29,6 +29,8 @@ Gem::Specification.new do |spec|
 
   # Production requirements
   spec.add_dependency "bunny", "~> 2.2"
+  spec.add_dependency "activesupport", "~> 4.2"
+  spec.required_ruby_version = "~> 2.2"
 
   # Development / Test Gems
   spec.add_development_dependency "rspec"

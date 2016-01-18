@@ -5,6 +5,9 @@ require "carrot_rpc/configuration"
 require "carrot_rpc/tagged_log"
 require "carrot_rpc/rpc_client"
 require "carrot_rpc/rpc_server"
+require 'active_support/core_ext/hash/indifferent_access'
+require 'active_support/core_ext/hash/except'
+require 'json'
 
 module CarrotRpc
   class << self

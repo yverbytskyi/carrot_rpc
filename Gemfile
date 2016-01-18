@@ -5,3 +5,7 @@ ruby "2.2.3"
 gemspec
 
 gem "bunny", "~> 2.2"
+
+group :test do
+  gem 'rspec_junit_formatter', '0.2.2'
+end

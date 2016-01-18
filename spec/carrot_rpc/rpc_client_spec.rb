@@ -24,4 +24,39 @@ describe CarrotRpc::RpcClient do
       subject
     end
   end
+
+  describe "#start" do
+    after :each do
+      server.channel.close
+      subject.channel.close
+    end
+
+    subject do
+      CarrotRpc::RpcClient.queue_name 'foo'
+      CarrotRpc::RpcClient.new
+    end
+
+    let(:server) do
+      CarrotRpc::RpcServer.queue_name 'foo'
+      CarrotRpc::RpcServer.class_eval do
+        def show(params)
+          { 'foo-baz' => { 'fizz-buzz' => 'baz', 'foo-bar' => 'biz',
+                           'biz-baz' => { 'super-duper' => 'grovy' } } }
+        end
+      end
+
+      CarrotRpc::RpcServer.new(block: false)
+    end
+
+    let(:result) do
+      { 'foo_baz' => { 'fizz_buzz' => 'baz', 'foo_bar' => 'biz',
+                       'biz_baz' => { 'super_duper' => 'grovy' } } }
+    end
+
+    it "parses the payload from json to hash and changes '-' to '_' in the keys" do
+      subject.start
+      server.start
+      expect(subject.show({})).to eq result
+    end
+  end
 end

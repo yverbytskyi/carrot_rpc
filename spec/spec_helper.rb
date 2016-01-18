@@ -45,6 +45,20 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
+  config.before(:suite) do
+    # Remove the log file on each run.
+    log_file = File.expand_path('../../logs/test.log', __FILE__)
+    File.delete(log_file) if File.exists?(log_file)
+
+    # Setup the connection to RabbitMQ
+    CarrotRpc.configure do |config|
+      bunny = Bunny.new
+      bunny.start
+      config.bunny = bunny
+      config.logger = Logger.new(log_file)
+    end
+  end
+
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
 =begin
