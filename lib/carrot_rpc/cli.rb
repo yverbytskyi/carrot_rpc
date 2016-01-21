@@ -11,7 +11,6 @@ module CarrotRpc
 
       def parse_options(args = ARGV)
         # Set defaults below.
-        options             = { }
         version             = "1.0.0"
         daemonize_help      = "run daemonized in the background (default: false)"
         runloop_sleep_help  = "Configurable sleep time in the runloop"

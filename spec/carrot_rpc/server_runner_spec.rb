@@ -65,7 +65,6 @@ describe CarrotRpc::ServerRunner do
 
     it "removes the file when process is dead" do
       allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:pid_status) { :dead }
-      file = double(File, delete: "")
       allow(File).to receive(:delete)
       expect(File).to receive(:delete)
       subject.check_pid
