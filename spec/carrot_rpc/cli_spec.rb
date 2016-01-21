@@ -16,7 +16,6 @@ RSpec.describe CarrotRpc::CLI do
     end
   end
 
-
   describe 'daemonize' do
     before(:each) { expect(CarrotRpc.configuration).to receive('daemonize=').with(true) }
 
