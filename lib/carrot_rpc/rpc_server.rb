@@ -1,16 +1,11 @@
-require "carrot_rpc/concerns/client_server"
-require "carrot_rpc/rpc_server/error"
-require "carrot_rpc/rpc_server/error/code"
-require "carrot_rpc/concerns/hash_extensions"
-
 # Base RPC Server class. Other Servers should inherit from this.
 class CarrotRpc::RpcServer
-  using HashExtensions
+  using CarrotRpc::HashExtensions
 
   attr_reader :channel, :server_queue, :logger
   # method_reciver => object that receives the method. can be a class or anything responding to send
 
-  extend ClientServer
+  extend CarrotRpc::ClientServer
 
   # Documentation advises not to share a channel connection. Create new channel for each server instance.
   def initialize(config: nil, block: true)

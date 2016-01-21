@@ -1,5 +1,5 @@
 # Common functionality for Client and Server.
-module ClientServer
+module CarrotRpc::ClientServer
   # @overload queue_name(new_name)
   #   @note Default naming not performed. Class must pass queue name.
   #

@@ -1,15 +1,12 @@
-require "carrot_rpc/concerns/client_server"
-require "carrot_rpc/concerns/hash_extensions"
-
 # Generic class for all RPC Consumers. Use as a base class to build other RPC Consumers for related functionality.
 # Let's define a naming convention here for subclasses becuase I don't want to write a Confluence doc.
 # All subclasses should have the following naming convention: <Name>RpcConsumer  ex: PostRpcConsumer
 class CarrotRpc::RpcClient
-  using HashExtensions
+  using CarrotRpc::HashExtensions
 
   attr_reader :channel, :server_queue, :logger
 
-  extend ClientServer
+  extend CarrotRpc::ClientServer
 
   # Use defaults for application level connection to RabbitMQ
   # All RPC data goes over the same queue. I think that's ok....

@@ -1,5 +1,5 @@
-# Extend the Hash class with new methods and functionality.
-module HashExtensions
+# Refine the Hash class with new methods and functionality.
+module CarrotRpc::HashExtensions
   refine Hash do
     # Utility method to rename keys in a hash
     # @param [String] find the text to look for in a keys

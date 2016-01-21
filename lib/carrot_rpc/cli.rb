@@ -1,5 +1,3 @@
-require 'bunny'
-require 'optparse'
 
 class CarrotRpc::CLI
   # Class methods
