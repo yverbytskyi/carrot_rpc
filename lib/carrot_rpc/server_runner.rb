@@ -85,15 +85,18 @@ class CarrotRpc::ServerRunner
     end
   end
 
+  # attr_reader doesn't allow adding a `?` to the method name, so I think this is a false positive
+  # rubocop:disable Style/TrivialAccessors
+
   # Attribute to determine when to daemonize the process.
   def daemonize?
     @daemonize
   end
 
+  # rubocop:enable Style/TrivialAccessors
+
   # Attribute accessor for pid file options
-  def pidfile
-    @pidfile
-  end
+  attr_reader :pidfile
 
   # pid file present?
   def pidfile?
