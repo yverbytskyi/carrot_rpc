@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["shamil614@gmail.com"]
 
   spec.summary       = %q{Remote Procedure Call (RPC) using the Bunny Gem over RabbitMQ}
-  spec.description   = %q{Streamlined approach to setting up RPC over RabbitMQ.}
+  spec.description   = %q(Streamlined approach to setting up RPC over RabbitMQ.)
   spec.homepage      = "TODO: Put your gem's website or public repo URL here."
   spec.license       = "MIT"
 
