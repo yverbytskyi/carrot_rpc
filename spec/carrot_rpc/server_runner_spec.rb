@@ -217,12 +217,12 @@ RSpec.describe CarrotRpc::ServerRunner do
 
   describe "#run_servers" do
     before :all do
-      path = $:.first
-      $:.unshift([path, "dummy", "app", "servers"].join("/"))
+      path = $LOAD_PATH.first
+      $LOAD_PATH.unshift([path, "dummy", "app", "servers"].join("/"))
     end
 
     after :all do
-      $:.shift
+      $LOAD_PATH.shift
     end
 
     it "loads the servers" do

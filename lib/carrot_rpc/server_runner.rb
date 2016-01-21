@@ -46,7 +46,7 @@ class CarrotRpc::ServerRunner
   # @return [Array] of RpcServers loaded and initialized
   def run_servers(dirs: ["app", "servers"])
     regex = %r{\A/.*/#{dirs.join("/")}\z}
-    server_path = $:.find do |p|
+    server_path = $LOAD_PATH.find do |p|
       p.match(regex)
     end + "/*.rb"
 
