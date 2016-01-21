@@ -16,7 +16,7 @@ module CarrotRpc::CLI
   end
 
   # There are just too many options in the Process options category and they can't really be broken down more
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 
   # Add "Process options" to `option_parser`.
   #
@@ -70,7 +70,7 @@ module CarrotRpc::CLI
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def self.add_ruby_options(option_parser)
     option_parser.separator ""

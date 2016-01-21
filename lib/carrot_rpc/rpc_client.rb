@@ -48,19 +48,37 @@ class CarrotRpc::RpcClient
   # @return [Object] the result of the method call.
   def remote_call(remote_method, params)
     correlation_id = SecureRandom.uuid
-    message = {
-      id: correlation_id,
-      jsonrpc: "2.0",
-      method: remote_method,
-      params: params.except(:controller, :action)
-    }
-    # Reply To => make sure the service knows where to send it's response.
-    # Correlation ID => identify the results that belong to the unique call made
-    @exchange.publish(message.to_json, routing_key: @server_queue.name, correlation_id: correlation_id,
-                                       reply_to: @reply_queue.name)
+    publish(correlation_id: correlation_id, method: remote_method, params: params)
+    wait_for_result(correlation_id)
+  end
+
+  def wait_for_result(correlation_id)
+    # `pop` is `Queue#pop`, so it is blocking on the receiving thread and this must happend before the `Hash.delete` or
+    # the receiving thread won't be able to find the correlation_id in @results
     result = @results[correlation_id].pop
     @results.delete correlation_id # remove item from hash. prevents memory leak.
     result
+  end
+
+  def publish(correlation_id:, method:, params:)
+    message = message(
+      correlation_id: correlation_id,
+      params:         params,
+      method:         method
+    )
+    # Reply To => make sure the service knows where to send it's response.
+    # Correlation ID => identify the results that belong to the unique call made
+    @exchange.publish(message.to_json, routing_key: @server_queue.name, correlation_id: correlation_id,
+                                       reply_to:                                     @reply_queue.name)
+  end
+
+  def message(correlation_id:, method:, params:)
+    {
+      id:      correlation_id,
+      jsonrpc: "2.0",
+      method:  method,
+      params:  params.except(:controller, :action)
+    }
   end
 
   # Convience method as a resource alias for index action.

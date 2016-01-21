@@ -9,8 +9,6 @@ Metrics/ClassLength:
   Enabled: false
 Metrics/LineLength:
   Max: 120
-Metrics/MethodLength:
-  Enabled: false
 
 Style/ClassAndModuleChildren:
   Description: >-

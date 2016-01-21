@@ -28,20 +28,22 @@ class CarrotRpc::RpcServer
       request_message = JSON.parse(payload).rename_keys("-", "_")
                             .with_indifferent_access
 
-      begin
-        result = send(request_message[:method], request_message[:params])
-      rescue Error => rpc_server_error
-        logger.error(rpc_server_error)
-
-        reply_error rpc_server_error.serialized_message,
-                    properties: properties,
-                    request_message: request_message
-      else
-        reply_result result,
-                     properties: properties,
-                     request_message: request_message
-      end
+      process_request(request_message, properties: properties)
     end
+  end
+
+  def process_request(request_message, properties:)
+    result = send(request_message[:method], request_message[:params])
+  rescue Error => rpc_server_error
+    logger.error(rpc_server_error)
+
+    reply_error rpc_server_error.serialized_message,
+                properties:      properties,
+                request_message: request_message
+  else
+    reply_result result,
+                 properties:      properties,
+                 request_message: request_message
   end
 
   private
