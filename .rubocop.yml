@@ -22,8 +22,6 @@ Style/ClassAndModuleChildren:
   EnforcedStyle: compact
 Style/Documentation:
   Enabled: false
-Style/GuardClause:
-  Enabled: false
 Style/IfInsideElse:
   Enabled: false
 Style/IfUnlessModifier:
