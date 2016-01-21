@@ -32,8 +32,6 @@ Style/StringLiterals:
                  Double quotes work for Strings in both Ruby and Elixir, so developers switch languages can use
                  consistent quoting. (Single quotes are char lists in Elixir.)
   EnforcedStyle: double_quotes
-Style/UnneededInterpolation:
-  Enabled: false
 Style/UnneededPercentQ:
   Enabled: false
 Style/WhileUntilModifier:

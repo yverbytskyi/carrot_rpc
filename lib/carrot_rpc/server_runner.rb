@@ -107,7 +107,7 @@ class CarrotRpc::ServerRunner
   def write_pid
     if pidfile?
       begin
-        File.open(pidfile, ::File::CREAT | ::File::EXCL | ::File::WRONLY) { |f| f.write("#{Process.pid}") }
+        File.open(pidfile, ::File::CREAT | ::File::EXCL | ::File::WRONLY) { |f| f.write(Process.pid.to_s) }
         at_exit { File.delete(pidfile) if File.exist?(pidfile) }
       rescue Errno::EEXIST
         check_pid
