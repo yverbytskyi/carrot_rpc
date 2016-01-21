@@ -4,8 +4,6 @@ AllCops:
 
 Lint/Eval:
   Enabled: false
-Lint/UnusedBlockArgument:
-  Enabled: false
 Lint/UselessAssignment:
   Enabled: false
 

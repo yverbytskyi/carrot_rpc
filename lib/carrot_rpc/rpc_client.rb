@@ -36,7 +36,7 @@ module CarrotRpc
 
       # setup subscribe block to Service
       # block => false is a non blocking IO option.
-      @reply_queue.subscribe(block: false) do |delivery_info, properties, payload|
+      @reply_queue.subscribe(block: false) do |_delivery_info, properties, payload|
         result = JSON.parse(payload).rename_keys('-', '_').with_indifferent_access
         @results[properties[:correlation_id]].push(result[:result])
       end

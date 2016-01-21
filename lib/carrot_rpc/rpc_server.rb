@@ -29,7 +29,7 @@ module CarrotRpc
     # method => object that receives the method. can be a class or anything responding to send
     def start
       # subscribe is like a callback
-      @server_queue.subscribe(block: @block) do |delivery_info, properties, payload|
+      @server_queue.subscribe(block: @block) do |_delivery_info, properties, payload|
         logger.debug "Receiving message: #{payload}"
 
         request_message = JSON.parse(payload).rename_keys('-', '_')
