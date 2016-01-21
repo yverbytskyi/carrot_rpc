@@ -56,7 +56,7 @@ class CarrotRpc::ServerRunner
     # Load each server defined in the project dir
     files.each do |file|
       require file
-      server_klass = eval file.to_s.split('/').last.gsub('.rb', '').split("_").collect!{ |w| w.capitalize}.join
+      server_klass = eval file.to_s.split('/').last.gsub('.rb', '').split("_").collect! { |w| w.capitalize }.join
       logger.info "Starting #{server_klass}..."
 
       server = server_klass.new(block: false)
@@ -104,7 +104,7 @@ class CarrotRpc::ServerRunner
   def write_pid
     if pidfile?
       begin
-        File.open(pidfile, ::File::CREAT | ::File::EXCL | ::File::WRONLY){|f| f.write("#{Process.pid}") }
+        File.open(pidfile, ::File::CREAT | ::File::EXCL | ::File::WRONLY) { |f| f.write("#{Process.pid}") }
         at_exit { File.delete(pidfile) if File.exist?(pidfile) }
       rescue Errno::EEXIST
         check_pid

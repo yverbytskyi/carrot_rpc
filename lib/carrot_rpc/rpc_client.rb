@@ -28,7 +28,7 @@ class CarrotRpc::RpcClient
     @reply_queue = @channel.queue("", exclusive: true)
 
     # setup a hash for results with a Queue object as a value
-    @results = Hash.new{ |h, k| h[k] = Queue.new }
+    @results = Hash.new { |h, k| h[k] = Queue.new }
 
     # setup subscribe block to Service
     # block => false is a non blocking IO option.

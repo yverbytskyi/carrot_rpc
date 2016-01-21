@@ -2,7 +2,7 @@
 class CarrotRpc::TaggedLog
   attr_reader :logger, :tags
 
-  def initialize(logger: , tags:)
+  def initialize(logger:, tags:)
     @logger = logger
     @tags = *tags
   end

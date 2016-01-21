@@ -62,10 +62,10 @@ class CarrotRpc::CLI
 
       op.separator "Ruby options:"
       op.on("-I", "--include PATH", include_help) do |value|
-        $LOAD_PATH.unshift(*value.split(":").map{|v| File.expand_path(v)})
+        $LOAD_PATH.unshift(*value.split(":").map { |v| File.expand_path(v) })
       end
-      op.on(      "--debug",        debug_help)   { $DEBUG = true }
-      op.on(      "--warn",         warn_help)    { $-w = true    }
+      op.on("--debug",        debug_help)   { $DEBUG = true }
+      op.on("--warn",         warn_help)    { $-w = true    }
       op.separator ""
 
       op.separator "Common options:"

@@ -3,7 +3,7 @@ require 'carrot_rpc/server_runner'
 
 RSpec.describe CarrotRpc::ServerRunner do
   let(:args) { { rails_path: File.expand_path("../../dummy", __FILE__) } }
-  subject{ CarrotRpc::ServerRunner.new(**args) }
+  subject { CarrotRpc::ServerRunner.new(**args) }
 
   before :each do
     @logger = instance_double(Logger, info: "", warn: "")
@@ -54,13 +54,13 @@ RSpec.describe CarrotRpc::ServerRunner do
     it "exits when there's an running pid and logs error" do
       allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:pid_status) { :running }
       expect(@logger).to receive(:warn)
-      expect{ subject.check_pid }.to terminate.with_code 1
+      expect { subject.check_pid }.to terminate.with_code 1
     end
 
     it "exits when there's a not_owned pid and logs error" do
       allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:pid_status) { :not_owned }
       expect(@logger).to receive(:warn)
-      expect{ subject.check_pid }.to terminate.with_code 1
+      expect { subject.check_pid }.to terminate.with_code 1
     end
 
     it "removes the file when process is dead" do
@@ -73,7 +73,7 @@ RSpec.describe CarrotRpc::ServerRunner do
 
   describe "#pid_status" do
     let(:pid_name) { "foo.pid" }
-    let(:path) { File.expand_path("../../dummy/tmp/pids/#{pid_name}", __FILE__)}
+    let(:path) { File.expand_path("../../dummy/tmp/pids/#{pid_name}", __FILE__) }
 
     context "file doesn't exist" do
       it "returns exited" do
@@ -101,7 +101,7 @@ RSpec.describe CarrotRpc::ServerRunner do
 
   describe "#write_pid" do
     let(:pid_name) { "running.pid" }
-    let(:path) { File.expand_path("../../dummy/tmp/pids/#{pid_name}", __FILE__)}
+    let(:path) { File.expand_path("../../dummy/tmp/pids/#{pid_name}", __FILE__) }
 
     it "creates a pidfile for a running process" do
       subject.instance_variable_set(:@pidfile, path)
@@ -144,7 +144,7 @@ RSpec.describe CarrotRpc::ServerRunner do
 
     it "rails if the rails app can not be found" do
       path = File.expand_path("../foo", __FILE__)
-      expect{subject.load_rails_app(path)}.to raise_error LoadError
+      expect { subject.load_rails_app(path) }.to raise_error LoadError
     end
   end
 
@@ -154,14 +154,14 @@ RSpec.describe CarrotRpc::ServerRunner do
     end
 
     context "with true" do
-      let(:args){ { rails_path: File.expand_path("../../dummy", __FILE__), daemonize: true } }
+      let(:args) { { rails_path: File.expand_path("../../dummy", __FILE__), daemonize: true } }
       it "true when set" do
         expect(subject.daemonize?).to eq true
       end
     end
 
     context "with false" do
-      let(:args){ { rails_path: File.expand_path("../../dummy", __FILE__), daemonize: false } }
+      let(:args) { { rails_path: File.expand_path("../../dummy", __FILE__), daemonize: false } }
 
       it "false when set" do
         expect(subject.daemonize?).to eq false
@@ -232,7 +232,7 @@ RSpec.describe CarrotRpc::ServerRunner do
   end
 
   describe "#set_logger" do
-    let(:args) { {rails_path: nil } }
+    let(:args) { { rails_path: nil } }
     before :each do
       CarrotRpc.configuration.autoload_rails = false
     end
@@ -246,7 +246,7 @@ RSpec.describe CarrotRpc::ServerRunner do
         CarrotRpc::CLI.parse_options(["--logfile=../rpc.log"])
         logger = instance_double(Logger, level: 1)
         expect(logger).to receive(:level=)
-        expect(Logger).to receive(:new).with(CarrotRpc.configuration.logfile){ logger }
+        expect(Logger).to receive(:new).with(CarrotRpc.configuration.logfile) { logger }
         subject.send(:set_logger)
       end
 
