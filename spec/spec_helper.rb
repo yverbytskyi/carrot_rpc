@@ -51,11 +51,11 @@ RSpec.configure do |config|
     File.delete(log_file) if File.exist?(log_file)
 
     # Setup the connection to RabbitMQ
-    CarrotRpc.configure do |config|
+    CarrotRpc.configure do |carrot_rpc_config|
       bunny = Bunny.new
       bunny.start
-      config.bunny = bunny
-      config.logger = Logger.new(log_file)
+      carrot_rpc_config.bunny = bunny
+      carrot_rpc_config.logger = Logger.new(log_file)
     end
   end
 
