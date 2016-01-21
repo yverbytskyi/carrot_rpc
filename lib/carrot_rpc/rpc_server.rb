@@ -26,7 +26,7 @@ class CarrotRpc::RpcServer
       logger.debug "Receiving message: #{payload}"
 
       request_message = JSON.parse(payload).rename_keys('-', '_')
-                          .with_indifferent_access
+                            .with_indifferent_access
 
       begin
         result = self.send(request_message[:method], request_message[:params])

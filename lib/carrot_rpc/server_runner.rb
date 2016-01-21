@@ -118,10 +118,10 @@ class CarrotRpc::ServerRunner
     if pidfile?
       case pid_status(pidfile)
       when :running, :not_owned
-          logger.warn "A server is already running. Check #{pidfile}"
-          exit(1)
+        logger.warn "A server is already running. Check #{pidfile}"
+        exit(1)
       when :dead
-          File.delete(pidfile)
+        File.delete(pidfile)
       end
     end
   end
