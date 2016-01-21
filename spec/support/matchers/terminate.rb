@@ -1,5 +1,5 @@
 # Custom matcher courtesy of https://gist.github.com/mmasashi/58bd7e2668836a387856
-RSpec::Matchers.define :terminate do |code|
+RSpec::Matchers.define :terminate do |_code|
   actual = nil
 
   def supports_block_expectations?
@@ -19,12 +19,12 @@ RSpec::Matchers.define :terminate do |code|
     @status_code = status_code
   end
 
-  failure_message do |block|
+  failure_message do |_block|
     "expected block to call exit(#{status_code}) but exit" +
       (actual.nil? ? " not called" : "(#{actual}) was called")
   end
 
-  failure_message_when_negated do |block|
+  failure_message_when_negated do |_block|
     "expected block not to call exit(#{status_code})"
   end
 

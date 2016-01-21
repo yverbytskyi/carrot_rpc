@@ -39,7 +39,7 @@ describe CarrotRpc::RpcClient do
     let(:server) do
       CarrotRpc::RpcServer.queue_name 'foo'
       CarrotRpc::RpcServer.class_eval do
-        def show(params)
+        def show(_params)
           { 'foo-baz' => { 'fizz-buzz' => 'baz', 'foo-bar' => 'biz',
                            'biz-baz' => { 'super-duper' => 'grovy' } } }
         end
