@@ -14,7 +14,7 @@ describe CarrotRpc::RpcClient do
 
     it "has a queue name class method" do
       CarrotRpc::RpcClient.queue_name "foo"
-      expect(CarrotRpc::RpcClient.get_queue_name).to eq "foo"
+      expect(CarrotRpc::RpcClient.queue_name).to eq "foo"
       # reset state
       CarrotRpc::RpcClient.queue_name nil
     end

@@ -21,7 +21,7 @@ module CarrotRpc
       @channel = config.bunny.create_channel
       @logger = config.logger
       @block = block
-      @server_queue = @channel.queue(self.class.get_queue_name)
+      @server_queue = @channel.queue(self.class.queue_name)
       @exchange  = @channel.default_exchange
     end
 
