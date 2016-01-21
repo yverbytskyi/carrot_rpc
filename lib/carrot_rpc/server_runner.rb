@@ -19,7 +19,7 @@ module CarrotRpc
     # Start the servers and the run loop.
     def run!
       check_pid
-      daemonize and suppress_output if daemonize?
+      daemonize && suppress_output if daemonize?
       write_pid
 
       # Initialize the servers. Set logger.

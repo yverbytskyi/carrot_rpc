@@ -14,8 +14,6 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Enabled: false
 
-Style/AndOr:
-  Enabled: false
 Style/BlockComments:
   Enabled: false
 Style/ClassAndModuleChildren:

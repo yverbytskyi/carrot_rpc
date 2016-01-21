@@ -12,7 +12,7 @@ RSpec::Matchers.define :terminate do |_code|
     rescue SystemExit => e
       actual = e.status
     end
-    actual and actual == status_code
+    actual && actual == status_code
   end
 
   chain :with_code do |status_code|
