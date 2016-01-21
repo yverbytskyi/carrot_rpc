@@ -45,8 +45,8 @@ module CarrotRpc
                       request_message: request_message
         else
           reply_result result,
-                      properties: properties,
-                      request_message: request_message
+                       properties: properties,
+                       request_message: request_message
         end
       end
     end
