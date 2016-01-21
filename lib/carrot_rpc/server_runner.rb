@@ -44,7 +44,7 @@ class CarrotRpc::ServerRunner
   # Find and require all servers in the app/servers dir.
   # @param dirs [Array] directories relative to root of host application where RpcServers can be loaded
   # @return [Array] of RpcServers loaded and initialized
-  def run_servers(dirs: ["app", "servers"])
+  def run_servers(dirs: %w(app servers))
     regex = %r{\A/.*/#{dirs.join("/")}\z}
     server_path = $LOAD_PATH.find do |p|
       p.match(regex)
