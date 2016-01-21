@@ -20,8 +20,6 @@ Style/ClassAndModuleChildren:
                  module.  Reopening the parent class or module can lead to the parent class or module not being loaded
                  as the child already defined it.
   EnforcedStyle: compact
-Style/ConditionalAssignment:
-  Enabled: false
 Style/Documentation:
   Enabled: false
 Style/EmptyLines:

@@ -8,12 +8,14 @@ module CarrotRpc::HashExtensions
     def rename_keys(find, replace, new_hash = {})
       self.each do |k, v|
         new_key = k.gsub(find, replace)
-        if v.is_a? Hash
-          new_hash[new_key] = v.rename_keys(find, replace)
-        else
-          new_hash[new_key] = v
-        end
+
+        new_hash[new_key] = if v.is_a? Hash
+                              v.rename_keys(find, replace)
+                            else
+                              v
+                            end
       end
+
       new_hash
     end
   end
