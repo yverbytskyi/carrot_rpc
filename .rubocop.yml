@@ -14,9 +14,6 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Enabled: false
 
-Performance/Detect:
-  Enabled: false
-
 Style/AccessorMethodName:
   Enabled: false
 Style/AlignHash:

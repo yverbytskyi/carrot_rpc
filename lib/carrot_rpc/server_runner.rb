@@ -49,9 +49,9 @@ module CarrotRpc
     # @return [Array] of RpcServers loaded and initialized
     def run_servers(dirs: ["app", "servers"])
       regex = /\A\/.*\/#{dirs.join("/")}\z/
-      server_path = $:.select do |p|
+      server_path = $:.find do |p|
         p.match(regex)
-      end.first + "/*.rb"
+      end + "/*.rb"
 
       files = Dir[server_path]
       fail "No servers found!" if files.empty?
