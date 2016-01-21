@@ -69,8 +69,14 @@ class CarrotRpc::CLI
       op.separator ""
 
       op.separator "Common options:"
-      op.on("-h", "--help")    { puts op.to_s; exit }
-      op.on("-v", "--version") { puts version; exit }
+      op.on("-h", "--help") do
+        puts op.to_s
+        exit
+      end
+      op.on("-v", "--version") do
+        puts version
+        exit
+      end
       op.separator ""
       op.parse!(args)
     end
