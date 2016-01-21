@@ -27,7 +27,7 @@ class CarrotRpc::CLI
       op.separator ""
 
       op.separator "Process options:"
-      op.on("-d", "--daemonize",   daemonize_help) do
+      op.on("-d", "--daemonize", daemonize_help) do
         CarrotRpc.configuration.daemonize = true
       end
 
@@ -35,7 +35,7 @@ class CarrotRpc::CLI
         CarrotRpc.configuration.pidfile = value
       end
 
-      op.on("-s", "--runloop_sleep VALUE", Float, runloop_sleep_help)  do |value|
+      op.on("-s", "--runloop_sleep VALUE", Float, runloop_sleep_help) do |value|
         CarrotRpc.configuration.runloop_sleep = value
       end
 

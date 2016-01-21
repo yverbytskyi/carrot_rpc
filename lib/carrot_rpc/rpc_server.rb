@@ -15,7 +15,7 @@ class CarrotRpc::RpcServer
     @logger = config.logger
     @block = block
     @server_queue = @channel.queue(self.class.queue_name)
-    @exchange  = @channel.default_exchange
+    @exchange = @channel.default_exchange
   end
 
   # start da server!

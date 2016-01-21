@@ -131,7 +131,7 @@ class CarrotRpc::ServerRunner
     return :exited unless File.exist?(pidfile)
     pid = ::File.read(pidfile).to_i
     return :dead if pid == 0
-    Process.kill(0, pid)      # check process status
+    Process.kill(0, pid) # check process status
     :running
   rescue Errno::ESRCH
     :dead
