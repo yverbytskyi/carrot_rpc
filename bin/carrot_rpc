@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
-require 'bunny'
-require_relative '../lib/carrot_rpc'
-require_relative '../lib/carrot_rpc/cli'
-require_relative '../lib/carrot_rpc/server_runner'
+require "bunny"
+require_relative "../lib/carrot_rpc"
+require_relative "../lib/carrot_rpc/cli"
+require_relative "../lib/carrot_rpc/server_runner"
 
 CarrotRpc::CLI.parse_options(ARGV)
 

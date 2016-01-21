@@ -25,7 +25,7 @@ class CarrotRpc::RpcServer
     @server_queue.subscribe(block: @block) do |_delivery_info, properties, payload|
       logger.debug "Receiving message: #{payload}"
 
-      request_message = JSON.parse(payload).rename_keys('-', '_')
+      request_message = JSON.parse(payload).rename_keys("-", "_")
                             .with_indifferent_access
 
       begin
@@ -54,7 +54,7 @@ class CarrotRpc::RpcServer
 
   # See http://www.jsonrpc.org/specification#error_object
   def reply_error(error, properties:, request_message:)
-    response_message = { error: error, id: request_message[:id], jsonrpc: '2.0' }
+    response_message = { error: error, id: request_message[:id], jsonrpc: "2.0" }
 
     logger.debug "Publish error: #{error} to #{response_message}"
 
@@ -64,7 +64,7 @@ class CarrotRpc::RpcServer
 
   # See http://www.jsonrpc.org/specification#response_object
   def reply_result(result, properties:, request_message:)
-    response_message = { id: request_message[:id], result: result, jsonrpc: '2.0' }
+    response_message = { id: request_message[:id], result: result, jsonrpc: "2.0" }
 
     logger.debug "Publishing result: #{result} to #{response_message}"
 

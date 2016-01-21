@@ -56,7 +56,7 @@ class CarrotRpc::ServerRunner
     # Load each server defined in the project dir
     files.each do |file|
       require file
-      server_klass = eval file.to_s.split('/').last.gsub('.rb', '').split("_").collect! { |w| w.capitalize }.join
+      server_klass = eval file.to_s.split("/").last.gsub(".rb", "").split("_").collect! { |w| w.capitalize }.join
       logger.info "Starting #{server_klass}..."
 
       server = server_klass.new(block: false)
@@ -73,10 +73,10 @@ class CarrotRpc::ServerRunner
 
   # Path should already be expanded.
   def load_rails_app(path)
-    rails_path = File.join(path, 'config/environment.rb')
+    rails_path = File.join(path, "config/environment.rb")
     if File.exist?(rails_path)
       logger.info "Rails app found at: #{rails_path}"
-      ENV['RACK_ENV'] ||= ENV['RAILS_ENV'] || 'development'
+      ENV["RACK_ENV"] ||= ENV["RAILS_ENV"] || "development"
       require rails_path
       ::Rails.application.eager_load!
       true
@@ -149,7 +149,7 @@ class CarrotRpc::ServerRunner
 
   # Part of daemonizing process. Prevents application from outputting info to terminal.
   def suppress_output
-    $stderr.reopen('/dev/null', 'a')
+    $stderr.reopen("/dev/null", "a")
     $stdout.reopen($stderr)
   end
 

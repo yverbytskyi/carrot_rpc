@@ -33,7 +33,7 @@ class CarrotRpc::RpcClient
     # setup subscribe block to Service
     # block => false is a non blocking IO option.
     @reply_queue.subscribe(block: false) do |_delivery_info, properties, payload|
-      result = JSON.parse(payload).rename_keys('-', '_').with_indifferent_access
+      result = JSON.parse(payload).rename_keys("-", "_").with_indifferent_access
       @results[properties[:correlation_id]].push(result[:result])
     end
   end
@@ -50,7 +50,7 @@ class CarrotRpc::RpcClient
     correlation_id = SecureRandom.uuid
     message = {
       id: correlation_id,
-      jsonrpc: '2.0',
+      jsonrpc: "2.0",
       method: remote_method,
       params: params.except(:controller, :action)
     }
@@ -68,7 +68,7 @@ class CarrotRpc::RpcClient
   #
   # @param params [Hash] the arguments for the method being called.
   def index(params)
-    remote_call('index', params)
+    remote_call("index", params)
   end
 
   # Convience method as a resource alias for show action.
@@ -76,7 +76,7 @@ class CarrotRpc::RpcClient
   #
   # @param params [Hash] the arguments for the method being called.
   def show(params)
-    remote_call('show', params)
+    remote_call("show", params)
   end
 
   # Convience method as a resource alias for create action.
@@ -84,7 +84,7 @@ class CarrotRpc::RpcClient
   #
   # @param params [Hash] the arguments for the method being called.
   def create(params)
-    remote_call('create', params)
+    remote_call("create", params)
   end
 
   # Convience method as a resource alias for update action.
@@ -92,6 +92,6 @@ class CarrotRpc::RpcClient
   #
   # @param params [Hash] the arguments for the method being called.
   def update(params)
-    remote_call('update', params)
+    remote_call("update", params)
   end
 end

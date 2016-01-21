@@ -28,7 +28,10 @@ Style/IfUnlessModifier:
                  the line cannot tell you if the body is ever executed.
   Enabled: false
 Style/StringLiterals:
-  Enabled: false
+  Description: >-
+                 Double quotes work for Strings in both Ruby and Elixir, so developers switch languages can use
+                 consistent quoting. (Single quotes are char lists in Elixir.)
+  EnforcedStyle: double_quotes
 Style/SymbolProc:
   Enabled: false
 Style/TrivialAccessors:

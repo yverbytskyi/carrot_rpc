@@ -1,5 +1,5 @@
-require 'spec_helper'
-require 'carrot_rpc/server_runner'
+require "spec_helper"
+require "carrot_rpc/server_runner"
 
 RSpec.describe CarrotRpc::ServerRunner do
   let(:args) { { rails_path: File.expand_path("../../dummy", __FILE__) } }
@@ -35,7 +35,7 @@ RSpec.describe CarrotRpc::ServerRunner do
 
     context "passing params" do
       let(:args) do
-        { rails_path: File.expand_path("../../dummy", __FILE__), pidfile: 'foo', runloop_sleep: 5, daemonize: true }
+        { rails_path: File.expand_path("../../dummy", __FILE__), pidfile: "foo", runloop_sleep: 5, daemonize: true }
       end
 
       it "sets instance vars to the params passed" do

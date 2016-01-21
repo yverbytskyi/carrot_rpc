@@ -1,5 +1,5 @@
-require 'spec_helper'
-require 'carrot_rpc'
+require "spec_helper"
+require "carrot_rpc"
 
 RSpec.describe CarrotRpc::RpcClient do
   subject { CarrotRpc::RpcClient.new }
@@ -32,16 +32,16 @@ RSpec.describe CarrotRpc::RpcClient do
     end
 
     subject do
-      CarrotRpc::RpcClient.queue_name 'foo'
+      CarrotRpc::RpcClient.queue_name "foo"
       CarrotRpc::RpcClient.new
     end
 
     let(:server) do
-      CarrotRpc::RpcServer.queue_name 'foo'
+      CarrotRpc::RpcServer.queue_name "foo"
       CarrotRpc::RpcServer.class_eval do
         def show(_params)
-          { 'foo-baz' => { 'fizz-buzz' => 'baz', 'foo-bar' => 'biz',
-                           'biz-baz' => { 'super-duper' => 'grovy' } } }
+          { "foo-baz" => { "fizz-buzz" => "baz", "foo-bar" => "biz",
+                           "biz-baz" => { "super-duper" => "grovy" } } }
         end
       end
 
@@ -49,8 +49,8 @@ RSpec.describe CarrotRpc::RpcClient do
     end
 
     let(:result) do
-      { 'foo_baz' => { 'fizz_buzz' => 'baz', 'foo_bar' => 'biz',
-                       'biz_baz' => { 'super_duper' => 'grovy' } } }
+      { "foo_baz" => { "fizz_buzz" => "baz", "foo_bar" => "biz",
+                       "biz_baz" => { "super_duper" => "grovy" } } }
     end
 
     it "parses the payload from json to hash and changes '-' to '_' in the keys" do

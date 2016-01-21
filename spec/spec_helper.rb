@@ -24,7 +24,7 @@ Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each { |f| require f }
 RSpec.configure do |config|
   config.before(:suite) do
     # Remove the log file on each run.
-    log_file = File.expand_path('../../logs/test.log', __FILE__)
+    log_file = File.expand_path("../../logs/test.log", __FILE__)
     File.delete(log_file) if File.exist?(log_file)
 
     # Setup the connection to RabbitMQ
@@ -69,7 +69,7 @@ RSpec.configure do |config|
     # Use the documentation formatter for detailed output,
     # unless a formatter has already been configured
     # (e.g. via a command-line flag).
-    config.default_formatter = 'doc'
+    config.default_formatter = "doc"
   end
 
   config.filter_run :focus
