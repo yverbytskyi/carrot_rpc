@@ -2,10 +2,6 @@
 class CarrotRpc::CLI
   # Class methods
   class << self
-    def self.run!(argv = ARGV)
-      parse_options(argv)
-    end
-
     def parse_options(args = ARGV)
       # Set defaults below.
       version             = "1.0.0"
