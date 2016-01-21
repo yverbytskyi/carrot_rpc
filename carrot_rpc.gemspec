@@ -44,6 +44,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   # Unit test framework
   spec.add_development_dependency "rspec"
+  # Style-checker
+  spec.add_development_dependency "rubocop"
 
   spec.required_ruby_version = "~> 2.2"
 end

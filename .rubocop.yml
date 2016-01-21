@@ -1,0 +1,107 @@
+AllCops:
+  DisplayCopNames: true
+  TargetRubyVersion: 2.2
+
+Lint/DeprecatedClassMethods:
+  Enabled: false
+Lint/Eval:
+  Enabled: false
+Lint/HandleExceptions:
+  Enabled: false
+Lint/ShadowingOuterLocalVariable:
+  Enabled: false
+Lint/UnusedBlockArgument:
+  Enabled: false
+Lint/UselessAssignment:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Metrics/LineLength:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+
+Performance/Detect:
+  Enabled: false
+
+Style/AccessorMethodName:
+  Enabled: false
+Style/AlignHash:
+  Enabled: false
+Style/AlignParameters:
+  Enabled: false
+Style/AndOr:
+  Enabled: false
+Style/BlockComments:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/ConditionalAssignment:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/EmptyLines:
+  Enabled: false
+Style/EmptyLinesAroundMethodBody:
+  Enabled: false
+Style/ExtraSpacing:
+  Enabled: false
+Style/GuardClause:
+  Enabled: false
+Style/IfInsideElse:
+  Enabled: false
+Style/IfUnlessModifier:
+  Enabled: false
+Style/IndentationConsistency:
+  Enabled: false
+Style/IndentationWidth:
+  Enabled: false
+Style/IndentHash:
+  Enabled: false
+Style/MultilineMethodCallIndentation:
+  Enabled: false
+Style/MutableConstant:
+  Enabled: false
+Style/NegatedWhile:
+  Enabled: false
+Style/NumericLiterals:
+  Enabled: false
+Style/PercentLiteralDelimiters:
+  Enabled: false
+Style/RedundantSelf:
+  Enabled: false
+Style/RegexpLiteral:
+  Enabled: false
+Style/Semicolon:
+  Enabled: false
+Style/SpaceAroundOperators:
+  Enabled: false
+Style/SpaceBeforeBlockBraces:
+  Enabled: false
+Style/SpaceBeforeComma:
+  Enabled: false
+Style/SpaceInsideBlockBraces:
+  Enabled: false
+Style/SpaceInsideHashLiteralBraces:
+  Enabled: false
+Style/SpaceInsideParens:
+  Enabled: false
+Style/SpecialGlobalVars:
+  Enabled: false
+Style/StringLiterals:
+  Enabled: false
+Style/SymbolProc:
+  Enabled: false
+Style/TrivialAccessors:
+  Enabled: false
+Style/UnneededInterpolation:
+  Enabled: false
+Style/UnneededPercentQ:
+  Enabled: false
+Style/WhileUntilModifier:
+  Enabled: false
+Style/WordArray:
+  Enabled: false
