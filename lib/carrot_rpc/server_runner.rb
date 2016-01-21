@@ -23,7 +23,7 @@ class CarrotRpc::ServerRunner
     run_servers
 
     # Sleep for a split second.
-    while !quit
+    until quit
       sleep @runloop_sleep
     end
     # When runtime gets here, quit signal is received.
