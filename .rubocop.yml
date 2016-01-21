@@ -33,6 +33,9 @@ Style/StringLiterals:
                  consistent quoting. (Single quotes are char lists in Elixir.)
   EnforcedStyle: double_quotes
 Style/WhileUntilModifier:
+  Description: >-
+                 Modifiers prevent placing break points on just the condition or just the body.  Similarly, coverage of
+                 the line cannot tell you if the body is ever executed.
   Enabled: false
 Style/WordArray:
   Enabled: false
