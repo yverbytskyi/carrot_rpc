@@ -4,8 +4,6 @@ AllCops:
 
 Lint/Eval:
   Enabled: false
-Lint/HandleExceptions:
-  Enabled: false
 Lint/ShadowingOuterLocalVariable:
   Enabled: false
 Lint/UnusedBlockArgument:

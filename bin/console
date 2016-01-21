@@ -13,6 +13,7 @@ require "carrot_rpc"
 begin
   require "byebug"
 rescue LoadError
+  $stderr.puts "byebug could not be loaded"
 end
 
 require "irb"
