@@ -64,7 +64,9 @@ module CarrotRpc
         op.separator ""
 
         op.separator "Ruby options:"
-        op.on("-I", "--include PATH", include_help) { |value| $LOAD_PATH.unshift(*value.split(":").map{|v| File.expand_path(v)}) }
+        op.on("-I", "--include PATH", include_help) do |value|
+          $LOAD_PATH.unshift(*value.split(":").map{|v| File.expand_path(v)})
+        end
         op.on(      "--debug",        debug_help)   { $DEBUG = true }
         op.on(      "--warn",         warn_help)    { $-w = true    }
         op.separator ""

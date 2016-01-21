@@ -52,7 +52,12 @@ module CarrotRpc
     # @return [Object] the result of the method call.
     def remote_call(remote_method, params)
       correlation_id = SecureRandom.uuid
-      message = { id: correlation_id, jsonrpc: '2.0', method: remote_method, params: params.except(:controller, :action)}
+      message = {
+        id: correlation_id,
+        jsonrpc: '2.0',
+        method: remote_method,
+        params: params.except(:controller, :action)
+      }
       # Reply To => make sure the service knows where to send it's response.
       # Correlation ID => identify the results that belong to the unique call made
       @exchange.publish(message.to_json, routing_key: @server_queue.name, correlation_id: correlation_id,
