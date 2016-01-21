@@ -48,7 +48,7 @@ RSpec.configure do |config|
   config.before(:suite) do
     # Remove the log file on each run.
     log_file = File.expand_path('../../logs/test.log', __FILE__)
-    File.delete(log_file) if File.exists?(log_file)
+    File.delete(log_file) if File.exist?(log_file)
 
     # Setup the connection to RabbitMQ
     CarrotRpc.configure do |config|

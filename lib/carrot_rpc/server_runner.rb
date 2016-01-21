@@ -77,7 +77,7 @@ module CarrotRpc
     # Path should already be expanded.
     def load_rails_app(path)
       rails_path = File.join(path, 'config/environment.rb')
-      if File.exists?(rails_path)
+      if File.exist?(rails_path)
         logger.info "Rails app found at: #{rails_path}"
         ENV['RACK_ENV'] ||= ENV['RAILS_ENV'] || 'development'
         require rails_path
@@ -108,7 +108,7 @@ module CarrotRpc
       if pidfile?
         begin
           File.open(pidfile, ::File::CREAT | ::File::EXCL | ::File::WRONLY){|f| f.write("#{Process.pid}") }
-          at_exit { File.delete(pidfile) if File.exists?(pidfile) }
+          at_exit { File.delete(pidfile) if File.exist?(pidfile) }
         rescue Errno::EEXIST
           check_pid
           retry
@@ -131,7 +131,7 @@ module CarrotRpc
 
     # Set the process id file. Required for backgrounding.
     def pid_status(pidfile)
-      return :exited unless File.exists?(pidfile)
+      return :exited unless File.exist?(pidfile)
       pid = ::File.read(pidfile).to_i
       return :dead if pid == 0
       Process.kill(0, pid)      # check process status

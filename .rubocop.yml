@@ -2,8 +2,6 @@ AllCops:
   DisplayCopNames: true
   TargetRubyVersion: 2.2
 
-Lint/DeprecatedClassMethods:
-  Enabled: false
 Lint/Eval:
   Enabled: false
 Lint/HandleExceptions:
