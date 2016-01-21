@@ -1,6 +1,14 @@
 # Automatically detects, loads, and runs all {CarrotRpc::RpcServer} subclasses under `app/servers` in the project root.
 class CarrotRpc::ServerRunner
+  # CONSTANTS
+
+  TRAPPED_SIGNALS = %w(HUP INT QUIT TERM).freeze
+
+  # Attributes
+
   attr_reader :quit, :servers
+
+  # Methods
 
   # Instantiate the ServerRunner.
   def initialize(rails_path: ".", pidfile: nil, runloop_sleep: 0, daemonize: false)
@@ -46,25 +54,37 @@ class CarrotRpc::ServerRunner
   # @param dirs [Array] directories relative to root of host application where RpcServers can be loaded
   # @return [Array] of RpcServers loaded and initialized
   def run_servers(dirs: %w(app servers))
-    regex = %r{\A/.*/#{dirs.join("/")}\z}
-    server_path = $LOAD_PATH.find do |p|
-      p.match(regex)
-    end + "/*.rb"
-
-    files = Dir[server_path]
+    files = server_files(dirs)
     fail "No servers found!" if files.empty?
 
     # Load each server defined in the project dir
     files.each do |file|
-      require file
-      server_klass = eval file.to_s.split("/").last.gsub(".rb", "").split("_").collect!(&:capitalize).join
-      logger.info "Starting #{server_klass}..."
-
-      server = server_klass.new(block: false)
-      server.start
-      @servers << server
+      @servers << run_server_file(file)
     end
+
     @servers
+  end
+
+  def run_server_file(file)
+    require file
+    server_klass = eval file.to_s.split("/").last.gsub(".rb", "").split("_").collect!(&:capitalize).join
+    logger.info "Starting #{server_klass}..."
+
+    server = server_klass.new(block: false)
+    server.start
+
+    server
+  end
+
+  def server_files(dirs)
+    Dir[server_glob(dirs)]
+  end
+
+  def server_glob(dirs)
+    regex = %r{\A/.*/#{dirs.join("/")}\z}
+    $LOAD_PATH.find do |p|
+      p.match(regex)
+    end + "/*.rb"
   end
 
   # Convenience method to wrap the logger object.
@@ -164,30 +184,16 @@ class CarrotRpc::ServerRunner
 
   # Handle signal events.
   def trap_signals
-    # graceful shutdown of run! loop
-    trap(:QUIT) do
-      logger.info "QUIT Little bunny foo foo is a Goon....closing connection to RabbitMQ"
-      shutdown
+    TRAPPED_SIGNALS.each do |trapped_signal|
+      trap(trapped_signal) do
+        trap_shutdown(trapped_signal)
+      end
     end
-    # Handle Ctrl-C
-    trap("INT") do
-      logger.info "INT Little bunny foo foo is a Goon....closing connection to RabbitMQ"
-      shutdown
-    end
+  end
 
-    # Handle Hangup
-    trap("HUP") do
-      logger.info "HUP Little bunny foo foo is a Goon....closing connection to RabbitMQ"
-      shutdown
-    end
-
-    # Handles `Kill` signals
-    trap("TERM") do
-      # Documentation says closing connection will first close the channels belonging to the connection
-      # Alternatively a channel can be closed independently ```channel.close```
-      logger.info "TERM Little bunny foo foo is a Goon....closing connection to RabbitMQ"
-      shutdown
-    end
+  def trap_shutdown(signal_name)
+    logger.info "#{signal_name} Little bunny foo foo is a Goon....closing connection to RabbitMQ"
+    shutdown
   end
 
   private
