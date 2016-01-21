@@ -1,3 +1,4 @@
+# Automatically detects, loads, and runs all {CarrotRpc::RpcServer} subclasses under `app/servers` in the project root.
 class CarrotRpc::ServerRunner
   attr_reader :quit, :servers
 

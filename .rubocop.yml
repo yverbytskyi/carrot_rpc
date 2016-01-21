@@ -20,8 +20,6 @@ Style/ClassAndModuleChildren:
                  module.  Reopening the parent class or module can lead to the parent class or module not being loaded
                  as the child already defined it.
   EnforcedStyle: compact
-Style/Documentation:
-  Enabled: false
 Style/IfUnlessModifier:
   Description: >-
                  Modifiers prevent placing break points on just the condition or just the body.  Similarly, coverage of

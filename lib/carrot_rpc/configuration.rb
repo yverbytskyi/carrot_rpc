@@ -1,3 +1,4 @@
+# Global configuration for {CarrotRpc}.  Access with {CarrotRpc.configuration}.
 class CarrotRpc::Configuration
   attr_accessor :logger, :logfile, :loglevel, :daemonize, :pidfile, :runloop_sleep, :autoload_rails, :bunny
 

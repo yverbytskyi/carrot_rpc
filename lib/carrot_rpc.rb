@@ -11,6 +11,9 @@ require "optparse"
 # project
 require "carrot_rpc/version"
 
+# An opinionated approach to doing Remote Procedure Call (RPC) with RabbitMQ and the bunny gem. CarrotRpc serves as a
+# way to streamline the RPC workflow so developers can focus on the implementation and not the plumbing when working
+# with RabbitMQ.
 module CarrotRpc
   extend ActiveSupport::Autoload
 

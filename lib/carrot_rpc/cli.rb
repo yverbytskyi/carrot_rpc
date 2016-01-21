@@ -1,4 +1,4 @@
-
+# Command-line interface for {CarrotRpc}
 class CarrotRpc::CLI
   # Class methods
   class << self
