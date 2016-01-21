@@ -29,7 +29,7 @@ class CarrotRpc::RpcServer
                             .with_indifferent_access
 
       begin
-        result = self.send(request_message[:method], request_message[:params])
+        result = send(request_message[:method], request_message[:params])
       rescue Error => rpc_server_error
         logger.error(rpc_server_error)
 

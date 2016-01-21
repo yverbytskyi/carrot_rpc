@@ -6,7 +6,7 @@ module CarrotRpc::HashExtensions
     # @param [String] replace the text to replace the found text
     # @return [Hash] a new hash
     def rename_keys(find, replace, new_hash = {})
-      self.each do |k, v|
+      each do |k, v|
         new_key = k.gsub(find, replace)
 
         new_hash[new_key] = if v.is_a? Hash
