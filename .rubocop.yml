@@ -27,8 +27,6 @@ Style/IfUnlessModifier:
                  Modifiers prevent placing break points on just the condition or just the body.  Similarly, coverage of
                  the line cannot tell you if the body is ever executed.
   Enabled: false
-Style/NumericLiterals:
-  Enabled: false
 Style/PercentLiteralDelimiters:
   Enabled: false
 Style/RedundantSelf:
