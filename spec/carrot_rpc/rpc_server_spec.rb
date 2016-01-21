@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'carrot_rpc'
 
-describe CarrotRpc::RpcServer do
+RSpec.describe CarrotRpc::RpcServer do
   describe "#queue_name" do
     before :each do
       @channel = double("channel", close: true, queue: true, default_exchange: true)

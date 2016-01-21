@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'carrot_rpc'
 require 'carrot_rpc/cli'
 
-describe CarrotRpc::CLI do
+RSpec.describe CarrotRpc::CLI do
   subject { CarrotRpc::CLI }
 
   describe 'runloop sleep' do

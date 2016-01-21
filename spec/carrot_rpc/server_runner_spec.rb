@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'carrot_rpc/server_runner'
 
-describe CarrotRpc::ServerRunner do
+RSpec.describe CarrotRpc::ServerRunner do
   let(:args) { { rails_path: File.expand_path("../../dummy", __FILE__) } }
   subject{ CarrotRpc::ServerRunner.new(**args) }
 

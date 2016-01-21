@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'carrot_rpc'
 
-describe CarrotRpc::RpcClient do
+RSpec.describe CarrotRpc::RpcClient do
   subject { CarrotRpc::RpcClient.new }
 
   describe "#queue_name" do

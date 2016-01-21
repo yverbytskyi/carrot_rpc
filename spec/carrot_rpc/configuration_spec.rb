@@ -1,7 +1,7 @@
 require "spec_helper"
 require "carrot_rpc/configuration"
 
-describe CarrotRpc::Configuration do
+RSpec.describe CarrotRpc::Configuration do
   subject { CarrotRpc::Configuration.new }
 
   it 'defaults daemonize' do
