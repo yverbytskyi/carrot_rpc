@@ -22,8 +22,6 @@ Style/ClassAndModuleChildren:
   EnforcedStyle: compact
 Style/Documentation:
   Enabled: false
-Style/EmptyLinesAroundMethodBody:
-  Enabled: false
 Style/ExtraSpacing:
   Enabled: false
 Style/GuardClause:
