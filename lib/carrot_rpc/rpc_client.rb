@@ -61,7 +61,7 @@ module CarrotRpc
       # Reply To => make sure the service knows where to send it's response.
       # Correlation ID => identify the results that belong to the unique call made
       @exchange.publish(message.to_json, routing_key: @server_queue.name, correlation_id: correlation_id,
-                        reply_to: @reply_queue.name)
+                                         reply_to: @reply_queue.name)
       result = @results[correlation_id].pop
       @results.delete correlation_id # remove item from hash. prevents memory leak.
       result

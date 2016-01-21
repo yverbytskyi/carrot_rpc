@@ -14,8 +14,6 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Enabled: false
 
-Style/AlignHash:
-  Enabled: false
 Style/AlignParameters:
   Enabled: false
 Style/AndOr:
