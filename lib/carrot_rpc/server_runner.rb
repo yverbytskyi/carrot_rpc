@@ -194,10 +194,10 @@ class CarrotRpc::ServerRunner
     logger = log_from_file
 
     if defined?(::Rails)
-      logger = Rails.logger if logger.nil?
+      logger ||= Rails.logger
       CarrotRpc::TaggedLog.new(logger: logger, tags: ["Carrot RPC"])
     else
-      logger = Logger.new(STDOUT) if logger.nil?
+      logger ||= Logger.new(STDOUT)
     end
 
     logger.level = CarrotRpc.configuration.loglevel

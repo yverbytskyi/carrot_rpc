@@ -22,8 +22,6 @@ Style/ClassAndModuleChildren:
   EnforcedStyle: compact
 Style/Documentation:
   Enabled: false
-Style/IfInsideElse:
-  Enabled: false
 Style/IfUnlessModifier:
   Enabled: false
 Style/IndentationConsistency:
