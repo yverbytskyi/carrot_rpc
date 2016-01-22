@@ -54,7 +54,7 @@ class CarrotRpc::ServerRunner
   def stop_servers
     logger.info "#{@siginal_name} signal received!"
     @servers.each do |s|
-      logger.info "Shutting Down Server Queue: #{s.queue.name}"
+      logger.info "Shutting Down Server Queue: #{s.server_queue.name}"
       s.channel.close
     end
     # Close the connection once all the other servers are shutdown
