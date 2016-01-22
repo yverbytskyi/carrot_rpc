@@ -13,19 +13,11 @@ RSpec.describe CarrotRpc::ServerRunner do
     }
   }
 
-  let(:logger) {
-    instance_double(Logger, info: "", warn: "")
-  }
-
   # Callbacks
 
-  before :each do
-    allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:logger).and_return(logger)
-
-    @channel = double("channel", close: true)
-    @bunny = double("bunny", close: true, create_channel: @channel)
-
-    allow_any_instance_of(CarrotRpc::Configuration).to receive(:bunny) { @bunny }
+  before(:each) do
+    # prevents configuration logger from actually being set
+    allow(CarrotRpc.configuration).to receive(:logger=)
   end
 
   describe "initialize" do
@@ -36,14 +28,15 @@ RSpec.describe CarrotRpc::ServerRunner do
     }
 
     it "sets @servers to empty array" do
-      subject
-      expect(subject.instance_variable_get(:@servers)).to eq []
+      server_runner
+
+      expect(server_runner.servers).to eq []
     end
 
     it "loads the rails app when passed" do
       expect(CarrotRpc::ServerRunner::AutoloadRails).to receive(:load_root).with(
         args[:rails_path],
-        logger: logger
+        hash_including(logger: anything)
       )
 
       server_runner
@@ -129,8 +122,16 @@ RSpec.describe CarrotRpc::ServerRunner do
   describe "#run!" do
     before :each do
       # setting quit flag so that runloop stops immediately
-      subject.shutdown
-      allow(subject).to receive(:run_servers)
+      server_runner.shutdown("QUIT")
+      allow(server_runner).to receive(:run_servers)
+    end
+
+    after(:each) do
+      # restore connection closed by CarrotRpc::ServerRunner#stop_servers
+      bunny = Bunny.new
+      bunny.start
+
+      CarrotRpc.configuration.bunny = bunny
     end
 
     it "always calls essential methods" do
@@ -160,16 +161,41 @@ RSpec.describe CarrotRpc::ServerRunner do
   end
 
   describe "#stop_servers" do
+    subject(:stop_servers) {
+      server_runner.stop_servers
+    }
+
+    let(:servers) {
+      Array.new(2) { |i|
+        klass = Class.new(CarrotRpc::RpcServer)
+        klass.queue_name("queue#{i}")
+
+        klass.new
+      }
+    }
+
+    # Callbacks
+
     before :each do
-      @name = double("Name", name: "fake")
-      @mock_server = double("RpcServer", queue: @name, channel: @channel, connection: @bunny)
-      subject.instance_variable_set(:@servers, [@mock_server, @mock_server])
+      server_runner.instance_variable_set(:@servers, servers)
+    end
+
+    after(:each) do
+      # restore connection closed by CarrotRpc::ServerRunner#stop_servers
+      bunny = Bunny.new
+      bunny.start
+
+      CarrotRpc.configuration.bunny = bunny
     end
 
     it "server receives shutdown methods" do
-      expect(@channel).to receive("close").exactly(2).times
-      expect(@bunny).to receive("close").exactly(1).times
-      subject.stop_servers
+      servers.each do |server|
+        expect(server.channel).to receive(:close).and_call_original
+      end
+
+      expect(CarrotRpc.configuration.bunny).to receive(:close)
+
+      stop_servers
     end
   end
 
@@ -190,28 +216,21 @@ RSpec.describe CarrotRpc::ServerRunner do
   end
 
   describe "#set_logger" do
-    let(:args) { { rails_path: nil } }
-    before :each do
-      CarrotRpc.configuration.autoload_rails = false
+    subject(:set_logger) {
+      # calls #set_logger because #logger calls #set_logger and #logger is called in #initialize
+      server_runner
+    }
+
+    it "calls CarrotRpc::ServerRunner::Logger.configured" do
+      expect(CarrotRpc::ServerRunner::Logger).to receive(:configured).and_call_original
+
+      set_logger
     end
 
-    after :each do
-      CarrotRpc.configuration.autoload_rails = true
-    end
+    it "sets CarrotRpc.configuration.logger" do
+      expect(CarrotRpc.configuration).to receive(:logger=)
 
-    context "when config is set to use a logfile" do
-      it "a logger is created" do
-        CarrotRpc::CLI.parse_options(["--logfile=../rpc.log"])
-        logger = instance_double(Logger, level: 1)
-        expect(logger).to receive(:level=)
-        expect(Logger).to receive(:new).with(CarrotRpc.configuration.logfile) { logger }
-        subject.send(:set_logger)
-      end
-
-      it "sets a logger for the config" do
-        expect(CarrotRpc.configuration).to receive(:logger=)
-        subject.send(:set_logger)
-      end
+      server_runner
     end
   end
 end

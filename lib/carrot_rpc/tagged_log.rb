@@ -7,6 +7,14 @@ class CarrotRpc::TaggedLog
     @tags = *tags
   end
 
+  def level
+    logger.level
+  end
+
+  def level=(level)
+    logger.level = level
+  end
+
   # Dyanmically define logger methods with a tagged reference. Makes filtering of logs possible.
   %i(debug info warn error fatal unknown).each do |level|
     define_method(level) do |msg|
