@@ -52,7 +52,7 @@ class CarrotRpc::ServerRunner
 
   # Shutdown all servers defined.
   def stop_servers
-    logger.info "Quit signal received!"
+    logger.info "#{@siginal_name} signal received!"
     @servers.each do |s|
       logger.info "Shutting Down Server Queue: #{s.queue.name}"
       s.channel.close
@@ -130,15 +130,17 @@ class CarrotRpc::ServerRunner
   end
 
   # Set a value to signal shutdown.
-  def shutdown
+  def shutdown(name)
+    @signal_name = name
     @quit = true
   end
 
   # Handle signal events.
   def trap_signals
     CarrotRpc::ServerRunner::Signals.trap do |name|
-      logger.info "#{name} Little bunny foo foo is a Goon....closing connection to RabbitMQ"
-      shutdown
+      # @note can't log from a trap context: since Ruby 2.0 traps don't allow mutexes as it could lead to a dead lock,
+      #   so `logger.info` here would return "log writing failed. can't be called from trap context"
+      shutdown(name)
     end
   end
 
