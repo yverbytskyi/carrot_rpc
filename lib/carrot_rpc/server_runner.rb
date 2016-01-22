@@ -1,3 +1,5 @@
+require "active_support/core_ext/string/inflections"
+
 # Automatically detects, loads, and runs all {CarrotRpc::RpcServer} subclasses under `app/servers` in the project root.
 class CarrotRpc::ServerRunner
   extend ActiveSupport::Autoload
@@ -76,7 +78,9 @@ class CarrotRpc::ServerRunner
 
   def run_server_file(file)
     require file
-    server_klass = eval file.to_s.split("/").last.gsub(".rb", "").split("_").collect!(&:capitalize).join
+    server_klass_name = file.to_s.split("/").last.gsub(".rb", "").camelize
+    server_klass = server_klass_name.constantize
+
     logger.info "Starting #{server_klass}..."
 
     server = server_klass.new(block: false)

@@ -2,9 +2,6 @@ AllCops:
   DisplayCopNames: true
   TargetRubyVersion: 2.2
 
-Lint/Eval:
-  Enabled: false
-
 Metrics/LineLength:
   Max: 120
 

@@ -56,8 +56,7 @@ module CarrotRpc::CLI
       "--loglevel VALUE",
       "levels of loggin: DEBUG < INFO < WARN < ERROR < FATAL < UNKNOWN"
     ) do |value|
-      level                            = eval(["Logger", value].join("::")) || 0
-      CarrotRpc.configuration.loglevel = level
+      CarrotRpc.configuration.loglevel = Logger.const_get(value) || 0
     end
 
     # Optional. Defaults to using the ENV['RABBITMQ_URL']
