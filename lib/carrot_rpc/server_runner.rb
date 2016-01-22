@@ -82,9 +82,9 @@ class CarrotRpc::ServerRunner
 
   def server_glob(dirs)
     regex = %r{\A/.*/#{dirs.join("/")}\z}
-    $LOAD_PATH.find do |p|
+    $LOAD_PATH.find { |p|
       p.match(regex)
-    end + "/*.rb"
+    } + "/*.rb"
   end
 
   # Convenience method to wrap the logger object.
@@ -128,7 +128,10 @@ class CarrotRpc::ServerRunner
   def write_pid
     if pidfile?
       begin
-        File.open(pidfile, ::File::CREAT | ::File::EXCL | ::File::WRONLY) { |f| f.write(Process.pid.to_s) }
+        File.open(pidfile, ::File::CREAT | ::File::EXCL | ::File::WRONLY) do |f|
+          f.write(Process.pid.to_s)
+        end
+
         at_exit { File.delete(pidfile) if File.exist?(pidfile) }
       rescue Errno::EEXIST
         check_pid

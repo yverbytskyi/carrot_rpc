@@ -6,7 +6,9 @@ RSpec.describe CarrotRpc::CLI do
   subject { CarrotRpc::CLI }
 
   describe "runloop sleep" do
-    before(:each) { expect(CarrotRpc.configuration).to receive_message_chain("runloop_sleep=").with(10) }
+    before(:each) do
+      expect(CarrotRpc.configuration).to receive_message_chain("runloop_sleep=").with(10)
+    end
 
     it "sets the sleep value with long switch" do
       CarrotRpc::CLI.parse_options(["--runloop_sleep=10"])
@@ -17,7 +19,9 @@ RSpec.describe CarrotRpc::CLI do
   end
 
   describe "daemonize" do
-    before(:each) { expect(CarrotRpc.configuration).to receive("daemonize=").with(true) }
+    before(:each) do
+      expect(CarrotRpc.configuration).to receive("daemonize=").with(true)
+    end
 
     it "sets daemonize value with long swtich" do
       CarrotRpc::CLI.parse_options(["--daemonize"])

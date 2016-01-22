@@ -10,6 +10,8 @@ Metrics/ClassLength:
 Metrics/LineLength:
   Max: 120
 
+Style/BlockDelimiters:
+  EnforcedStyle: semantic
 Style/ClassAndModuleChildren:
   Description: >-
                  Compact style ensures that the parent classes and modules are not reopened for each child class and

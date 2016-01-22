@@ -19,7 +19,9 @@
 
 require "byebug"
 # support files
-Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each { |f| require f }
+Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each do |f|
+  require f
+end
 
 RSpec.configure do |config|
   config.before(:suite) do

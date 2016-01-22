@@ -70,8 +70,6 @@ module CarrotRpc::CLI
     end
   end
 
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
-
   def self.add_ruby_options(option_parser)
     option_parser.separator ""
 
@@ -81,9 +79,16 @@ module CarrotRpc::CLI
       $LOAD_PATH.unshift(*value.split(":").map { |v| File.expand_path(v) })
     end
 
-    option_parser.on("--debug", "set $DEBUG to true") { $DEBUG = true }
-    option_parser.on("--warn", "enable warnings") { $-w = true }
+    option_parser.on("--debug", "set $DEBUG to true") do
+      $DEBUG = true
+    end
+
+    option_parser.on("--warn", "enable warnings") do
+      $-w = true
+    end
   end
+
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def self.option_parser
     option_parser = OptionParser.new
