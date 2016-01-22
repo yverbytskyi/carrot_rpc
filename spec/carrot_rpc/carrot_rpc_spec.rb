@@ -1,7 +1,7 @@
 require "spec_helper"
 require "carrot_rpc"
 
-describe CarrotRpc do
+RSpec.describe CarrotRpc do
   it "has a configuration object" do
     expect(CarrotRpc.configuration).to be_an_instance_of(CarrotRpc::Configuration)
   end

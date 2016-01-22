@@ -1,62 +1,129 @@
-require 'spec_helper'
-require 'carrot_rpc'
+require "spec_helper"
+require "carrot_rpc"
 
-describe CarrotRpc::RpcClient do
-  subject { CarrotRpc::RpcClient.new }
+RSpec.describe CarrotRpc::RpcClient do
+  subject(:client) {
+    client_class.new
+  }
+
+  let(:client_class) {
+    Class.new(CarrotRpc::RpcClient)
+  }
 
   describe "#queue_name" do
-    before :each do
-      @channel = double("channel", close: true, queue: true, default_exchange: true)
-      @bunny = double("bunny", close: true, create_channel: @channel)
-
-      allow_any_instance_of(CarrotRpc::Configuration).to receive(:bunny) { @bunny }
-    end
-
     it "has a queue name class method" do
-      CarrotRpc::RpcClient.queue_name "foo"
-      expect(CarrotRpc::RpcClient.get_queue_name).to eq "foo"
-      # reset state
-      CarrotRpc::RpcClient.queue_name nil
+      client_class.queue_name "foo"
+      expect(client_class.queue_name).to eq "foo"
     end
 
-    it "does not default queue name" do
-      expect(@channel).to receive(:queue).with(nil, auto_delete: false)
-      subject
+    context "during #initialize" do
+      # lets
+
+      let(:channel) {
+        instance_double(Bunny::Channel, default_exchange: nil)
+      }
+
+      # Callbacks
+
+      before(:each) do
+        allow(CarrotRpc.configuration.bunny).to receive(:create_channel).and_return(channel)
+      end
+
+      it "does not default queue name" do
+        expect(channel).to receive(:queue).with(nil, auto_delete: false)
+
+        client
+      end
     end
   end
 
   describe "#start" do
-    after :each do
-      server.channel.close
-      subject.channel.close
+    # Methods
+
+    def delete_queue
+      channel = CarrotRpc.configuration.bunny.create_channel
+      queue = channel.queue("foo")
+      queue.delete
+      channel.close
     end
 
-    subject do
-      CarrotRpc::RpcClient.queue_name 'foo'
-      CarrotRpc::RpcClient.new
-    end
+    # lets
 
-    let(:server) do
-      CarrotRpc::RpcServer.queue_name 'foo'
-      CarrotRpc::RpcServer.class_eval do
-        def show(params)
-          { 'foo-baz' => { 'fizz-buzz' => 'baz', 'foo-bar' => 'biz',
-                           'biz-baz' => { 'super-duper' => 'grovy' } } }
+    let(:client) {
+      client_class.new
+    }
+
+    let(:client_class) {
+      Class.new(CarrotRpc::RpcClient) do
+        queue_name "foo"
+      end
+    }
+
+    let(:server) {
+      server_class.new(block: false)
+    }
+
+    let(:server_class) {
+      Class.new(CarrotRpc::RpcServer) do
+        queue_name "foo"
+
+        # Instance Methods
+
+        def show(_params)
+          {
+            "foo-baz" => {
+              "biz-baz" => {
+                "super-duper" => "grovy"
+              },
+              "fizz-buzz" => "baz",
+              "foo-bar" => "biz"
+            }
+          }
         end
       end
+    }
 
-      CarrotRpc::RpcServer.new(block: false)
-    end
+    # Callbacks
 
-    let(:result) do
-      { 'foo_baz' => { 'fizz_buzz' => 'baz', 'foo_bar' => 'biz',
-                       'biz_baz' => { 'super_duper' => 'grovy' } } }
-    end
+    before(:each) do
+      # Delete queue if another test did not clean up properly, such as due to interrupt
+      delete_queue
 
-    it "parses the payload from json to hash and changes '-' to '_' in the keys" do
-      subject.start
       server.start
-      expect(subject.show({})).to eq result
+    end
+
+    after(:each) do
+      client.channel.close
+      server.channel.close
+
+      # Clean up properly
+      delete_queue
+    end
+
+    context "with client started" do
+      # lets
+
+      let(:result) do
+        {
+          "foo_baz" => {
+            "biz_baz" => {
+              "super_duper" => "grovy"
+            },
+            "fizz_buzz" => "baz",
+            "foo_bar" => "biz"
+          }
+        }
+      end
+
+      # Callbacks
+
+      before(:each) do
+        client.start
+      end
+
+      it "parses the payload from json to hash and changes '-' to '_' in the keys" do
+        expect(client.show({})).to eq result
+      end
     end
   end
 end

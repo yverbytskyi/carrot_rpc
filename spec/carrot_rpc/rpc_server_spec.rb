@@ -1,59 +1,109 @@
-require 'spec_helper'
-require 'carrot_rpc'
+require "spec_helper"
+require "carrot_rpc"
 
-describe CarrotRpc::RpcServer do
+RSpec.describe CarrotRpc::RpcServer do
   describe "#queue_name" do
-    before :each do
-      @channel = double("channel", close: true, queue: true, default_exchange: true)
-      @bunny = double("bunny", close: true, create_channel: @channel)
+    let(:server_class) {
+      Class.new(CarrotRpc::RpcServer)
+    }
 
-      config = instance_double(CarrotRpc::Configuration, bunny: @bunny, logger: @logger)
-      allow(CarrotRpc::Configuration).to receive(:new) { config }
-    end
-
-    it "has a queue name class method" do
-      CarrotRpc::RpcServer.queue_name "foo"
-      expect(CarrotRpc::RpcServer.get_queue_name).to eq "foo"
-      # reset state
-      CarrotRpc::RpcServer.queue_name nil
+    it "is readable by queue_name/0" do
+      server_class.queue_name "foo"
+      expect(server_class.queue_name).to eq "foo"
     end
   end
 
   describe "#start" do
-    after :each do
-      client.channel.close
-      subject.channel.close
+    # Methods
+
+    def delete_queue
+      channel = CarrotRpc.configuration.bunny.create_channel
+      queue = channel.queue("foo")
+      queue.delete
+      channel.close
     end
 
-    subject do
-      CarrotRpc::RpcServer.queue_name 'foo'
-      CarrotRpc::RpcServer.class_eval do
+    # lets
+
+    let(:client_class) {
+      Class.new(CarrotRpc::RpcClient) do
+        queue_name "foo"
+      end
+    }
+
+    let(:client) do
+      client_class.new
+    end
+
+    let(:server_class) {
+      Class.new(CarrotRpc::RpcServer) do
+        queue_name "foo"
+
+        # Instance Methods
+
         def create(params)
           params
         end
       end
+    }
 
-      CarrotRpc::RpcServer.new(block: false)
-    end
+    let(:server) {
+      server_class.new(block: false)
+    }
 
-    let(:client) do
-      CarrotRpc::RpcClient.queue_name 'foo'
-      CarrotRpc::RpcClient.new
-    end
+    # Callbacks
 
-    let(:payload) do
-      { 'foo-baz' => { 'fizz-buzz' => 'baz', 'foo-bar' => 'biz',
-                       'biz-baz' => { 'super-duper' => 'grovy' } } }
-    end
-    let(:result) do
-      { 'foo_baz' => { 'fizz_buzz' => 'baz', 'foo_bar' => 'biz',
-                       'biz_baz' => { 'super_duper' => 'grovy' } } }
-    end
+    before(:each) do
+      # Delete queue if another test did not clean up properly, such as due to interrupt
+      delete_queue
 
-    it "parses the payload from json to hash and changes '-' to '_' in the keys" do
       client.start
-      subject.start
-      expect(client.create(payload)).to eq result
+    end
+
+    after(:each) do
+      client.channel.close
+      server.channel.close
+
+      # Clean up properly
+      delete_queue
+    end
+
+    context "with server started" do
+      # lets
+
+      let(:payload) do
+        {
+          "foo-baz" => {
+            "biz-baz" => {
+              "super-duper" => "grovy"
+            },
+            "fizz-buzz" => "baz",
+            "foo-bar" => "biz"
+          }
+        }
+      end
+
+      let(:result) do
+        {
+          "foo_baz" => {
+            "biz_baz" => {
+              "super_duper" => "grovy"
+            },
+            "fizz_buzz" => "baz",
+            "foo_bar" => "biz"
+          }
+        }
+      end
+
+      # Callbacks
+
+      before(:each) do
+        server.start
+      end
+
+      it "parses the payload from json to hash and changes '-' to '_' in the keys" do
+        expect(client.create(payload)).to eq result
+      end
     end
   end
 end

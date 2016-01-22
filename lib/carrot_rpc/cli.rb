@@ -1,81 +1,110 @@
-require 'bunny'
-require 'optparse'
+# Command-line interface for {CarrotRpc}
+module CarrotRpc::CLI
+  def self.add_common_options(option_parser)
+    option_parser.separator ""
 
-module CarrotRpc
-  class CLI
-    # Class methods
-    class << self
-      def self.run!(argv = ARGV)
-        parse_options(argv)
-      end
-
-      def parse_options(args = ARGV)
-        # Set defaults below.
-        options             = { }
-        version             = "1.0.0"
-        daemonize_help      = "run daemonized in the background (default: false)"
-        runloop_sleep_help  = "Configurable sleep time in the runloop"
-        pidfile_help        = "the pid filename"
-        include_help        = "an additional $LOAD_PATH"
-        debug_help          = "set $DEBUG to true"
-        warn_help           = "enable warnings"
-        autoload_rails_help = "loads rails env by default. Uses Rails Logger by default."
-        logfile_help        = "relative path and name for Log file. Overrides Rails logger."
-        loglevel_help       = "levels of loggin: DEBUG < INFO < WARN < ERROR < FATAL < UNKNOWN"
-        rabbitmq_url_help   = "connection string to RabbitMQ 'amqp://user:pass@host:10000/vhost'"
-
-        op = OptionParser.new
-        op.banner =  "RPC Server Runner for RabbitMQ RPC Services."
-        op.separator ""
-        op.separator "Usage: server [options]"
-        op.separator ""
-
-        op.separator "Process options:"
-        op.on("-d", "--daemonize",   daemonize_help) do
-          CarrotRpc.configuration.daemonize = true
-        end
-
-        op.on(" ", "--pidfile PIDFILE", pidfile_help) do |value|
-          CarrotRpc.configuration.pidfile = value
-        end
-
-        op.on("-s", "--runloop_sleep VALUE", Float, runloop_sleep_help)  do |value|
-          CarrotRpc.configuration.runloop_sleep = value
-        end
-
-        op.on(" ", "--autoload_rails value", autoload_rails_help) do |value|
-          pv = value == "false" ? false : true
-          CarrotRpc.configuration.autoload_rails = pv
-        end
-
-        op.on(" ", "--logfile VALUE", logfile_help) do |value|
-          CarrotRpc.configuration.logfile = File.expand_path("../../#{value}", __FILE__)
-        end
-
-        op.on(" ", "--loglevel VALUE", loglevel_help) do |value|
-          level = eval(["Logger", value].join("::")) || 0
-          CarrotRpc.configuration.loglevel = level
-        end
-
-        # Optional. Defaults to using the ENV['RABBITMQ_URL']
-        op.on(" ", "--rabbitmq_url VALUE", rabbitmq_url_help) do |value|
-          CarrotRpc.configuration.bunny = Bunny.new(value)
-        end
-
-        op.separator ""
-
-        op.separator "Ruby options:"
-        op.on("-I", "--include PATH", include_help) { |value| $LOAD_PATH.unshift(*value.split(":").map{|v| File.expand_path(v)}) }
-        op.on(      "--debug",        debug_help)   { $DEBUG = true }
-        op.on(      "--warn",         warn_help)    { $-w = true    }
-        op.separator ""
-
-        op.separator "Common options:"
-        op.on("-h", "--help")    { puts op.to_s; exit }
-        op.on("-v", "--version") { puts version; exit }
-        op.separator ""
-        op.parse!(args)
-      end
+    option_parser.separator "Common options:"
+    option_parser.on("-h", "--help") do
+      puts option_parser.to_s
+      exit
     end
+
+    option_parser.on("-v", "--version") do
+      puts CarrotRpc::VERSION
+      exit
+    end
+  end
+
+  # There are just too many options in the Process options category and they can't really be broken down more
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+
+  # Add "Process options" to `option_parser`.
+  #
+  # @param option_parser [OptionParser]
+  # @return [OptionParser]
+  def self.add_process_options(option_parser)
+    option_parser.separator ""
+
+    option_parser.separator "Process options:"
+    option_parser.on("-d", "--daemonize", "run daemonized in the background (default: false)") do
+      CarrotRpc.configuration.daemonize = true
+    end
+
+    option_parser.on(" ", "--pidfile PIDFILE", "the pid filename") do |value|
+      CarrotRpc.configuration.pidfile = value
+    end
+
+    option_parser.on("-s", "--runloop_sleep VALUE", Float, "Configurable sleep time in the runloop") do |value|
+      CarrotRpc.configuration.runloop_sleep = value
+    end
+
+    option_parser.on(
+      " ",
+      "--autoload_rails value",
+      "loads rails env by default. Uses Rails Logger by default."
+    ) do |value|
+      pv = value == "false" ? false : true
+      CarrotRpc.configuration.autoload_rails = pv
+    end
+
+    option_parser.on(" ", "--logfile VALUE", "relative path and name for Log file. Overrides Rails logger.") do |value|
+      CarrotRpc.configuration.logfile = File.expand_path("../../#{value}", __FILE__)
+    end
+
+    option_parser.on(
+      " ",
+      "--loglevel VALUE",
+      "levels of loggin: DEBUG < INFO < WARN < ERROR < FATAL < UNKNOWN"
+    ) do |value|
+      CarrotRpc.configuration.loglevel = Logger.const_get(value) || 0
+    end
+
+    # Optional. Defaults to using the ENV['RABBITMQ_URL']
+    option_parser.on(
+      " ",
+      "--rabbitmq_url VALUE",
+      "connection string to RabbitMQ 'amqp://user:pass@host:10000/vhost'"
+    ) do |value|
+      CarrotRpc.configuration.bunny = Bunny.new(value)
+    end
+  end
+
+  def self.add_ruby_options(option_parser)
+    option_parser.separator ""
+
+    option_parser.separator "Ruby options:"
+
+    option_parser.on("-I", "--include PATH", "an additional $LOAD_PATH") do |value|
+      $LOAD_PATH.unshift(*value.split(":").map { |v| File.expand_path(v) })
+    end
+
+    option_parser.on("--debug", "set $DEBUG to true") do
+      $DEBUG = true
+    end
+
+    option_parser.on("--warn", "enable warnings") do
+      $-w = true
+    end
+  end
+
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+  def self.option_parser
+    option_parser = OptionParser.new
+    option_parser.banner =  "RPC Server Runner for RabbitMQ RPC Services."
+    option_parser.separator ""
+    option_parser.separator "Usage: server [options]"
+
+    add_process_options(option_parser)
+    add_ruby_options(option_parser)
+    add_common_options(option_parser)
+
+    option_parser.separator ""
+
+    option_parser
+  end
+
+  def self.parse_options(args = ARGV)
+    option_parser.parse!(args)
   end
 end

@@ -2,7 +2,6 @@ class FooServer
   attr_accessor :logger
 
   def initialize(block: false)
-
   end
 
   def start
