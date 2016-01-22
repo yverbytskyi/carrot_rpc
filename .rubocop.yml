@@ -5,8 +5,6 @@ AllCops:
 Lint/Eval:
   Enabled: false
 
-Metrics/ClassLength:
-  Enabled: false
 Metrics/LineLength:
   Max: 120
 

@@ -1,13 +1,26 @@
 require "spec_helper"
-require "carrot_rpc/server_runner"
 
 RSpec.describe CarrotRpc::ServerRunner do
-  let(:args) { { rails_path: File.expand_path("../../dummy", __FILE__) } }
-  subject { CarrotRpc::ServerRunner.new(**args) }
+  subject(:server_runner) {
+    CarrotRpc::ServerRunner.new(**args)
+  }
+
+  # lets
+
+  let(:args) {
+    {
+      rails_path: File.expand_path("../../dummy", __FILE__)
+    }
+  }
+
+  let(:logger) {
+    instance_double(Logger, info: "", warn: "")
+  }
+
+  # Callbacks
 
   before :each do
-    @logger = instance_double(Logger, info: "", warn: "")
-    allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:logger) { @logger }
+    allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:logger).and_return(logger)
 
     @channel = double("channel", close: true)
     @bunny = double("bunny", close: true, create_channel: @channel)
@@ -16,7 +29,11 @@ RSpec.describe CarrotRpc::ServerRunner do
   end
 
   describe "initialize" do
-    let(:args) { { rails_path: File.expand_path("../../dummy", __FILE__) } }
+    let(:args) {
+      {
+        rails_path: File.expand_path("../../dummy", __FILE__)
+      }
+    }
 
     it "sets @servers to empty array" do
       subject
@@ -24,8 +41,12 @@ RSpec.describe CarrotRpc::ServerRunner do
     end
 
     it "loads the rails app when passed" do
-      expect_any_instance_of(CarrotRpc::ServerRunner).to receive(:load_rails_app).with(args[:rails_path])
-      subject
+      expect(CarrotRpc::ServerRunner::AutoloadRails).to receive(:load_root).with(
+        args[:rails_path],
+        logger: logger
+      )
+
+      server_runner
     end
 
     it "calls a method to trap signal messages" do
@@ -39,87 +60,35 @@ RSpec.describe CarrotRpc::ServerRunner do
       end
 
       it "sets instance vars to the params passed" do
-        expect(subject.instance_variable_get(:@pidfile)).to_not eq nil
         expect(subject.instance_variable_get(:@runloop_sleep)).to eq 5
         expect(subject.instance_variable_get(:@daemonize)).to eq true
       end
-    end
-  end
 
-  describe "#check_pid" do
-    before :each do
-      allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:pidfile?) { true }
-    end
-
-    it "exits when there's an running pid and logs error" do
-      allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:pid_status) { :running }
-      expect(@logger).to receive(:warn)
-      expect { subject.check_pid }.to terminate.with_code 1
-    end
-
-    it "exits when there's a not_owned pid and logs error" do
-      allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:pid_status) { :not_owned }
-      expect(@logger).to receive(:warn)
-      expect { subject.check_pid }.to terminate.with_code 1
-    end
-
-    it "removes the file when process is dead" do
-      allow_any_instance_of(CarrotRpc::ServerRunner).to receive(:pid_status) { :dead }
-      allow(File).to receive(:delete)
-      expect(File).to receive(:delete)
-      subject.check_pid
-    end
-  end
-
-  describe "#pid_status" do
-    let(:pid_name) { "foo.pid" }
-    let(:path) { File.expand_path("../../dummy/tmp/pids/#{pid_name}", __FILE__) }
-
-    context "file doesn't exist" do
-      it "returns exited" do
-        expect(subject.pid_status(path)).to eq :exited
-      end
-    end
-
-    context "file exists but is terminated" do
-      let(:pid_name) { "dead.pid" }
-      it "returns dead" do
-        expect(subject.pid_status(path)).to eq :dead
-      end
-    end
-
-    context "file exists and is running" do
-      let(:pid_name) { "running.pid" }
-      it "returns running" do
-        subject.instance_variable_set(:@pidfile, path)
-        subject.write_pid
-        expect(subject.pid_status(path)).to eq :running
-        File.delete(path)
+      it "sets pid.path to pidfile param" do
+        expect(server_runner.pid.path).not_to eq nil
       end
     end
   end
 
-  describe "#write_pid" do
-    let(:pid_name) { "running.pid" }
-    let(:path) { File.expand_path("../../dummy/tmp/pids/#{pid_name}", __FILE__) }
+  describe "#pid" do
+    subject(:pid) {
+      server_runner.pid
+    }
 
-    it "creates a pidfile for a running process" do
-      subject.instance_variable_set(:@pidfile, path)
-      expect(subject.write_pid).to be_a Proc
-      File.delete(path)
-    end
-  end
-
-  describe "#pidfile" do
-    it "nil by default" do
-      expect(subject.pidfile).to eq nil
+    it "has path as nil by default" do
+      expect(pid.path).to be_nil
     end
 
     context "with params" do
-      let(:args) { { rails_path: File.expand_path("../../dummy", __FILE__), pidfile: "stuff" } }
+      let(:args) {
+        {
+          pidfile: "stuff",
+          rails_path: File.expand_path("../../dummy", __FILE__)
+        }
+      }
 
-      it "is set by parameter" do
-        expect(subject.pidfile).to match("stuff")
+      it "is path set by parameter" do
+        expect(pid.path).to match("stuff")
       end
     end
   end
@@ -133,18 +102,6 @@ RSpec.describe CarrotRpc::ServerRunner do
     end
     it "has default" do
       expect(subject.instance_variable_get(:@runloop_sleep)).to eq 0
-    end
-  end
-
-  describe "#load_rails_app" do
-    it "returns true if the rails app can be found" do
-      path = File.expand_path("../../dummy", __FILE__)
-      expect(subject.load_rails_app(path)).to eq true
-    end
-
-    it "rails if the rails app can not be found" do
-      path = File.expand_path("../foo", __FILE__)
-      expect { subject.load_rails_app(path) }.to raise_error LoadError
     end
   end
 
@@ -177,12 +134,13 @@ RSpec.describe CarrotRpc::ServerRunner do
     end
 
     it "always calls essential methods" do
-      expect(subject).to receive(:check_pid)
-      expect(subject).to receive(:write_pid)
-      expect(subject).to receive(:run_servers)
-      expect(subject).to receive(:stop_servers)
-      expect(subject).to_not receive(:daemonize)
-      subject.run!
+      expect(server_runner.pid).to receive(:check)
+      expect(server_runner.pid).to receive(:ensure_written)
+      expect(server_runner).to receive(:run_servers)
+      expect(server_runner).to receive(:stop_servers)
+      expect(server_runner).to_not receive(:daemonize)
+
+      server_runner.run!
     end
 
     context "daemonize not set" do

@@ -1,3 +1,5 @@
+require "securerandom"
+
 # Generic class for all RPC Consumers. Use as a base class to build other RPC Consumers for related functionality.
 # Let's define a naming convention here for subclasses becuase I don't want to write a Confluence doc.
 # All subclasses should have the following naming convention: <Name>RpcConsumer  ex: PostRpcConsumer

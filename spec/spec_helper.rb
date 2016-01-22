@@ -23,6 +23,8 @@ Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each do |f|
   require f
 end
 
+require "carrot_rpc"
+
 RSpec.configure do |config|
   config.before(:suite) do
     # Remove the log file on each run.
