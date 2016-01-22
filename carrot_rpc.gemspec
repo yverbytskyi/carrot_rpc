@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "Remote Procedure Call (RPC) using the Bunny Gem over RabbitMQ"
   spec.description   = "Streamlined approach to setting up RPC over RabbitMQ."
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = "https://github.com/C-S-D/carrot_rpc"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
