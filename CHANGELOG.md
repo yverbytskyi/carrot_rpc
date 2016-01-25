@@ -19,21 +19,21 @@ All significant changes in the project are documented here.
 ## v0.1.2
 
 ### Enhancements
-* [#4](https://github.com/C-S-D/carrot_rpc/pull1) - [shamil614](https://github.com/shamil614]
+* [#4](https://github.com/C-S-D/carrot_rpc/pull1) - [shamil614](https://github.com/shamil614)
   * Rename the keys in the parsed payload from '-' to '_'
   * Added integration specs to test functionality
   * Logging to test.log file
   * Setup for circleci integration tests to rabbitmq
 
 ### Bug Fixes
-* [#4](https://github.com/C-S-D/carrot_rpc/pull1) - [shamil614](https://github.com/shamil614]
+* [#4](https://github.com/C-S-D/carrot_rpc/pull1) - [shamil614](https://github.com/shamil614)
   * Some require statements not properly loading modules
   * Consistent use of require vs require_relative
 
 ## v0.1.1
 
 ### Enhancements
-* [#1](https://github.com/C-S-D/carrot_rpc/pull1) - [shamil614](https://github.com/shamil614]
+* [#1](https://github.com/C-S-D/carrot_rpc/pull1) - [shamil614](https://github.com/shamil614)
   * `CarrotRpc.configuration.bunny` can be set to custom
     [`Bunny` instance](http://www.rubydoc.info/gems/bunny/Bunny#new-class_method).
   * `CarrotRpc::RpcClient` and `CarrotRpc::RpcServer` subclasses can set their queue name with the `queue_name` class
@@ -44,7 +44,7 @@ All significant changes in the project are documented here.
     is converted to a JSON RPC error and sent back to the client.
 
 ### Bug Fixes
-* [#1](https://github.com/C-S-D/carrot_rpc/pull/1) - [shamil614](https://github.com/shamil614]
+* [#1](https://github.com/C-S-D/carrot_rpc/pull/1) - [shamil614](https://github.com/shamil614)
   * Send `jsonrpc` key instead of incorrect `json_rpc` key in JSON RPC response messages
   * All files under `bin` are marked as gem executables instead of just `carrot_rpc`
   * Fix files not loading properly when using `carrot_rpc`
@@ -53,7 +53,7 @@ All significant changes in the project are documented here.
     `CarrotRpc::ServerRunner#run_servers` to prevent a race condition where `#start` may try to use the logger.
 
 ### Incompatible Changes
-* [#1](https://github.com/C-S-D/carrot_rpc/pull/1) - [shamil614](https://github.com/shamil614]
+* [#1](https://github.com/C-S-D/carrot_rpc/pull/1) - [shamil614](https://github.com/shamil614)
   * `CarrotRpc.configuration.bunny` **MUST** be set to a
     [`Bunny` instance](http://www.rubydoc.info/gems/bunny/Bunny#new-class_method), usually using `Bunny.new`.
   * `CarrotRpc::RpcClient` and `CarrotRpc::RpcServer` subclasses **MUST** set their queue name with the `queue_name`
