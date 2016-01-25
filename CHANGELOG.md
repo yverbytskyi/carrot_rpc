@@ -3,18 +3,84 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Changelog](#changelog)
-  - [v0.1.2](#v012)
+  - [v0.2.0](#v020)
     - [Enhancements](#enhancements)
     - [Bug Fixes](#bug-fixes)
-  - [v0.1.1](#v011)
+    - [Incompatible Changes](#incompatible-changes)
+  - [v0.1.2](#v012)
     - [Enhancements](#enhancements-1)
     - [Bug Fixes](#bug-fixes-1)
-    - [Incompatible Changes](#incompatible-changes)
+  - [v0.1.1](#v011)
+    - [Enhancements](#enhancements-2)
+    - [Bug Fixes](#bug-fixes-2)
+    - [Incompatible Changes](#incompatible-changes-1)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Changelog
 All significant changes in the project are documented here.
+
+## v0.2.0
+
+### Enhancements
+* [#5](https://github.com/C-S-D/carrot_rpc/pull/5) - [KronicDeth](http://github.com/KronicDeth)
+  * Gems ordered and documented in gemspec and `Gemfile`
+  * Temorpary (`#`) files removed from git
+  * Rubocop is enabled and used on CircleCI
+    * Unused variables are prefixed with `_`
+    * `fail` is used instead of `raise` when first raising an exception
+    * Remove usage of deprecated methods
+    * Print error if `byebug` can't be loaded instead of failing silently, but CLI still starts
+    * Stop shadowing outer local variables in blocks
+    * Remove unused assignments
+    * Set and enforce max line length to 120
+    * Use `find` instead of `select {}.first` for better performance
+    * `queue_name` will retrieve the current queue name while `queue_name(new_name)` will set it.
+    * Align hashes
+    * Align parameters
+    * Favor symbolic `&&` over `and`. (They have different precedence too)
+    * Remove block comments
+    * Assign to variable outside conditionals instead of on each branch
+    * Remove extra empty lines
+    * Don't favor guard clauses as they prevent break pointing the body and guard separately and obscure bodies that don't have code coverage.
+    * Remove extra spacing
+    * Correct indentation
+    * Freeze `CarrotRpc::VERSION` so it is immutable
+    * Use `until` instead of negated `while`
+    * Use `_` to separate digits in large numerals
+    * Use `( )` for sigils
+    * Remove redundant `self.` for method calls
+    * Use `%r{}` instead of `//` for regexps
+    * Use newlines instead of `;`
+    * Add spacing around blocks and braces
+    * Enforce double quotes for all strings as double quotes work for strings in both Ruby and Elixir. (Single quotes are for Char Lists in Elixir)
+    * Use `&:<method>` instead of calling a non-args method in blocks
+    * Use `attr_reader` instead of trivial accessor methods
+    * Remove unneed interpolation
+    * Use double quotes instead of `%q`
+    * Use `%w` for word arrays
+    * Extract methods to lower to AbcSize metric and Method Length
+    * Extract classes and modules to lower Class Length
+    * Use `const_get` and `constantize` instead of security risk `eval`
+  * Enable all RSpec 3 recommended options
+    * Fix order-dependency of specs.
+  * Use `autoload` to delay loading
+  * Use compact class and module children to prevent parent from being missed when loading.
+  * Add `rake spec`
+  * Add Luke Imhoff as an author
+  * Set gem home page to this repository
+  * Semantic block delimiters, so we always think about procedural vs functional blocks to make Elixir coding easier.
+
+### Bug Fixes
+* [#5](https://github.com/C-S-D/carrot_rpc/pull/5) - [KronicDeth](http://github.com/KronicDeth)
+  * `ClientServer::ClassMethods` has been moved under `CarrotRpc` namespace as `CarrotRpc::ClientServer`
+  * `HashExtensions` has been moved under `CarrotRpc` namespace as `CarrotRpc::HashExtensions`
+
+### Incompatible Changes
+* [#5](https://github.com/C-S-D/carrot_rpc/pull/5) - [KronicDeth](http://github.com/KronicDeth)
+  * `ClientServer::ClassMethods` renamed to `CarrotRpc::ClientServer`
+  * `HashExtensions` renamed to `CarrotRpc::HashExtensions`
+  * `ClientServer::ClassMethods#get_queue_name` renamed to `CarrotRpc::ClientServer#queue_name()` (no args is the reader, one argument is the writer)
 
 ## v0.1.2
 
