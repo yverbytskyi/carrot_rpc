@@ -1,3 +1,20 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [CarrotRpc](#carrotrpc)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+    - [Server](#server)
+    - [Client](#client)
+  - [Usage](#usage)
+    - [Writing Servers](#writing-servers)
+    - [Writing Clients](#writing-clients)
+  - [Development](#development)
+  - [Contributing](#contributing)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # CarrotRpc
 
 An opinionated approach to doing Remote Procedure Call (RPC) with RabbitMQ and the bunny gem. CarrotRpc serves as a way to streamline the RPC workflow so developers can focus on the implementation and not the plumbing when working with RabbitMQ.
