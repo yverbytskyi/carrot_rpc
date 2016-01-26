@@ -20,6 +20,16 @@
 # Changelog
 All significant changes in the project are documented here.
 
+## v0.2.1
+
+### Bug Fixes
+* [#6](https://github.com/C-S-D/carrot_rpc/pull/6) - [shamil614](https://github.com/shamil614)
+  * Error class not loaded in RpcServer
+  * RpcServer should not rename json keys
+  * RpcClient dasherizes keys before serializing hash to json. Better conformity to json property naming conventions.
+  * RpcClient underscores keys after receiving response from server. Better conformity to ruby naming conventions.
+
+
 ## v0.2.0
 
 ### Enhancements

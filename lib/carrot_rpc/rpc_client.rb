@@ -50,7 +50,7 @@ class CarrotRpc::RpcClient
   # @return [Object] the result of the method call.
   def remote_call(remote_method, params)
     correlation_id = SecureRandom.uuid
-    publish(correlation_id: correlation_id, method: remote_method, params: params)
+    publish(correlation_id: correlation_id, method: remote_method, params: params.rename_keys("_", "-"))
     wait_for_result(correlation_id)
   end
 
