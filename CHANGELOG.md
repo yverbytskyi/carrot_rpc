@@ -28,6 +28,7 @@ All significant changes in the project are documented here.
   * RpcServer should not rename json keys
   * RpcClient dasherizes keys before serializing hash to json. Better conformity to json property naming conventions.
   * RpcClient underscores keys after receiving response from server. Better conformity to ruby naming conventions.
+  * Make sure hash keys are strings before renaming
 
 
 ## v0.2.0
