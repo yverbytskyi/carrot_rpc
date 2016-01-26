@@ -3,16 +3,18 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Changelog](#changelog)
+  - [v0.2.1](#v021)
+    - [Bug Fixes](#bug-fixes)
   - [v0.2.0](#v020)
     - [Enhancements](#enhancements)
-    - [Bug Fixes](#bug-fixes)
+    - [Bug Fixes](#bug-fixes-1)
     - [Incompatible Changes](#incompatible-changes)
   - [v0.1.2](#v012)
     - [Enhancements](#enhancements-1)
-    - [Bug Fixes](#bug-fixes-1)
+    - [Bug Fixes](#bug-fixes-2)
   - [v0.1.1](#v011)
     - [Enhancements](#enhancements-2)
-    - [Bug Fixes](#bug-fixes-2)
+    - [Bug Fixes](#bug-fixes-3)
     - [Incompatible Changes](#incompatible-changes-1)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -28,6 +30,7 @@ All significant changes in the project are documented here.
   * RpcServer should not rename json keys
   * RpcClient dasherizes keys before serializing hash to json. Better conformity to json property naming conventions.
   * RpcClient underscores keys after receiving response from server. Better conformity to ruby naming conventions.
+* [#7](https://github.com/C-S-D/carrot_rpc/pull/7) - [shamil614](https://github.com/shamil614)
   * Make sure hash keys are strings before renaming
 
 
