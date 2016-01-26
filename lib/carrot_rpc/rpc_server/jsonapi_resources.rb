@@ -99,7 +99,7 @@ module CarrotRpc::RpcServer::JSONAPIResources
   #   `:controller` to a URL name for the controller, such as `"api/v1/partner"`, so that the resource can be looked up
   #   by the controller name.
   # @return [Hash] rendered, but not encoded JSON.
-  def process_request(params) # rubocop:disable Metrics/MethodLength
+  def process_request_params(params) # rubocop:disable Metrics/MethodLength
     request = JSONAPI::Request.new(
       params,
       context: {},

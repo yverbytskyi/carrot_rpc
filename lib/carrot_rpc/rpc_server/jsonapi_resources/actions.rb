@@ -2,7 +2,7 @@
 module CarrotRpc::RpcServer::JSONAPIResources::Actions
   # create RPC method
   def create(params)
-    process_request(
+    process_request_params(
       # ActionController::Parameters#require is used by JSONAPI::Request#setup_create_action
       ActionController::Parameters.new(
         params.merge(
@@ -15,7 +15,7 @@ module CarrotRpc::RpcServer::JSONAPIResources::Actions
 
   # index RPC method
   def index
-    process_request(
+    process_request_params(
       action: :index,
       controller: controller
     )
@@ -23,7 +23,7 @@ module CarrotRpc::RpcServer::JSONAPIResources::Actions
 
   # show RPC method
   def show(params)
-    process_request(
+    process_request_params(
       params.merge(
         action: :show,
         controller: controller
@@ -33,7 +33,7 @@ module CarrotRpc::RpcServer::JSONAPIResources::Actions
 
   # update RPC method
   def update(params)
-    process_request(
+    process_request_params(
       # ActionController::Parameters#require is used by JSONAPI::Request#setup_update_action
       ActionController::Parameters.new(
         params.merge(
