@@ -1,3 +1,5 @@
+require "carrot_rpc/rpc_server/error"
+
 # Base RPC Server class. Other Servers should inherit from this.
 class CarrotRpc::RpcServer
   using CarrotRpc::HashExtensions
@@ -25,8 +27,7 @@ class CarrotRpc::RpcServer
     @server_queue.subscribe(block: @block) do |_delivery_info, properties, payload|
       logger.debug "Receiving message: #{payload}"
 
-      request_message = JSON.parse(payload).rename_keys("-", "_")
-                            .with_indifferent_access
+      request_message = JSON.parse(payload).with_indifferent_access
 
       process_request(request_message, properties: properties)
     end
@@ -34,7 +35,7 @@ class CarrotRpc::RpcServer
 
   def process_request(request_message, properties:)
     result = send(request_message[:method], request_message[:params])
-  rescue Error => rpc_server_error
+  rescue CarrotRpc::Error => rpc_server_error
     logger.error(rpc_server_error)
 
     reply_error rpc_server_error.serialized_message,
