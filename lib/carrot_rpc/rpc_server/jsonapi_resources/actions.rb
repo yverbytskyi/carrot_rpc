@@ -14,10 +14,12 @@ module CarrotRpc::RpcServer::JSONAPIResources::Actions
   end
 
   # index RPC method
-  def index
+  def index(params)
     process_request_params(
-      action: :index,
-      controller: controller
+      params.merge(
+        action: :index,
+        controller: controller
+      )
     )
   end
 
