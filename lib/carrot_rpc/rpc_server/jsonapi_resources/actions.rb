@@ -13,6 +13,19 @@ module CarrotRpc::RpcServer::JSONAPIResources::Actions
     )
   end
 
+  # Mimics behavior of `<collection>/<id>/<relationship>` routes
+  def get_related_resource(params)
+    process_request_params(
+      # ActionController::Parameters#require is used by JSONAPI::Request#setup_get_related_resource_action
+      ActionController::Parameters.new(
+        params.merge(
+          action: :get_related_resource,
+          controller: controller
+        )
+      )
+    )
+  end
+
   # index RPC method
   def index(params)
     process_request_params(
@@ -29,6 +42,19 @@ module CarrotRpc::RpcServer::JSONAPIResources::Actions
       params.merge(
         action: :show,
         controller: controller
+      )
+    )
+  end
+
+  # Mimic behavior of `<collection>/<id>/relationships/<relationship>` routes
+  def show_relationship(params)
+    process_request_params(
+      # ActionController::Parameters#require is used by JSONAPI::Request#setup_show_relationship_action
+      ActionController::Parameters.new(
+        params.merge(
+          action: :show_relationship,
+          controller: controller
+        )
       )
     )
   end
