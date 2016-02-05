@@ -93,7 +93,8 @@ end
 
 ## Usage
 ### Writing Servers
-Carrot CLI will look for your servers in `app/servers` directory. This directory should not be autoloaded by the host application. 
+Carrot CLI will look for your servers in `app/servers` directory. This directory should not be autoloaded by the host application.
+
 
 Example Server: `app/servers/car_server.rb`
 ```ruby
@@ -105,6 +106,26 @@ class CarServer < CarrotRpc::RpcServer
 end
 ```
 The method can return any data that can be stringified. But CarrotRPC uses [JSON RPC 2.0](http://www.jsonrpc.org/specification) as protocol for the message workflow.
+
+With a standard Rails configuration `app/servers` will be marked as `eager_load: true` because `app` is `eager_load: true`.  This is a problem because `Rails.application.eager_load!` is called when running `carrot_rpc`, which would lead to `app/servers/**/*.rb` being double loaded.  To prevent the double loading, `app/servers` itself needs to be added as
+a non-eager-load path, but still a load path.
+
+In `config/application.rb`
+```ruby
+module MyApp
+  class Application < Rails::Application
+    config.paths.add "app/servers",
+                     # `app/servers` MUST NOT be an eager_load path (to override the setting inherited from "app"), so
+                     # that `carrot_rpc` does not double load `app/servers/**/*.rb` when first loading Rails and the
+                     # servers.
+                     eager_load: false,
+                     # A load path so `carrot_rpc` can find load path ending in `app/servers` to scan for servers to
+                     # load
+                     load_path: true
+  end
+end
+```
+
 ### Writing Clients
 Clients are not run in the CLI, and are typlically invoked during a request / response lifecycle in a web application. In the case of Rails, Clients would most likely be used in a controller action. Clients should be written in the `app/clients` directory of the host application, and should be autoloaded by Rails.
 
