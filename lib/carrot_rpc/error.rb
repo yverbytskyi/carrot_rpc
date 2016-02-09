@@ -1,6 +1,8 @@
 # Error raised by an {RpcServer} method to signal that a
 # {http://www.jsonrpc.org/specification#error_object JSON RPC 2.0 Response Error object} should be the reply.
 class CarrotRpc::Error < StandardError
+  autoload :Code, "carrot_rpc/error/code"
+
   # @return [Integer]A Number that indicates the error type that occurred. Some codes are
   #   {http://www.jsonrpc.org/specification#error_object predefined}.
   attr_reader :code

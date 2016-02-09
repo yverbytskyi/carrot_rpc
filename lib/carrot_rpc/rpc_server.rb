@@ -1,5 +1,3 @@
-require "carrot_rpc/rpc_server/error"
-
 # Base RPC Server class. Other Servers should inherit from this.
 class CarrotRpc::RpcServer
   using CarrotRpc::HashExtensions
