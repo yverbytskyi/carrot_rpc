@@ -3,8 +3,7 @@
 # Allows a {CarrotRpc::RpcServer} subclass to behave the same as a controller that does
 # `include JSONAPI::ActsAsResourceController`
 module CarrotRpc::RpcServer::JSONAPIResources
-  require "carrot_rpc/rpc_server/jsonapi_resources/actions"
-  include CarrotRpc::RpcServer::JSONAPIResources::Actions
+  autoload :Actions, "carrot_rpc/rpc_server/jsonapi_resources/actions"
 
   # The base "meta" to include in the top-level of all JSON API documents.
   #
