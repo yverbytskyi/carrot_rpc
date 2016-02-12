@@ -3,24 +3,66 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Changelog](#changelog)
-  - [v0.2.1](#v021)
-    - [Bug Fixes](#bug-fixes)
-  - [v0.2.0](#v020)
+  - [v0.2.3](#v023)
     - [Enhancements](#enhancements)
+    - [Bug Fixes](#bug-fixes)
+    - [Upgrading](#upgrading)
+  - [v0.2.1](#v021)
     - [Bug Fixes](#bug-fixes-1)
-    - [Incompatible Changes](#incompatible-changes)
-  - [v0.1.2](#v012)
+  - [v0.2.0](#v020)
     - [Enhancements](#enhancements-1)
     - [Bug Fixes](#bug-fixes-2)
-  - [v0.1.1](#v011)
+    - [Incompatible Changes](#incompatible-changes)
+  - [v0.1.2](#v012)
     - [Enhancements](#enhancements-2)
     - [Bug Fixes](#bug-fixes-3)
+  - [v0.1.1](#v011)
+    - [Enhancements](#enhancements-3)
+    - [Bug Fixes](#bug-fixes-4)
     - [Incompatible Changes](#incompatible-changes-1)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Changelog
 All significant changes in the project are documented here.
+
+## v0.2.3
+
+
+### Enhancements
+* [#9](https://github.com/C-S-D/carrot_rpc/pull/9) - [KronicDeth](http://github.com/KronicDeth)
+  * `CarrotRpc::RpcServer` subclasses can `include CarrotRpc::RpcServer::JSONAPIResources` to get
+    [`JSONAPI::ActsAsResourceController`](https://github.com/cerebris/jsonapi-resources/blob/8e85d68dfbaf9181344c7618b0b29b4cfd362034/lib/jsonapi/acts_as_resource_controller.rb)
+    helper methods for processing JSONAPI requests in server methods.
+  * The primary entry point is `#process_request_params`, which expects an `ActionController::Parameters`
+    (to do strong parameters) with `:action` set to the method name and `:controller` set to the name of the
+    controller that corresponds to the `JSONAPI::Resource` subclass, such as `"api/v1/post"` to load `API::V1::PostResource`.
+  * You need to define the following methods:
+    * `base_url`
+    * `resource_klass`
+  * `CarrotRpc::RpcServer` subclasses, when including `CarrotRpc::Rpc::JSONAPIResources` can
+    `extend CarrotRpc::Rpc::JSONAPIResources::Actions` to gain access to an `actions` DSL that takes a
+    list of actions and defines methods that call `process_request_params` with the correct options.
+  * You need to define the following methods:
+    * `base_url`
+    * `controller`
+    * `resource_klass`
+
+### Bug Fixes
+* [#9](https://github.com/C-S-D/carrot_rpc/pull/9) - [KronicDeth](http://github.com/KronicDeth)
+  * `CarrotRpc::Error` was moved from the incorrect `lib/carrot_rpc/rpc_server/error.rb`
+    path to the correct `lib/carrot_rpc/error.rb` path.
+  * `CarrotRpc::Error::Code` was moved from the incorrect `lib/carrot_rpc/rpc_server/error/code.rb`
+    path to the correct `lib/carrot_rpc/error/code.rb` path.
+
+### Upgrading
+* [#9](https://github.com/C-S-D/carrot_rpc/pull/9) - [KronicDeth](http://github.com/KronicDeth)
+  * If you previously loaded `CarrotRpc::Error` directly with `require "carrot_rpc/rpc_server/error"` you now need to
+    `require "carrot_rpc/error"`, which is the corrected path.  `CarrotRpc::Error` is autoloaded, so you don't need to require it.
+  * If you previously loaded `CarrotRpc::Error::Code` directly with `require "carrot_rpc/rpc_server/error/code"`
+    you now need to `require "carrot_rpc/error/code"`, which is the corrected path.  `CarrotRpc::Error::Code` is
+    autoloaded, so you don't need to require it.
+
 
 ## v0.2.1
 

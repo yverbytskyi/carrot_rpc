@@ -1,3 +1,3 @@
 module CarrotRpc
-  VERSION = "0.2.3.pre".freeze
+  VERSION = "0.2.3".freeze
 end
