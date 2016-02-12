@@ -20,6 +20,7 @@ module CarrotRpc
   autoload :CLI
   autoload :ClientServer
   autoload :Configuration
+  autoload :Error
   autoload :HashExtensions
   autoload :RpcClient
   autoload :RpcServer

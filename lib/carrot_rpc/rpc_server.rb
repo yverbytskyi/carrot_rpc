@@ -1,7 +1,7 @@
-require "carrot_rpc/rpc_server/error"
-
 # Base RPC Server class. Other Servers should inherit from this.
 class CarrotRpc::RpcServer
+  autoload :JSONAPIResources, "carrot_rpc/rpc_server/jsonapi_resources"
+
   using CarrotRpc::HashExtensions
 
   attr_reader :channel, :server_queue, :logger
