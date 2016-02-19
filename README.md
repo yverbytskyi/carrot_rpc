@@ -19,6 +19,7 @@
 
 An opinionated approach to doing Remote Procedure Call (RPC) with RabbitMQ and the bunny gem. CarrotRpc serves as a way to streamline the RPC workflow so developers can focus on the implementation and not the plumbing when working with RabbitMQ.
 
+[![Code Climate](https://codeclimate.com/github/C-S-D/carrot_rpc/badges/gpa.svg)](https://codeclimate.com/github/C-S-D/carrot_rpc)
 [![Circle CI](https://circleci.com/gh/C-S-D/carrot_rpc.svg?style=svg)](https://circleci.com/gh/C-S-D/carrot_rpc)
 
 ## Installation
@@ -42,7 +43,7 @@ There's two modes for CarrotRpc: server and client. The server is run via comman
 ### Server
 The server is configured via command line and run in it's own process.
 
-Carrot is easy to run via command line: 
+Carrot is easy to run via command line:
 ```bash
 carrot_rpc
 ```
@@ -75,15 +76,15 @@ Clients are configured by initializing `CarrotRpc::Configuration`. The most comm
 
 ```ruby
 CarrotRpc.configure do |config|
-  # Required on the client to connect to RabbitMQ. 
+  # Required on the client to connect to RabbitMQ.
   # Bunny defaults to connecting to ENV['RABBITMQ_URL']. See Bunny docs.
   config.bunny = Bunny.new.start
   # Set the log level. Ruby Logger Docs http://ruby-doc.org/stdlib-2.2.0/libdoc/logger/rdoc/Logger.html
   config.loglevel = Logger::INFO
-  # Create a new logger or use the Rails logger. 
+  # Create a new logger or use the Rails logger.
   # When using Rails, use a tagged log to make it easier to track RPC.
   config.logger = CarrotRpc::TaggedLog.new(logger: Rails.logger, tags: ["Carrot RPC Client"])
-  
+
   # Don't use. Server implementation only. The values below are set via CLI:
   # config.pidfile = nil
   # config.runloop_sleep = 0
