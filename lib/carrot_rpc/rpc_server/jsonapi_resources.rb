@@ -77,7 +77,7 @@ module CarrotRpc::RpcServer::JSONAPIResources
       logger.error { # rubocop:disable Style/BlockDelimiters
         "Internal Server Error: #{exception.message} #{exception.backtrace.join("\n")}"
       }
-      render_errors(internal_server_error.errors)
+      render_errors(internal_server_error.errors, request: request)
     end
   end
 
