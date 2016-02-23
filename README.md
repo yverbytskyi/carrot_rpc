@@ -93,12 +93,14 @@ end
 
 ## Usage
 ### Writing Servers
-Carrot CLI will look for your servers in `app/servers` directory. This directory should not be autoloaded by the host application.
+Carrot CLI will look for your servers in `app/servers` directory. This directory should not be autoloaded by the host application. Very important to declare the name of the queue with `queue_name`. The name must be the same as what's implemented in the `Client`.
 
 
 Example Server: `app/servers/car_server.rb`
 ```ruby
 class CarServer < CarrotRpc::RpcServer
+  queue_name "car_queue"
+
   def show(params)
     # ...do something
     Car.find(params[:id]).to_json
@@ -127,11 +129,13 @@ end
 ```
 
 ### Writing Clients
-Clients are not run in the CLI, and are typlically invoked during a request / response lifecycle in a web application. In the case of Rails, Clients would most likely be used in a controller action. Clients should be written in the `app/clients` directory of the host application, and should be autoloaded by Rails.
+Clients are not run in the CLI, and are typlically invoked during a request / response lifecycle in a web application. In the case of Rails, Clients would most likely be used in a controller action. Clients should be written in the `app/clients` directory of the host application, and should be autoloaded by Rails. The name of the queue to send messages to must be declared with `queue_name`.
 
 Example Client: `app/clients/cars_client.rb`
 ```ruby
   class CarClient < CarrotRpc::RpcClient
+    queue_name "car_queue"
+
     # By default RpcClient defines the following Railsy inspired methods:
     # def show(params)
     # def index(params)
@@ -147,6 +151,8 @@ Example Client: `app/clients/cars_client.rb`
 Example Rails Controller:
 ```ruby
 class CarsController < ApplicationController
+  queue_name "car_queue"
+
   def show
     car_client = CarClient.new
     car_client.start
