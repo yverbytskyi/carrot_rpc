@@ -163,6 +163,42 @@ class CarsController < ApplicationController
 end
 ```
 
+### Support for JSONAPI::Resources
+In the case that you're writing an application that uses the `jsonapi-resources` gem and you want the `RpcServer` to have the same functionality, then we got you covered. All you need to do is import a few modules. See [jsonapi-resources](https://github.com/cerebris/jsonapi-resources) for details on how to implement resources for your models.
+
+Example Server with JSONAPI functionality:
+```ruby
+class CarServer < CarrotRpc::RpcServer
+  extend CarrotRpc::RpcServer::JSONAPIResources::Actions
+  include CarrotRpc::RpcServer::JSONAPIResources
+  
+  # declare the actions to enable
+  actions: :create, :destroy, :index, :show, :update
+ 
+  # Context so it can build urls
+  def base_url
+    "http://foo.com"
+  end
+  
+  # Context to find the resource and create links.
+  def controller
+    "api/cars"
+  end
+ 
+  # JSONAPI::Resource example: `app/resources/car_resource.rb`
+  def resource_klass
+    CarResource
+  end
+  
+  queue_name "car_queue"
+
+  def show(params)
+    # ...do something
+    Car.find(params[:id]).to_json
+  end
+end
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.
