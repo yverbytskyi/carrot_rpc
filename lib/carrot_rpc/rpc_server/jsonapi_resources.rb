@@ -101,7 +101,7 @@ module CarrotRpc::RpcServer::JSONAPIResources
   def process_request_params(params) # rubocop:disable Metrics/MethodLength
     request = JSONAPI::Request.new(
       params,
-      context: {},
+      context: { rpc_request: true },
       key_formatter: key_formatter,
       server_error_callbacks: []
     )
