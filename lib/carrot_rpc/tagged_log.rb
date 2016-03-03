@@ -17,8 +17,8 @@ class CarrotRpc::TaggedLog
 
   # Dyanmically define logger methods with a tagged reference. Makes filtering of logs possible.
   %i(debug info warn error fatal unknown).each do |level|
-    define_method(level) do |msg|
-      logger.tagged(tags) { logger.send(level, msg) }
+    define_method(level) do |msg = nil, &block|
+      logger.tagged(tags) { logger.send(level, msg || block.call) }
     end
   end
 end
