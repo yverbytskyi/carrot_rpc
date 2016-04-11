@@ -3,22 +3,25 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Changelog](#changelog)
-  - [v0.2.3](#v023)
+  - [v0.3.0](#v030)
     - [Enhancements](#enhancements)
     - [Bug Fixes](#bug-fixes)
+  - [v0.2.3](#v023)
+    - [Enhancements](#enhancements-1)
+    - [Bug Fixes](#bug-fixes-1)
     - [Upgrading](#upgrading)
   - [v0.2.1](#v021)
-    - [Bug Fixes](#bug-fixes-1)
-  - [v0.2.0](#v020)
-    - [Enhancements](#enhancements-1)
     - [Bug Fixes](#bug-fixes-2)
-    - [Incompatible Changes](#incompatible-changes)
-  - [v0.1.2](#v012)
+  - [v0.2.0](#v020)
     - [Enhancements](#enhancements-2)
     - [Bug Fixes](#bug-fixes-3)
-  - [v0.1.1](#v011)
+    - [Incompatible Changes](#incompatible-changes)
+  - [v0.1.2](#v012)
     - [Enhancements](#enhancements-3)
     - [Bug Fixes](#bug-fixes-4)
+  - [v0.1.1](#v011)
+    - [Enhancements](#enhancements-4)
+    - [Bug Fixes](#bug-fixes-5)
     - [Incompatible Changes](#incompatible-changes-1)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -26,11 +29,22 @@
 # Changelog
 All significant changes in the project are documented here.
 
-## v0.2.3
-
+## v0.3.0
 
 ### Enhancements
-* [#9](https://github.com/C-S-D/carrot_rpc/pull/9) - [KronicDeth](http://github.com/KronicDeth)
+* [#11](https://githb.com/C-S-D/carrot_rpc/pull/11) - Add CodeClimate badge to README - [thewalkingtoast](https://github.com/thewalkingtoast)
+* [#13](https://githb.com/C-S-D/carrot_rpc/pull/13) - Document `queue_name` - [shamil614](https://github.com/shamil614)
+* [#14](https://githb.com/C-S-D/carrot_rpc/pull/14) - Pass `rpc_request: true` in the `JSONAPI::Request` `context`, so resources can differentiate between API and RPC calls - [shamil614](https://github.com/shamil614)
+
+### Bug Fixes
+* [#12](https://githb.com/C-S-D/carrot_rpc/pull/12) - Pass `request` to `render_errors` when handling exceptions in `CarrotRpc::RpcServer::JSONAPIResources` - [shamil614](https://github.com/shamil614)
+* [#15](https://githb.com/C-S-D/carrot_rpc/pull/15) - Fix argument error bug when passing block to `CarrotRpc::TaggedLog` methods by allowing either a message or a block like standard `Logger` interface - [shamil614](https://github.com/shamil614)
+* [#17](https://githb.com/C-S-D/carrot_rpc/pull/17) - New rubocop versions add new cops or deprecate old config settings, so it is not safe to have `"rubocop"` without a version in the gemspec. - [KronicDeth](http://github.com/kronicdeth)
+
+## v0.2.3
+
+### Enhancements
+* [#9](https://github.com/C-S-D/carrot_rpc/pull/9) - [KronicDeth](http://github.com/kronicdeth)
   * `CarrotRpc::RpcServer` subclasses can `include CarrotRpc::RpcServer::JSONAPIResources` to get
     [`JSONAPI::ActsAsResourceController`](https://github.com/cerebris/jsonapi-resources/blob/8e85d68dfbaf9181344c7618b0b29b4cfd362034/lib/jsonapi/acts_as_resource_controller.rb)
     helper methods for processing JSONAPI requests in server methods.
