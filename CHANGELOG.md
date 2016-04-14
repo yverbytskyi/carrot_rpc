@@ -3,26 +3,30 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Changelog](#changelog)
-  - [v0.3.0](#v030)
+  - [v0.4.0](#v040)
     - [Enhancements](#enhancements)
     - [Bug Fixes](#bug-fixes)
-  - [v0.2.3](#v023)
+    - [Incompatible Changes](#incompatible-changes)
+  - [v0.3.0](#v030)
     - [Enhancements](#enhancements-1)
     - [Bug Fixes](#bug-fixes-1)
+  - [v0.2.3](#v023)
+    - [Enhancements](#enhancements-2)
+    - [Bug Fixes](#bug-fixes-2)
     - [Upgrading](#upgrading)
   - [v0.2.1](#v021)
-    - [Bug Fixes](#bug-fixes-2)
-  - [v0.2.0](#v020)
-    - [Enhancements](#enhancements-2)
     - [Bug Fixes](#bug-fixes-3)
-    - [Incompatible Changes](#incompatible-changes)
-  - [v0.1.2](#v012)
+  - [v0.2.0](#v020)
     - [Enhancements](#enhancements-3)
     - [Bug Fixes](#bug-fixes-4)
-  - [v0.1.1](#v011)
+    - [Incompatible Changes](#incompatible-changes-1)
+  - [v0.1.2](#v012)
     - [Enhancements](#enhancements-4)
     - [Bug Fixes](#bug-fixes-5)
-    - [Incompatible Changes](#incompatible-changes-1)
+  - [v0.1.1](#v011)
+    - [Enhancements](#enhancements-5)
+    - [Bug Fixes](#bug-fixes-6)
+    - [Incompatible Changes](#incompatible-changes-2)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -38,6 +42,9 @@ All significant changes in the project are documented here.
 * [#19](https://githb.com/C-S-D/carrot_rpc/pull/19) - [KronicDeth](http://github.com/kronicdeth)
   * Put JSONAPI errors documents into the JSONRPC error fields instead of returning as normal results as consumers, such as `Rpc.Generic.Client` are expecting all errors to be in JSONRPC's error field and not have to check if the non-error `result` contains a JSONAPI level error.  This achieves parity with the behavior in the Elixir `Rpc.Generic.Server`.
   * Scrub JSONAPI error fields that are `nil` so they don't get transmitted as `null`.  JSONAPI spec is quite clear that `null` columns shouldn't be transmitted except in the case of `null` data to signal a missing singleton resource.  This achieves compatibility with the error parsing in `Rpc.Generic.Client` in Elixir.
+  
+### Incompatible Changes
+* [#20](https://githb.com/C-S-D/carrot_rpc/pull/20) - `base_url`, which must be implemented by any RPC server that `include CarrotRpc::RpcServer::JSONAPIResources`, changes from `base_url() :: String` to `base_url(JSONAPI::OperationResult, JSONAPI::Request) :: String` - [shamil614](https://github.com/shamil614)
 
 ## v0.3.0
 
