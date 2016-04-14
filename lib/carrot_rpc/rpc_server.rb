@@ -67,11 +67,42 @@ class CarrotRpc::RpcServer
 
   # See http://www.jsonrpc.org/specification#response_object
   def reply_result(result, properties:, request_message:)
-    response_message = { id: request_message[:id], result: result, jsonrpc: "2.0" }
+    if result["errors"]
+      reply_result_with_errors(result, properties: properties, request_message: request_message)
+    else
+      reply_result_without_errors(result, properties: properties, request_message: request_message)
+    end
+  end
+
+  def reply_result_with_errors(result, properties:, request_message:)
+    scrubbed_result = result.merge(
+      "errors" => scrub_errors(result.fetch("errors"))
+    )
+    reply_error({ code: 422, data: scrubbed_result, message: "JSONAPI error" },
+                properties: properties,
+                request_message: request_message)
+  end
+
+  def reply_result_without_errors(result, properties:, request_message:)
+    response_message = { id: request_message[:id], jsonrpc: "2.0", result: result }
 
     logger.debug "Publishing result: #{result} to #{response_message}"
 
     reply properties: properties,
           response_message: response_message
+  end
+
+  # Removes `nil` values as JSONAPI spec expects unset keys not to be transmitted
+  def scrub_error(error)
+    error.reject { |_, value|
+      value.nil?
+    }
+  end
+
+  # Removes `nil` values as JSONAPI spec expects unset keys not to be transmitted
+  def scrub_errors(errors)
+    errors.map { |error|
+      scrub_error(error)
+    }
   end
 end
