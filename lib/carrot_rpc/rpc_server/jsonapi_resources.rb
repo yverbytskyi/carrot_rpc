@@ -51,7 +51,7 @@ module CarrotRpc::RpcServer::JSONAPIResources
       primary_resource_klass: resource_klass,
       include_directives: request ? request.include_directives : nil,
       fields: request ? request.fields : nil,
-      base_url: base_url,
+      base_url: base_url(operation_results, request),
       key_formatter: key_formatter,
       route_formatter: route_formatter,
       base_meta: base_meta(request),

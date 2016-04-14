@@ -27,4 +27,8 @@ RSpec.describe CarrotRpc::Configuration do
   it "defaults bunny" do
     expect(subject.bunny).to eq nil
   end
+
+  it "defaults a before_request Proc" do
+    expect(subject.before_request).to eq nil
+  end
 end
