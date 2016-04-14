@@ -37,6 +37,46 @@ RSpec.describe CarrotRpc::RpcClient do
     end
   end
 
+  describe "#remote_call" do
+    before :each do
+      client_class.queue_name "lannister"
+      client.start
+    end
+
+    after :each do
+      client.channel.close
+    end
+
+    it "does nothing if a Proc is not set" do
+      params = { data: { name: "foo" } }
+      method = :foo_method
+      random_id = SecureRandom.uuid
+
+      allow(SecureRandom).to receive(:uuid) { random_id }
+      allow(client).to receive(:publish)
+      allow(client).to receive(:wait_for_result)
+
+      result_params = { "data" => { "name" => "foo" } }
+      expect(client).to receive(:publish).with(correlation_id: random_id, method: method, params: result_params)
+      subject.remote_call(method, params)
+    end
+
+    it "passes params to Proc before making a remote call" do
+      client_class.before_request proc { |params| params.merge(meta: "foo") }
+      params = { data: { name: "foo" } }
+      method = :foo_method
+      random_id = SecureRandom.uuid
+
+      allow(SecureRandom).to receive(:uuid) { random_id }
+      allow(client).to receive(:publish)
+      allow(client).to receive(:wait_for_result)
+
+      result_params = { "data" => { "name" => "foo" }, "meta" => "foo" }
+      expect(client).to receive(:publish).with(correlation_id: random_id, method: method, params: result_params)
+      subject.remote_call(method, params)
+    end
+  end
+
   describe "#start" do
     # Methods
 

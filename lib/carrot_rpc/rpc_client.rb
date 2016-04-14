@@ -10,6 +10,16 @@ class CarrotRpc::RpcClient
 
   extend CarrotRpc::ClientServer
 
+  def self.before_request(*proc)
+    if proc.length == 0
+      @before_request
+    elsif proc.length == 1
+      @before_request = proc.first || CarrotRpc.configuration.before_request
+    else
+      fail ArgumentError
+    end
+  end
+
   # Use defaults for application level connection to RabbitMQ
   # All RPC data goes over the same queue. I think that's ok....
   def initialize(config: nil)
@@ -50,6 +60,7 @@ class CarrotRpc::RpcClient
   # @return [Object] the result of the method call.
   def remote_call(remote_method, params)
     correlation_id = SecureRandom.uuid
+    params = self.class.before_request.call(params) if self.class.before_request
     publish(correlation_id: correlation_id, method: remote_method, params: params.rename_keys("_", "-"))
     wait_for_result(correlation_id)
   end

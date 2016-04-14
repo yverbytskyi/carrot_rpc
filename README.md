@@ -84,6 +84,8 @@ CarrotRpc.configure do |config|
   # Create a new logger or use the Rails logger.
   # When using Rails, use a tagged log to make it easier to track RPC.
   config.logger = CarrotRpc::TaggedLog.new(logger: Rails.logger, tags: ["Carrot RPC Client"])
+  # Set a Proc to allow manipulation of the params on the RpcClient before the request is sent.
+  config.before_request = proc { |params| params.merge(foo: "bar") }
 
   # Don't use. Server implementation only. The values below are set via CLI:
   # config.pidfile = nil
@@ -136,6 +138,8 @@ Example Client: `app/clients/cars_client.rb`
 ```ruby
   class CarClient < CarrotRpc::RpcClient
     queue_name "car_queue"
+    # optional hook to modify params before submission
+    before_request proc { |params| params.merge(foo: "bar") }
 
     # By default RpcClient defines the following Railsy inspired methods:
     # def show(params)
