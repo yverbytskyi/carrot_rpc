@@ -29,6 +29,16 @@
 # Changelog
 All significant changes in the project are documented here.
 
+## v0.4.0
+
+### Enhancements
+* [#20](https://githb.com/C-S-D/carrot_rpc/pull/20) - `config.before_request` may be set with a `#call(params) :: params` that is passed the `params` and returns altered `params` that are published to the queue. - [shamil614](https://github.com/shamil614)
+
+### Bug Fixes
+* [#19](https://githb.com/C-S-D/carrot_rpc/pull/19) - [KronicDeth](http://github.com/kronicdeth)
+  * Put JSONAPI errors documents into the JSONRPC error fields instead of returning as normal results as consumers, such as `Rpc.Generic.Client` are expecting all errors to be in JSONRPC's error field and not have to check if the non-error `result` contains a JSONAPI level error.  This achieves parity with the behavior in the Elixir `Rpc.Generic.Server`.
+  * Scrub JSONAPI error fields that are `nil` so they don't get transmitted as `null`.  JSONAPI spec is quite clear that `null` columns shouldn't be transmitted except in the case of `null` data to signal a missing singleton resource.  This achieves compatibility with the error parsing in `Rpc.Generic.Client` in Elixir.
+
 ## v0.3.0
 
 ### Enhancements
