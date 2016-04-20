@@ -67,7 +67,7 @@ class CarrotRpc::RpcServer
 
   # See http://www.jsonrpc.org/specification#response_object
   def reply_result(result, properties:, request_message:)
-    if result["errors"]
+    if result && result.is_a?(Hash) && result["errors"]
       reply_result_with_errors(result, properties: properties, request_message: request_message)
     else
       reply_result_without_errors(result, properties: properties, request_message: request_message)
