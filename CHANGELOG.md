@@ -3,35 +3,42 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Changelog](#changelog)
+  - [v0.4.1](#v041)
+    - [Bug Fixes](#bug-fixes)
   - [v0.4.0](#v040)
     - [Enhancements](#enhancements)
-    - [Bug Fixes](#bug-fixes)
-    - [Incompatible Changes](#incompatible-changes)
+    - [Bug Fixes](#bug-fixes-1)
   - [v0.3.0](#v030)
     - [Enhancements](#enhancements-1)
-    - [Bug Fixes](#bug-fixes-1)
+    - [Bug Fixes](#bug-fixes-2)
   - [v0.2.3](#v023)
     - [Enhancements](#enhancements-2)
-    - [Bug Fixes](#bug-fixes-2)
+    - [Bug Fixes](#bug-fixes-3)
     - [Upgrading](#upgrading)
   - [v0.2.1](#v021)
-    - [Bug Fixes](#bug-fixes-3)
+    - [Bug Fixes](#bug-fixes-4)
   - [v0.2.0](#v020)
     - [Enhancements](#enhancements-3)
-    - [Bug Fixes](#bug-fixes-4)
-    - [Incompatible Changes](#incompatible-changes-1)
+    - [Bug Fixes](#bug-fixes-5)
+    - [Incompatible Changes](#incompatible-changes)
   - [v0.1.2](#v012)
     - [Enhancements](#enhancements-4)
-    - [Bug Fixes](#bug-fixes-5)
+    - [Bug Fixes](#bug-fixes-6)
   - [v0.1.1](#v011)
     - [Enhancements](#enhancements-5)
-    - [Bug Fixes](#bug-fixes-6)
-    - [Incompatible Changes](#incompatible-changes-2)
+    - [Bug Fixes](#bug-fixes-7)
+    - [Incompatible Changes](#incompatible-changes-1)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Changelog
 All significant changes in the project are documented here.
+
+## v0.4.1
+### Bug Fixes
+* [#23](https://githb.com/C-S-D/carrot_rpc/pull/23) - [shamil614](https://github.com/shamil614)
+  * Fixes errors for non-hash results being called with hash methods.
+  * RPC client parses response to account for jsonrpc error object as well as jsonrpc result object.
 
 ## v0.4.0
 
