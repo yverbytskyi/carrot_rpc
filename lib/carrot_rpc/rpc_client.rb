@@ -23,9 +23,9 @@ class CarrotRpc::RpcClient
   # Use defaults for application level connection to RabbitMQ
   # All RPC data goes over the same queue. I think that's ok....
   def initialize(config: nil)
-    config ||= CarrotRpc.configuration
-    @channel = config.bunny.create_channel
-    @logger = config.logger
+    @config ||= CarrotRpc.configuration
+    @channel = @config.bunny.create_channel
+    @logger = @config.logger
     # auto_delete => false keeps the queue around until RabbitMQ restarts or explicitly deleted
     @server_queue = @channel.queue(self.class.queue_name, auto_delete: false)
 
@@ -68,11 +68,14 @@ class CarrotRpc::RpcClient
   end
 
   def wait_for_result(correlation_id)
-    # `pop` is `Queue#pop`, so it is blocking on the receiving thread and this must happend before the `Hash.delete` or
-    # the receiving thread won't be able to find the correlation_id in @results
-    result = @results[correlation_id].pop
-    @results.delete correlation_id # remove item from hash. prevents memory leak.
-    result
+    # Should be good to timeout here because we're blocking in the main thread here.
+    Timeout.timeout(@config.rpc_client_timeout, CarrotRpc::Exception::RpcClientTimeout) do
+      # `pop` is `Queue#pop`, so it is blocking on the receiving thread and this must happend before the `Hash.delete` or
+      # the receiving thread won't be able to find the correlation_id in @results
+      result = @results[correlation_id].pop
+      @results.delete correlation_id # remove item from hash. prevents memory leak.
+      result
+    end
   end
 
   def publish(correlation_id:, method:, params:)
