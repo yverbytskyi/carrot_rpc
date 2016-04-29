@@ -20,8 +20,12 @@ class CarrotRpc::RpcClient
     end
   end
 
-  # Use defaults for application level connection to RabbitMQ
-  # All RPC data goes over the same queue. I think that's ok....
+  # Use defaults for application level connection to RabbitMQ.
+  #
+  # @example pass custom {Configuration} class as an argument to override.
+  #   config = CarrotRpc::Configuration.new
+  #   config.rpc_client_timeout = 10
+  #   CarrotRpc::RpcClient.new(config)
   def initialize(*)
     @config ||= CarrotRpc.configuration
     @channel = @config.bunny.create_channel
@@ -34,6 +38,9 @@ class CarrotRpc::RpcClient
   end
 
   # Starts the connection to listen for messages.
+  #
+  # All RpcClient requests go to the a single {server_queue}
+  # Responses come back over a unique queue name.
   def start
     # Empty queue name ends up creating a randomly named queue by RabbitMQ
     # Exclusive => queue will be deleted when connection closes. Allows for automatic "cleanup".
@@ -61,10 +68,13 @@ class CarrotRpc::RpcClient
   # @param params [Hash] the arguments for the method being called.
   # @return [Object] the result of the method call.
   def remote_call(remote_method, params)
+    start
     correlation_id = SecureRandom.uuid
     params = self.class.before_request.call(params) if self.class.before_request
     publish(correlation_id: correlation_id, method: remote_method, params: params.rename_keys("_", "-"))
     wait_for_result(correlation_id)
+  ensure
+    @channel.close
   end
 
   def wait_for_result(correlation_id)
@@ -79,6 +89,8 @@ class CarrotRpc::RpcClient
     end
   end
 
+  # {reply_queue} is deleted when the channel is closed.
+  # Closing the channel accounts for cleanup of the client {reply_queue}.
   def publish(correlation_id:, method:, params:)
     message = message(
       correlation_id: correlation_id,

@@ -43,10 +43,6 @@ RSpec.describe CarrotRpc::RpcClient do
       client.start
     end
 
-    after :each do
-      client.channel.close
-    end
-
     it "does nothing if a Proc is not set" do
       params = { data: { name: "foo" } }
       method = :foo_method
@@ -150,7 +146,6 @@ RSpec.describe CarrotRpc::RpcClient do
     end
 
     after(:each) do
-      client.channel.close
       server.channel.close
 
       # Clean up properly
@@ -173,10 +168,6 @@ RSpec.describe CarrotRpc::RpcClient do
       end
 
       # Callbacks
-
-      before(:each) do
-        client.start
-      end
 
       it "parses the payload from json to hash and changes '-' to '_' in the keys" do
         expect(client.show({})).to eq result
