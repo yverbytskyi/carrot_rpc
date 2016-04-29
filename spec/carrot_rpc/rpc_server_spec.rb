@@ -56,12 +56,9 @@ RSpec.describe CarrotRpc::RpcServer do
     before(:each) do
       # Delete queue if another test did not clean up properly, such as due to interrupt
       delete_queue
-
-      client.start
     end
 
     after(:each) do
-      client.channel.close
       server.channel.close
 
       # Clean up properly

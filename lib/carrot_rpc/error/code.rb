@@ -1,4 +1,4 @@
-# An enum of predefined {RpcServer::Server#code}
+# An enum of predefined error codes.
 module CarrotRpc::Error::Code
   # Internal JSON-RPC error.
   INTERNAL_ERROR   = -32_603

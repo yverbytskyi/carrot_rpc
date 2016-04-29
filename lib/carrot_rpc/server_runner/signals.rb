@@ -1,4 +1,4 @@
-# Traps all {the signals NAMES} that should be intercepted by a long-running background process.
+# Traps all the signals {NAMES} that should be intercepted by a long-running background process.
 module CarrotRpc::ServerRunner::Signals
   # CONSTANTS
 
