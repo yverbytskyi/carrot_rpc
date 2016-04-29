@@ -162,10 +162,7 @@ class CarsController < ApplicationController
 
   def show
     car_client = CarClient.new
-    car_client.start
     result = car_client.show({id: 1})
-    # Good idea to clean up connections when finished.
-    car_client.channel.close
   end
 end
 ```
