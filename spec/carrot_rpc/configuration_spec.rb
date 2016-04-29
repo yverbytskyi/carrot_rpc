@@ -31,4 +31,8 @@ RSpec.describe CarrotRpc::Configuration do
   it "defaults a before_request Proc" do
     expect(subject.before_request).to eq nil
   end
+
+  it "defaults to rpc_client_timeout to 5 seconds" do
+    expect(subject.rpc_client_timeout).to eq 5
+  end
 end

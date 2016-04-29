@@ -77,6 +77,23 @@ RSpec.describe CarrotRpc::RpcClient do
     end
   end
 
+  describe "#wait_for_result" do
+    before :each do
+      client_class.queue_name "lannister"
+      client.start
+    end
+
+    after :each do
+      client.channel.close
+    end
+
+    it "raises an exception when timeout is reached" do
+      # I don't feel like waiting for the default 5 seconds...do you?
+      CarrotRpc.configuration.rpc_client_timeout = 0.1
+      expect { client.wait_for_result("Bogus-123") }.to raise_error CarrotRpc::Exception::RpcClientTimeout
+    end
+  end
+
   describe "#start" do
     # Methods
 

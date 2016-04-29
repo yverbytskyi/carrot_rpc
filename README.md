@@ -86,6 +86,8 @@ CarrotRpc.configure do |config|
   config.logger = CarrotRpc::TaggedLog.new(logger: Rails.logger, tags: ["Carrot RPC Client"])
   # Set a Proc to allow manipulation of the params on the RpcClient before the request is sent.
   config.before_request = proc { |params| params.merge(foo: "bar") }
+  # Number of seconds to wait before a RPC Client request timesout. Default 5 seconds.
+  config.rpc_client_timeout = 5
 
   # Don't use. Server implementation only. The values below are set via CLI:
   # config.pidfile = nil
