@@ -39,7 +39,7 @@ class CarrotRpc::RpcClient
 
   # Starts the connection to listen for messages.
   #
-  # All RpcClient requests go to the a single {server_queue}
+  # All RpcClient requests go to the a single @server_queue
   # Responses come back over a unique queue name.
   def start
     # Empty queue name ends up creating a randomly named queue by RabbitMQ
@@ -89,8 +89,8 @@ class CarrotRpc::RpcClient
     end
   end
 
-  # {reply_queue} is deleted when the channel is closed.
-  # Closing the channel accounts for cleanup of the client {reply_queue}.
+  # A @reply_queue is deleted when the channel is closed.
+  # Closing the channel accounts for cleanup of the client @reply_queue.
   def publish(correlation_id:, method:, params:)
     message = message(
       correlation_id: correlation_id,

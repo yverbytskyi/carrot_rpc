@@ -75,7 +75,7 @@ class CarrotRpc::ServerRunner::Pid
 
   ## Instance Methods
 
-  # Exits if {#status} indicates server is already running, otherwise deletes {#path}.
+  # Exits if status indicates server is already running, otherwise deletes {#path}.
   #
   # @return [void]
   def check

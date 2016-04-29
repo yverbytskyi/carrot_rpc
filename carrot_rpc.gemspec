@@ -44,6 +44,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
   # Style-checker
   spec.add_development_dependency "rubocop", "~> 0.36.0"
+  # Documentation
+  spec.add_development_dependency "yard", "~> 0.8"
 
   spec.required_ruby_version = "~> 2.2"
 end
