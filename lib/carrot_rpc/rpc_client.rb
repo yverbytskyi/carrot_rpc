@@ -28,13 +28,7 @@ class CarrotRpc::RpcClient
   #   CarrotRpc::RpcClient.new(config)
   def initialize(*)
     @config ||= CarrotRpc.configuration
-    @channel = @config.bunny.create_channel
     @logger = @config.logger
-    # auto_delete => false keeps the queue around until RabbitMQ restarts or explicitly deleted
-    @server_queue = @channel.queue(self.class.queue_name, auto_delete: false)
-
-    # Setup a direct exchange.
-    @exchange = @channel.default_exchange
   end
 
   # Starts the connection to listen for messages.
@@ -42,6 +36,17 @@ class CarrotRpc::RpcClient
   # All RpcClient requests go to the a single @server_queue
   # Responses come back over a unique queue name.
   def start
+    # Create a new channel on each request because the channel should be closed after each request.
+    @channel = @config.bunny.create_channel
+
+    # auto_delete => false keeps the queue around until RabbitMQ restarts or explicitly deleted
+    @server_queue = @channel.queue(self.class.queue_name, auto_delete: false)
+
+    # Setup a direct exchange.
+    @exchange = @channel.default_exchange
+  end
+
+  def subscribe
     # Empty queue name ends up creating a randomly named queue by RabbitMQ
     # Exclusive => queue will be deleted when connection closes. Allows for automatic "cleanup".
     @reply_queue = @channel.queue("", exclusive: true)
@@ -69,12 +74,11 @@ class CarrotRpc::RpcClient
   # @return [Object] the result of the method call.
   def remote_call(remote_method, params)
     start
+    subscribe
     correlation_id = SecureRandom.uuid
     params = self.class.before_request.call(params) if self.class.before_request
     publish(correlation_id: correlation_id, method: remote_method, params: params.rename_keys("_", "-"))
     wait_for_result(correlation_id)
-  ensure
-    @channel.close
   end
 
   def wait_for_result(correlation_id)
@@ -87,6 +91,8 @@ class CarrotRpc::RpcClient
       @results.delete correlation_id # remove item from hash. prevents memory leak.
       result
     end
+  ensure
+    @channel.close
   end
 
   # A @reply_queue is deleted when the channel is closed.

@@ -16,7 +16,7 @@ RSpec.describe CarrotRpc::RpcClient do
       expect(client_class.queue_name).to eq "foo"
     end
 
-    context "during #initialize" do
+    context "during #start" do
       # lets
 
       let(:channel) {
@@ -32,7 +32,7 @@ RSpec.describe CarrotRpc::RpcClient do
       it "does not default queue name" do
         expect(channel).to receive(:queue).with(nil, auto_delete: false)
 
-        client
+        client.start
       end
     end
   end
@@ -41,6 +41,26 @@ RSpec.describe CarrotRpc::RpcClient do
     before :each do
       client_class.queue_name "lannister"
       client.start
+    end
+
+    it "calls all the important methods needed for a request" do
+      allow(client).to receive :start
+      allow(client).to receive :subscribe
+      allow(client).to receive :publish
+      allow(client).to receive :wait_for_result
+
+      correlation_id = "ABC123"
+      allow(SecureRandom).to receive(:uuid) { correlation_id }
+
+      expect(client).to receive :start
+      expect(client).to receive :subscribe
+
+      method = :foo_bar
+      params = {}
+      expect(client).to receive(:publish).with(correlation_id: correlation_id, method: method, params: params)
+      expect(client).to receive(:wait_for_result).with(correlation_id)
+
+      subject.remote_call(method, params)
     end
 
     it "does nothing if a Proc is not set" do
@@ -77,13 +97,13 @@ RSpec.describe CarrotRpc::RpcClient do
     before :each do
       client_class.queue_name "lannister"
       client.start
+      client.subscribe
     end
 
-    after :each do
-      client.channel.close
-    end
+    it "raises an exception when timeout is reached and closes the channel" do
+      allow(client.channel).to receive(:close)
+      expect(client.channel).to receive(:close)
 
-    it "raises an exception when timeout is reached" do
       # I don't feel like waiting for the default 5 seconds...do you?
       CarrotRpc.configuration.rpc_client_timeout = 0.1
       expect { client.wait_for_result("Bogus-123") }.to raise_error CarrotRpc::Exception::RpcClientTimeout
