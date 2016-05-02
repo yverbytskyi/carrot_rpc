@@ -20,14 +20,33 @@ class CarrotRpc::RpcClient
     end
   end
 
+  # Logic to process the renaming of keys in a hash.
+  # @param format [Symbol] :dasherize changes keys that have "_" to "-"
+  # @param format [Symbol] :underscore changes keys that have "-" to "_"
+  # @param format [Symbol] :skip, will not rename the keys
+  # @param data [Hash] data structure to be transformed
+  # @return [Hash] the transformed data
+  def self.format_keys(format, data)
+    case format
+    when :dasherize
+      data.rename_keys("_", "-")
+    when :underscore
+      data.rename_keys("-", "_")
+    when :none
+      data
+    else
+      data
+    end
+  end
+
   # Use defaults for application level connection to RabbitMQ.
   #
   # @example pass custom {Configuration} class as an argument to override.
   #   config = CarrotRpc::Configuration.new
   #   config.rpc_client_timeout = 10
   #   CarrotRpc::RpcClient.new(config)
-  def initialize(*)
-    @config ||= CarrotRpc.configuration
+  def initialize(config = nil)
+    @config = config || CarrotRpc.configuration
     @logger = @config.logger
   end
 
@@ -57,7 +76,7 @@ class CarrotRpc::RpcClient
     # setup subscribe block to Service
     # block => false is a non blocking IO option.
     @reply_queue.subscribe(block: false) do |_delivery_info, properties, payload|
-      response = JSON.parse(payload).rename_keys("-", "_").with_indifferent_access
+      response = response_key_formatter(JSON.parse(payload).with_indifferent_access)
 
       result = parse_response(response)
       @results[properties[:correlation_id]].push(result)
@@ -77,7 +96,7 @@ class CarrotRpc::RpcClient
     subscribe
     correlation_id = SecureRandom.uuid
     params = self.class.before_request.call(params) if self.class.before_request
-    publish(correlation_id: correlation_id, method: remote_method, params: params.rename_keys("_", "-"))
+    publish(correlation_id: correlation_id, method: remote_method, params: request_key_formatter(params))
     wait_for_result(correlation_id)
   end
 
@@ -93,6 +112,20 @@ class CarrotRpc::RpcClient
     end
   ensure
     @channel.close
+  end
+
+  # Formats keys in the response data.
+  # @param payload [Hash] response data received from the remote server.
+  # @return [Hash] formatted data structure.
+  def response_key_formatter(payload)
+    self.class.format_keys @config.rpc_client_response_key_format, payload
+  end
+
+  # Formats keys in the request data.
+  # @param payload [Hash] request data to be sent to the remote server.
+  # @return [Hash] formatted data structure.
+  def request_key_formatter(params)
+    self.class.format_keys @config.rpc_client_request_key_format, params
   end
 
   # A @reply_queue is deleted when the channel is closed.
