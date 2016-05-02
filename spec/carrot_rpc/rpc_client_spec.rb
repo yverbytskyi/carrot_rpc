@@ -39,8 +39,16 @@ RSpec.describe CarrotRpc::RpcClient do
 
   describe "#remote_call" do
     before :each do
+      CarrotRpc.configuration.rpc_client_request_key_format = :dasherize
+      CarrotRpc.configuration.rpc_client_response_key_format = :underscore
+
       client_class.queue_name "lannister"
       client.start
+    end
+
+    after :each do
+      CarrotRpc.configuration.rpc_client_request_key_format = :none
+      CarrotRpc.configuration.rpc_client_response_key_format = :none
     end
 
     it "calls all the important methods needed for a request" do
@@ -110,7 +118,7 @@ RSpec.describe CarrotRpc::RpcClient do
     end
   end
 
-  describe "#start" do
+  describe "#subscribe" do
     # Methods
 
     def delete_queue
@@ -159,6 +167,7 @@ RSpec.describe CarrotRpc::RpcClient do
     # Callbacks
 
     before(:each) do
+      CarrotRpc.configuration.rpc_client_response_key_format = :underscore
       # Delete queue if another test did not clean up properly, such as due to interrupt
       delete_queue
 
@@ -166,13 +175,21 @@ RSpec.describe CarrotRpc::RpcClient do
     end
 
     after(:each) do
+      CarrotRpc.configuration.rpc_client_response_key_format = :none
       server.channel.close
 
       # Clean up properly
       delete_queue
     end
 
-    context "with client started" do
+    context "with client started and configuration set to underscore results" do
+      before(:each) do
+        CarrotRpc.configuration.rpc_client_response_key_format = :underscore
+      end
+
+      after(:each) do
+        CarrotRpc.configuration.rpc_client_response_key_format = :none
+      end
       # lets
 
       let(:result) do

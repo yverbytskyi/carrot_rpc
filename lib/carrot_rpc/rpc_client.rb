@@ -77,9 +77,10 @@ class CarrotRpc::RpcClient
     # setup subscribe block to Service
     # block => false is a non blocking IO option.
     @reply_queue.subscribe(block: false) do |_delivery_info, properties, payload|
-      response = response_key_formatter(JSON.parse(payload).with_indifferent_access)
+      response = JSON.parse(payload).with_indifferent_access
 
       result = parse_response(response)
+      result = response_key_formatter(result) if result.is_a? Hash
       @results[properties[:correlation_id]].push(result)
     end
   end
