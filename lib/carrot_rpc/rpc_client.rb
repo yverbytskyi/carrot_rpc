@@ -9,6 +9,7 @@ class CarrotRpc::RpcClient
   attr_reader :channel, :server_queue, :logger
 
   extend CarrotRpc::ClientServer
+  include CarrotRpc::ClientActions
 
   def self.before_request(*proc)
     if proc.length == 0
@@ -20,14 +21,33 @@ class CarrotRpc::RpcClient
     end
   end
 
+  # Logic to process the renaming of keys in a hash.
+  # @param format [Symbol] :dasherize changes keys that have "_" to "-"
+  # @param format [Symbol] :underscore changes keys that have "-" to "_"
+  # @param format [Symbol] :skip, will not rename the keys
+  # @param data [Hash] data structure to be transformed
+  # @return [Hash] the transformed data
+  def self.format_keys(format, data)
+    case format
+    when :dasherize
+      data.rename_keys("_", "-")
+    when :underscore
+      data.rename_keys("-", "_")
+    when :none
+      data
+    else
+      data
+    end
+  end
+
   # Use defaults for application level connection to RabbitMQ.
   #
   # @example pass custom {Configuration} class as an argument to override.
   #   config = CarrotRpc::Configuration.new
   #   config.rpc_client_timeout = 10
   #   CarrotRpc::RpcClient.new(config)
-  def initialize(*)
-    @config ||= CarrotRpc.configuration
+  def initialize(config = nil)
+    @config = config || CarrotRpc.configuration
     @logger = @config.logger
   end
 
@@ -57,9 +77,10 @@ class CarrotRpc::RpcClient
     # setup subscribe block to Service
     # block => false is a non blocking IO option.
     @reply_queue.subscribe(block: false) do |_delivery_info, properties, payload|
-      response = JSON.parse(payload).rename_keys("-", "_").with_indifferent_access
+      response = JSON.parse(payload).with_indifferent_access
 
       result = parse_response(response)
+      result = response_key_formatter(result).with_indifferent_access if result.is_a? Hash
       @results[properties[:correlation_id]].push(result)
     end
   end
@@ -77,7 +98,7 @@ class CarrotRpc::RpcClient
     subscribe
     correlation_id = SecureRandom.uuid
     params = self.class.before_request.call(params) if self.class.before_request
-    publish(correlation_id: correlation_id, method: remote_method, params: params.rename_keys("_", "-"))
+    publish(correlation_id: correlation_id, method: remote_method, params: request_key_formatter(params))
     wait_for_result(correlation_id)
   end
 
@@ -93,6 +114,20 @@ class CarrotRpc::RpcClient
     end
   ensure
     @channel.close
+  end
+
+  # Formats keys in the response data.
+  # @param payload [Hash] response data received from the remote server.
+  # @return [Hash] formatted data structure.
+  def response_key_formatter(payload)
+    self.class.format_keys @config.rpc_client_response_key_format, payload
+  end
+
+  # Formats keys in the request data.
+  # @param payload [Hash] request data to be sent to the remote server.
+  # @return [Hash] formatted data structure.
+  def request_key_formatter(params)
+    self.class.format_keys @config.rpc_client_request_key_format, params
   end
 
   # A @reply_queue is deleted when the channel is closed.
@@ -116,38 +151,6 @@ class CarrotRpc::RpcClient
       method:  method,
       params:  params.except(:controller, :action)
     }
-  end
-
-  # Convience method as a resource alias for index action.
-  # To customize, override the method in your class.
-  #
-  # @param params [Hash] the arguments for the method being called.
-  def index(params)
-    remote_call("index", params)
-  end
-
-  # Convience method as a resource alias for show action.
-  # To customize, override the method in your class.
-  #
-  # @param params [Hash] the arguments for the method being called.
-  def show(params)
-    remote_call("show", params)
-  end
-
-  # Convience method as a resource alias for create action.
-  # To customize, override the method in your class.
-  #
-  # @param params [Hash] the arguments for the method being called.
-  def create(params)
-    remote_call("create", params)
-  end
-
-  # Convience method as a resource alias for update action.
-  # To customize, override the method in your class.
-  #
-  # @param params [Hash] the arguments for the method being called.
-  def update(params)
-    remote_call("update", params)
   end
 
   private

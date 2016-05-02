@@ -98,8 +98,18 @@ RSpec.describe CarrotRpc::RpcServer do
         server.start
       end
 
-      it "parses the payload from json to hash and changes '-' to '_' in the keys" do
-        expect(client.create(payload)).to eq result
+      context "with client configured to underscore keys" do
+        before(:each) do
+          CarrotRpc.configuration.rpc_client_response_key_format = :underscore
+        end
+
+        after(:each) do
+          CarrotRpc.configuration.rpc_client_response_key_format = :none
+        end
+
+        it "parses the payload from json to hash and changes '-' to '_' in the keys" do
+          expect(client.create(payload)).to eq result
+        end
       end
     end
   end

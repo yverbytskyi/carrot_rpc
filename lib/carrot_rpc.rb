@@ -18,6 +18,7 @@ module CarrotRpc
   extend ActiveSupport::Autoload
 
   autoload :CLI
+  autoload :ClientActions
   autoload :ClientServer
   autoload :Configuration
   autoload :Error

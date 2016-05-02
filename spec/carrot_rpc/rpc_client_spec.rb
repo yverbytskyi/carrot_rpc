@@ -39,8 +39,16 @@ RSpec.describe CarrotRpc::RpcClient do
 
   describe "#remote_call" do
     before :each do
+      CarrotRpc.configuration.rpc_client_request_key_format = :dasherize
+      CarrotRpc.configuration.rpc_client_response_key_format = :underscore
+
       client_class.queue_name "lannister"
       client.start
+    end
+
+    after :each do
+      CarrotRpc.configuration.rpc_client_request_key_format = :none
+      CarrotRpc.configuration.rpc_client_response_key_format = :none
     end
 
     it "calls all the important methods needed for a request" do
@@ -110,7 +118,7 @@ RSpec.describe CarrotRpc::RpcClient do
     end
   end
 
-  describe "#start" do
+  describe "#subscribe" do
     # Methods
 
     def delete_queue
@@ -159,6 +167,7 @@ RSpec.describe CarrotRpc::RpcClient do
     # Callbacks
 
     before(:each) do
+      CarrotRpc.configuration.rpc_client_response_key_format = :underscore
       # Delete queue if another test did not clean up properly, such as due to interrupt
       delete_queue
 
@@ -166,13 +175,21 @@ RSpec.describe CarrotRpc::RpcClient do
     end
 
     after(:each) do
+      CarrotRpc.configuration.rpc_client_response_key_format = :none
       server.channel.close
 
       # Clean up properly
       delete_queue
     end
 
-    context "with client started" do
+    context "with client started and configuration set to underscore results" do
+      before(:each) do
+        CarrotRpc.configuration.rpc_client_response_key_format = :underscore
+      end
+
+      after(:each) do
+        CarrotRpc.configuration.rpc_client_response_key_format = :none
+      end
       # lets
 
       let(:result) do
@@ -191,6 +208,103 @@ RSpec.describe CarrotRpc::RpcClient do
 
       it "parses the payload from json to hash and changes '-' to '_' in the keys" do
         expect(client.show({})).to eq result
+      end
+    end
+  end
+
+  describe "#format_keys" do
+    it "dasherizes the keys" do
+      params = { foo_bar: { "baz_zam" => 1 } }
+      res = described_class.format_keys :dasherize, params
+      expect(res).to eq("foo-bar" => { "baz-zam" => 1 })
+    end
+
+    it "underscores the keys" do
+      params = { "foo-bar" => { "baz-zam" => 1 } }
+      res = described_class.format_keys :underscore, params
+      expect(res).to eq("foo_bar" => { "baz_zam" => 1 })
+    end
+
+    it "skips key formatting for skip" do
+      param_sets = [
+        { "foo-bar" => { "baz-zam" => 1 } },
+        { foo_bar: { "baz_zam" => 1 } },
+        { "foo_bar" => { "baz_zam" => 1 } }
+      ]
+
+      param_sets.each do |params|
+        res = described_class.format_keys :none, params
+        expect(res).to eq(params)
+      end
+    end
+  end
+
+  describe ".response_key_formatter" do
+    before :each do
+      CarrotRpc.configuration.rpc_client_response_key_format = :underscore
+    end
+
+    after :each do
+      CarrotRpc.configuration.rpc_client_response_key_format = :none
+    end
+
+    let(:payload) { { foo: "bar" } }
+
+    context "with a config passed in" do
+      let(:config) do
+        config = CarrotRpc::Configuration.new
+        config.rpc_client_response_key_format = :dasherize
+        config
+      end
+
+      subject { described_class.new(config) }
+
+      it "overwrites the default config" do
+        expect(described_class).to receive(:format_keys).with(:dasherize, payload)
+        subject.response_key_formatter(payload)
+      end
+    end
+
+    context "without a config passed" do
+      subject { described_class.new }
+      it "uses the default config" do
+        expect(described_class).to receive(:format_keys).with(:underscore, payload)
+        subject.response_key_formatter(payload)
+      end
+    end
+  end
+
+  describe ".request_key_formatter" do
+    before :each do
+      CarrotRpc.configuration.rpc_client_request_key_format = :underscore
+    end
+
+    after :each do
+      CarrotRpc.configuration.rpc_client_request_key_format = :none
+    end
+
+    let(:payload) { { foo: "bar" } }
+
+    context "with a config passed in" do
+      let(:config) do
+        config = CarrotRpc::Configuration.new
+        config.rpc_client_request_key_format = :dasherize
+        config
+      end
+
+      subject { described_class.new(config) }
+
+      it "overwrites the default config" do
+        expect(described_class).to receive(:format_keys).with(:dasherize, payload)
+        subject.request_key_formatter(payload)
+      end
+    end
+
+    context "without a config passed" do
+      subject { described_class.new }
+      it "uses the default config" do
+        expect(described_class).to receive(:format_keys).with(:underscore, payload)
+        subject.request_key_formatter(payload)
       end
     end
   end

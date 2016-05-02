@@ -35,4 +35,12 @@ RSpec.describe CarrotRpc::Configuration do
   it "defaults to rpc_client_timeout to 5 seconds" do
     expect(subject.rpc_client_timeout).to eq 5
   end
+
+  it "defaults rpc_client_response_key_format" do
+    expect(subject.rpc_client_response_key_format).to eq :none
+  end
+
+  it "defaults rpc_client_request_key_format" do
+    expect(subject.rpc_client_request_key_format).to eq :none
+  end
 end

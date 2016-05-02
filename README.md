@@ -88,6 +88,10 @@ CarrotRpc.configure do |config|
   config.before_request = proc { |params| params.merge(foo: "bar") }
   # Number of seconds to wait before a RPC Client request timesout. Default 5 seconds.
   config.rpc_client_timeout = 5
+  # Formats hash keys to stringified and replaces "_" with "-". Default is `:none` for no formatting.
+  config.rpc_client_request_key_format = :dasherize
+  # Formats hash keys to stringified and replaces "-" with "_". Default is `:none` for no formatting.
+  config.rpc_client_response_key_format = :underscore
 
   # Don't use. Server implementation only. The values below are set via CLI:
   # config.pidfile = nil
@@ -166,6 +170,16 @@ class CarsController < ApplicationController
   end
 end
 ```
+
+One way to implement a RpcClient is to override the default configuration.
+```ruby
+config = CarrotRPC.configuration.clone
+# Now only this one object will format keys as dashes
+config.rpc_client_response_key_format = :dasherize
+
+car_client = CarClient.new(config)
+```
+By duplicating the `Configuration` instance you can override the global configuration and pass a custom configuration to the RpcClient instance.
 
 ### Support for JSONAPI::Resources
 In the case that you're writing an application that uses the `jsonapi-resources` gem and you want the `RpcServer` to have the same functionality, then we got you covered. All you need to do is import a few modules. See [jsonapi-resources](https://github.com/cerebris/jsonapi-resources) for details on how to implement resources for your models.
