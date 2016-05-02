@@ -80,7 +80,7 @@ class CarrotRpc::RpcClient
       response = JSON.parse(payload).with_indifferent_access
 
       result = parse_response(response)
-      result = response_key_formatter(result) if result.is_a? Hash
+      result = response_key_formatter(result).with_indifferent_access if result.is_a? Hash
       @results[properties[:correlation_id]].push(result)
     end
   end
