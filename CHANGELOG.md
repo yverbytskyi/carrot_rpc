@@ -34,6 +34,36 @@
 # Changelog
 All significant changes in the project are documented here.
 
+## v.0.5.0
+### Enhancements
+* [#25](https://github.com/C-S-D/carrot_rpc/pull/25) - [shamil614](https://github.com/shamil614)
+  * Timeout RpcClient requests when response is not received. 
+  * Default timeout is 5 seconds.
+  * Timeout is configurable.
+* [#27](https://github.com/C-S-D/carrot_rpc/pull/27) - [shamil614](https://github.com/shamil614)
+  * Simplify RpcClient usage.
+  * Each request which goes through `RpcClient.remote_request` ultimately needs to use a unique `reply_queue` on eqch request.
+  * By closing the channel and opening a new channel on each request we ensure that cleanup takes place by the deletion of the `reply_queue`.
+* [#29](https://github.com/C-S-D/carrot_rpc/pull/29) - [shamil614](https://github.com/shamil614)
+  * Implementations of the RpcClient need to be flexible with the key formatter.
+  * Formatting can be set globally via `Configuration`, overridden via passing Configuration object upon initializing client, or redefine `response_key_formatter` `request_key_formatter` methods.
+
+### Incompatible Changes
+* [#27](https://github.com/C-S-D/carrot_rpc/pull/27) - [shamil614](https://github.com/shamil614)
+  * Calling `rpc_client.start` and `rpc_client.channel.close` are no longer required when calling `rpc_client.remote_call` or the methods that call it (`index` `create`, etc).
+  * Calling `rpc_client.channel.close` after `rpc_client.remote_call` will cause an Exception to be raised as the channel is already closed.
+* [#29](https://github.com/C-S-D/carrot_rpc/pull/29) - [shamil614](https://github.com/shamil614)
+  * Replaced hard coded key formatter in place of a configurable option. 
+  * Need to set the following in config to maintain previous behavior
+  ```ruby
+   CarrotRpc.configure do |config|
+     # RpcServers expect the params to be dashed.
+     config.rpc_client_request_key_format = :dasherize
+     # In most cases the RpcClient instances use JSONAPI::Resource classes and the keys need to be transformed.
+     config.rpc_client_response_key_format = :underscore
+   end
+  ```
+
 ## v0.4.1
 ### Bug Fixes
 * [#23](https://githb.com/C-S-D/carrot_rpc/pull/23) - [shamil614](https://github.com/shamil614)
