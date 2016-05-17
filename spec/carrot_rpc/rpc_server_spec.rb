@@ -2,6 +2,82 @@ require "spec_helper"
 require "carrot_rpc"
 
 RSpec.describe CarrotRpc::RpcServer do
+  # Methods
+
+  def delete_queue
+    channel = CarrotRpc.configuration.bunny.create_channel
+    queue = channel.queue("foo")
+    queue.delete
+    channel.close
+  end
+
+  describe "#process_request" do
+    subject(:process_request) {
+      rpc_server.process_request(request_message, properties: properties)
+    }
+
+    let(:rpc_server) {
+      rpc_server_class.new
+    }
+
+    let(:rpc_server_class) {
+      Class.new(CarrotRpc::RpcServer) do
+        queue_name "foo"
+      end
+    }
+
+    context "with unsupported method" do
+      #
+      # lets
+      #
+
+      let(:properties) {
+        {}
+      }
+
+      let(:request_message) {
+        {
+          method: "unknown_method"
+        }
+      }
+
+      #
+      # Callbacks
+      #
+
+      before(:each) do
+        # Delete queue if another test did not clean up properly, such as due to interrupt
+        delete_queue
+      end
+
+      after(:each) do
+        rpc_server.channel.close
+
+        # Clean up properly
+        delete_queue
+      end
+
+      it "replies method not found" do
+        expect(rpc_server).to receive(:reply).with(
+          hash_including(
+            properties: properties,
+            response_message: hash_including(
+              error: {
+                code: -32_601,
+                message: "Method not found",
+                data: {
+                  method: request_message.fetch(:method)
+                }
+              }
+            )
+          )
+        )
+
+        process_request
+      end
+    end
+  end
+
   describe "#queue_name" do
     let(:server_class) {
       Class.new(CarrotRpc::RpcServer)
@@ -14,15 +90,6 @@ RSpec.describe CarrotRpc::RpcServer do
   end
 
   describe "#start" do
-    # Methods
-
-    def delete_queue
-      channel = CarrotRpc.configuration.bunny.create_channel
-      queue = channel.queue("foo")
-      queue.delete
-      channel.close
-    end
-
     # lets
 
     let(:client_class) {
