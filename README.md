@@ -10,6 +10,7 @@
   - [Usage](#usage)
     - [Writing Servers](#writing-servers)
     - [Writing Clients](#writing-clients)
+    - [Support for JSONAPI::Resources](#support-for-jsonapiresources)
   - [Development](#development)
   - [Contributing](#contributing)
 
