@@ -34,7 +34,24 @@ class CarrotRpc::RpcServer
   end
 
   def process_request(request_message, properties:)
-    result = send(request_message[:method], request_message[:params])
+    method = request_message[:method]
+
+    handler = if respond_to? method
+                :call_found_method
+              else
+                :reply_method_not_found
+              end
+
+    send handler,
+         method:          method,
+         properties:      properties,
+         request_message: request_message
+  end
+
+  private
+
+  def call_found_method(method:, properties:, request_message:)
+    result = send(method, request_message[:params])
   rescue CarrotRpc::Error => rpc_server_error
     logger.error(rpc_server_error)
 
@@ -46,8 +63,6 @@ class CarrotRpc::RpcServer
                  properties:      properties,
                  request_message: request_message
   end
-
-  private
 
   def reply(properties:, response_message:)
     @exchange.publish response_message.to_json,
@@ -63,6 +78,19 @@ class CarrotRpc::RpcServer
 
     reply properties: properties,
           response_message: response_message
+  end
+
+  def reply_method_not_found(method:, properties:, request_message:)
+    error = CarrotRpc::Error.new code: CarrotRpc::Error::Code::METHOD_NOT_FOUND,
+                                 data: {
+                                   method: method
+                                 },
+                                 message: "Method not found"
+    logger.error(error)
+
+    reply_error error.serialized_message,
+                properties:      properties,
+                request_message: request_message
   end
 
   # See http://www.jsonrpc.org/specification#response_object
