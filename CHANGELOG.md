@@ -3,38 +3,48 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Changelog](#changelog)
-  - [v0.4.1](#v041)
+  - [v0.5.1](#v051)
     - [Bug Fixes](#bug-fixes)
-  - [v0.4.0](#v040)
+  - [v0.5.0](#v050)
     - [Enhancements](#enhancements)
+    - [Incompatible Changes](#incompatible-changes)
+  - [v0.4.1](#v041)
     - [Bug Fixes](#bug-fixes-1)
-  - [v0.3.0](#v030)
+  - [v0.4.0](#v040)
     - [Enhancements](#enhancements-1)
     - [Bug Fixes](#bug-fixes-2)
-  - [v0.2.3](#v023)
+    - [Incompatible Changes](#incompatible-changes-1)
+  - [v0.3.0](#v030)
     - [Enhancements](#enhancements-2)
     - [Bug Fixes](#bug-fixes-3)
+  - [v0.2.3](#v023)
+    - [Enhancements](#enhancements-3)
+    - [Bug Fixes](#bug-fixes-4)
     - [Upgrading](#upgrading)
   - [v0.2.1](#v021)
-    - [Bug Fixes](#bug-fixes-4)
-  - [v0.2.0](#v020)
-    - [Enhancements](#enhancements-3)
     - [Bug Fixes](#bug-fixes-5)
-    - [Incompatible Changes](#incompatible-changes)
-  - [v0.1.2](#v012)
+  - [v0.2.0](#v020)
     - [Enhancements](#enhancements-4)
     - [Bug Fixes](#bug-fixes-6)
-  - [v0.1.1](#v011)
+    - [Incompatible Changes](#incompatible-changes-2)
+  - [v0.1.2](#v012)
     - [Enhancements](#enhancements-5)
     - [Bug Fixes](#bug-fixes-7)
-    - [Incompatible Changes](#incompatible-changes-1)
+  - [v0.1.1](#v011)
+    - [Enhancements](#enhancements-6)
+    - [Bug Fixes](#bug-fixes-8)
+    - [Incompatible Changes](#incompatible-changes-3)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Changelog
 All significant changes in the project are documented here.
 
-## v.0.5.0
+## v0.5.1
+### Bug Fixes
+* [#31](https://github.com/C-S-D/carrot_rpc/pull/31) - If the server does not respond to a method in the `request_message`, then return a "Method not found" JSONRPC 2.0 error instead of the server crashing with `NoMethodError` exception. - [KronicDeth)(https://github.com/KronicDeth)
+
+## v0.5.0
 ### Enhancements
 * [#25](https://github.com/C-S-D/carrot_rpc/pull/25) - [shamil614](https://github.com/shamil614)
   * Timeout RpcClient requests when response is not received. 
