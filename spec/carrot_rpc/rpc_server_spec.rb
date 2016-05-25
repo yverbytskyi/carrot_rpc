@@ -83,9 +83,33 @@ RSpec.describe CarrotRpc::RpcServer do
       Class.new(CarrotRpc::RpcServer)
     }
 
+    let(:server) {
+      server_class.new(block: false)
+    }
+
     it "is readable by queue_name/0" do
       server_class.queue_name "foo"
       expect(server_class.queue_name).to eq "foo"
+    end
+
+    context "with server_test_mode set" do
+      before :each do
+        CarrotRpc.configuration.server_test_mode = true
+      end
+
+      after :each do
+        CarrotRpc.configuration.server_test_mode = false
+      end
+
+      it "appends _test to queue name" do
+        server_class.queue_name "foo"
+        expect(server.server_queue.name).to eq "foo_test"
+      end
+
+      it "fails when queue name is not set" do
+        server_class.queue_name nil
+        expect{ server }.to raise_error CarrotRpc::Exception::InvalidQueueName
+      end
     end
   end
 
@@ -171,20 +195,6 @@ RSpec.describe CarrotRpc::RpcServer do
 
         it "parses the payload from json to hash and changes '-' to '_' in the keys" do
           expect(client.create(payload)).to eq result
-        end
-      end
-
-      context "with server_test_mode set" do
-        before :each do
-          CarrotRpc.configuration.server_test_mode = true
-        end
-
-        after :each do
-          CarrotRpc.configuration.server_test_mode = false
-        end
-
-        it "appends _test to queue name" do
-          expect(server.server_queue.name).to eq "foo_test"
         end
       end
     end

@@ -35,6 +35,26 @@ RSpec.describe CarrotRpc::RpcClient do
         client.start
       end
     end
+
+    context "with client_test_mode enabled" do
+      before :each do
+        CarrotRpc.configuration.client_test_mode = true
+      end
+
+      after :each do
+        CarrotRpc.configuration.client_test_mode = false
+      end
+
+      it "modifies the queue name" do
+        client_class.queue_name "foo"
+        client.start
+        expect(client.server_queue.name).to eq "foo_test"
+      end
+
+      it "fails if queue name is missing" do
+        expect{ client.start }.to raise_error CarrotRpc::Exception::InvalidQueueName
+      end
+    end
   end
 
   describe "#remote_call" do

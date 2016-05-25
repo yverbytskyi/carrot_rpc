@@ -25,6 +25,10 @@ module CarrotRpc::ClientServer
 
   def test_queue_name(name, append_name = false)
     return name unless append_name
-    "#{name}_test"
+    if name
+      "#{name}_test"
+    else
+      fail CarrotRpc::Exception::InvalidQueueName
+    end
   end
 end
