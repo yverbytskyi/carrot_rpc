@@ -52,7 +52,7 @@ RSpec.describe CarrotRpc::RpcClient do
       end
 
       it "fails if queue name is missing" do
-        expect{ client.start }.to raise_error CarrotRpc::Exception::InvalidQueueName
+        expect { client.start }.to raise_error CarrotRpc::Exception::InvalidQueueName
       end
     end
   end

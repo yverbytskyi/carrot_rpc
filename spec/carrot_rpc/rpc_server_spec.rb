@@ -108,7 +108,7 @@ RSpec.describe CarrotRpc::RpcServer do
 
       it "fails when queue name is not set" do
         server_class.queue_name nil
-        expect{ server }.to raise_error CarrotRpc::Exception::InvalidQueueName
+        expect { server }.to raise_error CarrotRpc::Exception::InvalidQueueName
       end
     end
   end
