@@ -81,7 +81,8 @@ class CarrotRpc::ServerRunner
     server_klass_name = file.to_s.split("/").last.gsub(".rb", "").camelize
     server_klass = server_klass_name.constantize
 
-    logger.info "Starting #{server_klass}..."
+    stm = CarrotRpc.configuration.server_test_mode
+    logger.info "Starting: #{server_klass} | Rails/Rack ENV: #{ENV["RAILS_ENV"]} | Server Test Mode: #{stm}"
 
     server = server_klass.new(block: false)
     server.start
