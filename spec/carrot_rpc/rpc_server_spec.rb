@@ -159,14 +159,9 @@ RSpec.describe CarrotRpc::RpcServer do
         }
       end
 
-      # Callbacks
-
-      before(:each) do
-        server.start
-      end
-
       context "with client configured to underscore keys" do
         before(:each) do
+          server.start
           CarrotRpc.configuration.rpc_client_response_key_format = :underscore
         end
 
@@ -176,6 +171,20 @@ RSpec.describe CarrotRpc::RpcServer do
 
         it "parses the payload from json to hash and changes '-' to '_' in the keys" do
           expect(client.create(payload)).to eq result
+        end
+      end
+
+      context "with server_test_mode set" do
+        before :each do
+          CarrotRpc.configuration.server_test_mode = true
+        end
+
+        after :each do
+          CarrotRpc.configuration.server_test_mode = false
+        end
+
+        it "appends _test to queue name" do
+          expect(server.server_queue.name).to eq "foo_test"
         end
       end
     end

@@ -41,7 +41,7 @@ module CarrotRpc::ServerRunner::AutoloadRails
 
   # Set Rails/Rack env vars to test when server test mode is enabled.
   #
-  # @return [Voic]
+  # @return [Void]
   def self.set_rack_rails_env
     if CarrotRpc.configuration.server_test_mode
       env_mode = "test"
