@@ -24,8 +24,13 @@ RSpec.describe CarrotRpc::ServerRunner::AutoloadRails do
 
       it "sets rails / rack env to development by default" do
         load_root
-        expect(ENV["RAILS_ENV"]).to eq "development"
-        expect(ENV["RACK_ENV"]).to eq "development"
+        if ENV["CI"]
+          expect(ENV["RAILS_ENV"]).to eq "test"
+          expect(ENV["RACK_ENV"]).to eq "test"
+        else
+          expect(ENV["RAILS_ENV"]).to eq "development"
+          expect(ENV["RACK_ENV"]).to eq "development"
+        end
       end
 
       context "with server_test_mode enabled" do
