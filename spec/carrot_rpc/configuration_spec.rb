@@ -43,4 +43,12 @@ RSpec.describe CarrotRpc::Configuration do
   it "defaults rpc_client_request_key_format" do
     expect(subject.rpc_client_request_key_format).to eq :none
   end
+
+  it "defaults client_test_mode to false" do
+    expect(subject.client_test_mode).to eq false
+  end
+
+  it "defaults server_test_mode to false" do
+    expect(subject.server_test_mode).to eq false
+  end
 end

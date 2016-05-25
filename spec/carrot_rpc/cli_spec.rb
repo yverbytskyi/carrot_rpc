@@ -52,4 +52,9 @@ RSpec.describe CarrotRpc::CLI do
     expect(Bunny).to receive(:new).with "amqp://guest:guest@rabbitmq:5672"
     CarrotRpc::CLI.parse_options(["--rabbitmq_url=amqp://guest:guest@rabbitmq:5672"])
   end
+
+  it "set server_test_mode with long switch" do
+    expect(CarrotRpc.configuration).to receive("server_test_mode=").with(true)
+    CarrotRpc::CLI.parse_options(["--server_test_mode"])
+  end
 end
