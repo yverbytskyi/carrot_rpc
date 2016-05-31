@@ -19,7 +19,7 @@ module CarrotRpc::ServerRunner::AutoloadRails
 
     if File.exist?(rails_path)
       logger.info "Rails app found at: #{rails_path}"
-      ENV["RACK_ENV"] ||= ENV["RAILS_ENV"] || "development"
+      set_rack_rails_env
       require rails_path
       ::Rails.application.eager_load!
       true
@@ -36,6 +36,19 @@ module CarrotRpc::ServerRunner::AutoloadRails
   def self.conditionally_load_root(root, logger:)
     if CarrotRpc.configuration.autoload_rails
       load_root(root, logger: logger)
+    end
+  end
+
+  # Set Rails/Rack env vars to test when server test mode is enabled.
+  #
+  # @return [Void]
+  def self.set_rack_rails_env
+    if CarrotRpc.configuration.server_test_mode
+      env_mode = "test"
+      ENV["RACK_ENV"] = ENV["RAILS_ENV"] = env_mode
+    else
+      env_mode = "development"
+      ENV["RACK_ENV"] ||= ENV["RAILS_ENV"] ||= env_mode
     end
   end
 end

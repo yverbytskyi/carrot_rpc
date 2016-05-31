@@ -83,9 +83,33 @@ RSpec.describe CarrotRpc::RpcServer do
       Class.new(CarrotRpc::RpcServer)
     }
 
+    let(:server) {
+      server_class.new(block: false)
+    }
+
     it "is readable by queue_name/0" do
       server_class.queue_name "foo"
       expect(server_class.queue_name).to eq "foo"
+    end
+
+    context "with server_test_mode set" do
+      before :each do
+        CarrotRpc.configuration.server_test_mode = true
+      end
+
+      after :each do
+        CarrotRpc.configuration.server_test_mode = false
+      end
+
+      it "appends _test to queue name" do
+        server_class.queue_name "foo"
+        expect(server.server_queue.name).to eq "foo_test"
+      end
+
+      it "fails when queue name is not set" do
+        server_class.queue_name nil
+        expect { server }.to raise_error CarrotRpc::Exception::InvalidQueueName
+      end
     end
   end
 
@@ -159,14 +183,9 @@ RSpec.describe CarrotRpc::RpcServer do
         }
       end
 
-      # Callbacks
-
-      before(:each) do
-        server.start
-      end
-
       context "with client configured to underscore keys" do
         before(:each) do
+          server.start
           CarrotRpc.configuration.rpc_client_response_key_format = :underscore
         end
 

@@ -16,7 +16,8 @@ class CarrotRpc::RpcServer
     @channel = config.bunny.create_channel
     @logger = config.logger
     @block = block
-    @server_queue = @channel.queue(self.class.queue_name)
+    queue_name = self.class.test_queue_name(self.class.queue_name, config.server_test_mode)
+    @server_queue = @channel.queue(queue_name)
     @exchange = @channel.default_exchange
   end
 

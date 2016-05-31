@@ -59,8 +59,9 @@ class CarrotRpc::RpcClient
     # Create a new channel on each request because the channel should be closed after each request.
     @channel = @config.bunny.create_channel
 
+    queue_name = self.class.test_queue_name(self.class.queue_name, @config.client_test_mode)
     # auto_delete => false keeps the queue around until RabbitMQ restarts or explicitly deleted
-    @server_queue = @channel.queue(self.class.queue_name, auto_delete: false)
+    @server_queue = @channel.queue(queue_name, auto_delete: false)
 
     # Setup a direct exchange.
     @exchange = @channel.default_exchange

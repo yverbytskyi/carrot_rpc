@@ -22,4 +22,13 @@ module CarrotRpc::ClientServer
            "queue_name(new_name) :: new_name or queue_name() :: current_name are the only ways to call queue_name"
     end
   end
+
+  def test_queue_name(name, append_name = false)
+    return name unless append_name
+    if name
+      "#{name}_test"
+    else
+      fail CarrotRpc::Exception::InvalidQueueName
+    end
+  end
 end
