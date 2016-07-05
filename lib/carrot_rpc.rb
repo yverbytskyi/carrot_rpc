@@ -25,6 +25,7 @@ module CarrotRpc
   autoload :Exception
   autoload :Format
   autoload :HashExtensions
+  autoload :Reply
   autoload :RpcClient
   autoload :RpcServer
   autoload :ServerRunner
