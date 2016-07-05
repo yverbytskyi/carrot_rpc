@@ -26,30 +26,15 @@ class CarrotRpc::RpcServer
   # method => object that receives the method. can be a class or anything responding to send
   def start
     # subscribe is like a callback
-    @server_queue.subscribe(block: @block) do |_delivery_info, properties, payload|
-      logger.tagged("server", "queue=#{server_queue.name}", "correlation_id=#{properties[:correlation_id]}") do
-        logger.debug "Receiving request: #{payload}"
-
-        begin
-          request_message = JSON.parse(payload).with_indifferent_access
-
-          process_request(request_message, properties: properties)
-        rescue Exception => exception
-          logger.error(exception)
-        end
-      end
+    @server_queue.subscribe(block: @block) do |delivery_info, properties, payload|
+      consume(delivery_info, properties, payload)
     end
   end
 
   def process_request(request_message, properties:)
-    thread_request(request_message: request_message) do
+    maybe_thread_request(request_message: request_message) do
       method = request_message[:method]
-
-      handler = if respond_to? method
-        :call_found_method
-      else
-        :reply_method_not_found
-      end
+      handler = method_handler(method)
 
       send handler,
            method:          method,
@@ -72,6 +57,38 @@ class CarrotRpc::RpcServer
     reply_result result,
                  properties:      properties,
                  request_message: request_message
+  end
+
+  def consume(_delivery_info, properties, payload)
+    logger.tagged("server", "queue=#{server_queue.name}", "correlation_id=#{properties[:correlation_id]}") do
+      logger.debug "Receiving request: #{payload}"
+
+      # rubocop:disable Lint/RescueException
+      begin
+        request_message = JSON.parse(payload).with_indifferent_access
+
+        process_request(request_message, properties: properties)
+      rescue Exception => exception
+        logger.error(exception)
+      end
+      # rubocop:enable Lint/RescueException
+    end
+  end
+
+  def maybe_thread_request(request_message:)
+    if thread_request_variable
+      thread_request(request_message: request_message, &Proc.new)
+    else
+      yield
+    end
+  end
+
+  def method_handler(method)
+    if respond_to? method
+      :call_found_method
+    else
+      :reply_method_not_found
+    end
   end
 
   def reply(properties:, response_message:)
@@ -145,19 +162,15 @@ class CarrotRpc::RpcServer
   end
 
   def thread_request(request_message:)
-    if thread_request_variable
-      logger.debug "Threading request (#{request_message.inspect}) " \
+    logger.debug "Threading request (#{request_message.inspect}) " \
                    "in Thread.current.thread_variable_get(#{thread_request_variable.inspect})"
 
-      Thread.current.thread_variable_set(thread_request_variable, request_message)
+    Thread.current.thread_variable_set(thread_request_variable, request_message)
 
-      begin
-        yield
-      ensure
-        Thread.current.thread_variable_set(thread_request_variable, nil)
-      end
-    else
+    begin
       yield
+    ensure
+      Thread.current.thread_variable_set(thread_request_variable, nil)
     end
   end
 end
