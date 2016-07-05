@@ -28,6 +28,7 @@ module CarrotRpc
   autoload :RpcClient
   autoload :RpcServer
   autoload :ServerRunner
+  autoload :Scrub
   autoload :TaggedLog
 
   class << self
