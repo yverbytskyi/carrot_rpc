@@ -73,6 +73,15 @@ module CarrotRpc::CLI
     ) do |value|
       CarrotRpc.configuration.bunny = Bunny.new(value)
     end
+
+    option_parser.on(
+      " ",
+      "--thread-request VARIABLE",
+      "Copies the current request into VARIABLE Thread local variable, " \
+      "where it can be retrieved with `Thread.thread_variable_get(<VARIABLE>)`"
+    ) do |variable|
+      CarrotRpc.configuration.thread_request_variable = variable
+    end
   end
 
   def self.add_ruby_options(option_parser)

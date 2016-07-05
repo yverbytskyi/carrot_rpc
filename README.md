@@ -53,18 +53,19 @@ By typing in `carrot_rpc -h` you will see all the command line options:
 Usage: server [options]
 
 Process options:
-    -d, --daemonize              run daemonized in the background (default: false)
-        --pidfile PIDFILE        the pid filename
-    -s, --runloop_sleep VALUE    Configurable sleep time in the runloop
-        --autoload_rails VALUE   loads rails env by default. Uses Rails Logger by default.
-        --logfile VALUE          relative path and name for Log file. Overrides Rails logger.
-        --loglevel VALUE         levels of loggin: DEBUG < INFO < WARN < ERROR < FATAL < UNKNOWN
-        --rabbitmq_url VALUE     connection string to RabbitMQ 'amqp://user:pass@host:10000/vhost'
+    -d, --daemonize               run daemonized in the background (default: false)
+        --pidfile PIDFILE         the pid filename
+    -s, --runloop_sleep VALUE     Configurable sleep time in the runloop
+        --autoload_rails VALUE    loads rails env by default. Uses Rails Logger by default.
+        --logfile VALUE           relative path and name for Log file. Overrides Rails logger.
+        --loglevel VALUE          levels of loggin: DEBUG < INFO < WARN < ERROR < FATAL < UNKNOWN
+        --rabbitmq_url VALUE      connection string to RabbitMQ 'amqp://user:pass@host:10000/vhost'
+        --thread-request VARIABLE Copies the current request into VARIABLE Thread local variable, where it can be retrieved with `Thread.thread_variable_get(<VARIABLE>)`
 
 Ruby options:
-    -I, --include PATH           an additional $LOAD_PATH
-        --debug                  set $DEBUG to true
-        --warn                   enable warnings
+    -I, --include PATH            an additional $LOAD_PATH
+        --debug                   set $DEBUG to true
+        --warn                    enable warnings
 
 Common options:
     -h, --help
@@ -95,9 +96,10 @@ CarrotRpc.configure do |config|
   config.rpc_client_response_key_format = :underscore
 
   # Don't use. Server implementation only. The values below are set via CLI:
+  # config.logfile = nil
   # config.pidfile = nil
   # config.runloop_sleep = 0
-  # config.logfile = nil
+  # config.thread_request_variable = nil
 end
 ```
 
@@ -181,6 +183,33 @@ config.rpc_client_response_key_format = :dasherize
 car_client = CarClient.new(config)
 ```
 By duplicating the `Configuration` instance you can override the global configuration and pass a custom configuration to the RpcClient instance.
+
+#### Using request threading in clients
+
+If you run the server with `--thread-request VARIABLE`, you can retrieve that variable in the `before_request` callback, such as to pass along important meta data:
+
+```sh
+carrot_rpc --thread-request carrot_rpc_server_request_message
+```
+
+Example Client: `app/clients/profile_client.rb`
+```
+# Allows calls to other RPC server's profile resource.
+class ProfileClient < CarrotRpc::RpcClient
+  before_request ->(params){
+    request_message = Thread.current.thread_variable_get(:carrot_rpc_server_request_message)
+
+    if request_message
+      meta = params[:meta] || {}
+      # beam is test meta data specific to Elixir
+      meta = meta.merge(beam: request_message[:params][:meta][:beam])
+      params.merge(meta: meta)
+    else
+      params
+    end
+  }
+end
+```
 
 ### Support for JSONAPI::Resources
 In the case that you're writing an application that uses the `jsonapi-resources` gem and you want the `RpcServer` to have the same functionality, then we got you covered. All you need to do is import a few modules. See [jsonapi-resources](https://github.com/cerebris/jsonapi-resources) for details on how to implement resources for your models.

@@ -4,7 +4,7 @@ class CarrotRpc::RpcServer
 
   using CarrotRpc::HashExtensions
 
-  attr_reader :channel, :server_queue, :logger
+  attr_reader :channel, :server_queue, :logger, :thread_request_variable
   # method_reciver => object that receives the method. can be a class or anything responding to send
 
   extend CarrotRpc::ClientServer
@@ -13,6 +13,7 @@ class CarrotRpc::RpcServer
   def initialize(config: nil, block: true)
     # create a channel and exchange that both client and server know about
     config ||= CarrotRpc.configuration
+    @thread_request_variable = config.thread_request_variable
     @channel = config.bunny.create_channel
     @logger = config.logger
     @block = block
@@ -26,27 +27,35 @@ class CarrotRpc::RpcServer
   def start
     # subscribe is like a callback
     @server_queue.subscribe(block: @block) do |_delivery_info, properties, payload|
-      logger.debug "Receiving message: #{payload}"
+      logger.tagged("server", "queue=#{server_queue.name}", "correlation_id=#{properties[:correlation_id]}") do
+        logger.debug "Receiving request: #{payload}"
 
-      request_message = JSON.parse(payload).with_indifferent_access
+        begin
+          request_message = JSON.parse(payload).with_indifferent_access
 
-      process_request(request_message, properties: properties)
+          process_request(request_message, properties: properties)
+        rescue Exception => exception
+          logger.error(exception)
+        end
+      end
     end
   end
 
   def process_request(request_message, properties:)
-    method = request_message[:method]
+    thread_request(request_message: request_message) do
+      method = request_message[:method]
 
-    handler = if respond_to? method
-                :call_found_method
-              else
-                :reply_method_not_found
-              end
+      handler = if respond_to? method
+        :call_found_method
+      else
+        :reply_method_not_found
+      end
 
-    send handler,
-         method:          method,
-         properties:      properties,
-         request_message: request_message
+      send handler,
+           method:          method,
+           properties:      properties,
+           request_message: request_message
+    end
   end
 
   private
@@ -133,5 +142,22 @@ class CarrotRpc::RpcServer
     errors.map { |error|
       scrub_error(error)
     }
+  end
+
+  def thread_request(request_message:)
+    if thread_request_variable
+      logger.debug "Threading request (#{request_message.inspect}) " \
+                   "in Thread.current.thread_variable_get(#{thread_request_variable.inspect})"
+
+      Thread.current.thread_variable_set(thread_request_variable, request_message)
+
+      begin
+        yield
+      ensure
+        Thread.current.thread_variable_set(thread_request_variable, nil)
+      end
+    else
+      yield
+    end
   end
 end
