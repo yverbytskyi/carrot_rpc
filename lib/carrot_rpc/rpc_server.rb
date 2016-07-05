@@ -75,7 +75,11 @@ class CarrotRpc::RpcServer
   end
 
   def reply(properties:, response_message:)
-    @exchange.publish response_message.to_json,
+    payload = response_message.to_json
+
+    logger.debug "Publishing response: #{payload}"
+
+    @exchange.publish payload,
                       correlation_id: properties.correlation_id,
                       routing_key: properties.reply_to
   end
@@ -83,8 +87,6 @@ class CarrotRpc::RpcServer
   # See http://www.jsonrpc.org/specification#error_object
   def reply_error(error, properties:, request_message:)
     response_message = { error: error, id: request_message[:id], jsonrpc: "2.0" }
-
-    logger.debug "Publish error: #{error} to #{response_message}"
 
     reply properties: properties,
           response_message: response_message
@@ -123,8 +125,6 @@ class CarrotRpc::RpcServer
 
   def reply_result_without_errors(result, properties:, request_message:)
     response_message = { id: request_message[:id], jsonrpc: "2.0", result: result }
-
-    logger.debug "Publishing result: #{result} to #{response_message}"
 
     reply properties: properties,
           response_message: response_message

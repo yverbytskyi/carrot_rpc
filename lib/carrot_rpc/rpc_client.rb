@@ -78,11 +78,15 @@ class CarrotRpc::RpcClient
     # setup subscribe block to Service
     # block => false is a non blocking IO option.
     @reply_queue.subscribe(block: false) do |_delivery_info, properties, payload|
-      response = JSON.parse(payload).with_indifferent_access
+      logger.with_correlation_id(properties[:correlation_id]) do
+        logger.debug "Receiving response: #{payload}"
 
-      result = parse_response(response)
-      result = response_key_formatter(result).with_indifferent_access if result.is_a? Hash
-      @results[properties[:correlation_id]].push(result)
+        response = JSON.parse(payload).with_indifferent_access
+
+        result = parse_response(response)
+        result = response_key_formatter(result).with_indifferent_access if result.is_a? Hash
+        @results[properties[:correlation_id]].push(result)
+      end
     end
   end
 
@@ -98,9 +102,11 @@ class CarrotRpc::RpcClient
     start
     subscribe
     correlation_id = SecureRandom.uuid
-    params = self.class.before_request.call(params) if self.class.before_request
-    publish(correlation_id: correlation_id, method: remote_method, params: request_key_formatter(params))
-    wait_for_result(correlation_id)
+    logger.with_correlation_id(correlation_id) do
+      params = self.class.before_request.call(params) if self.class.before_request
+      publish(correlation_id: correlation_id, method: remote_method, params: request_key_formatter(params))
+      wait_for_result(correlation_id)
+    end
   end
 
   def wait_for_result(correlation_id)
@@ -139,10 +145,14 @@ class CarrotRpc::RpcClient
       params:         params,
       method:         method
     )
+    payload = message.to_json
     # Reply To => make sure the service knows where to send it's response.
     # Correlation ID => identify the results that belong to the unique call made
-    @exchange.publish(message.to_json, routing_key: @server_queue.name, correlation_id: correlation_id,
-                                       reply_to:                                     @reply_queue.name)
+    logger.debug "Publishing request: #{payload}"
+    @exchange.publish payload,
+                      correlation_id: correlation_id,
+                      reply_to:       @reply_queue.name,
+                      routing_key:    @server_queue.name
   end
 
   def message(correlation_id:, method:, params:)

@@ -21,4 +21,10 @@ class CarrotRpc::TaggedLog
       logger.tagged(tags) { logger.send(level, msg || block.call) }
     end
   end
+
+  delegate :tagged, to: :logger
+
+  def with_correlation_id(correlation_id, &block)
+    tagged("correlation_id=#{correlation_id}", &block)
+  end
 end
