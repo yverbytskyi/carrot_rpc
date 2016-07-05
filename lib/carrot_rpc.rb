@@ -23,6 +23,7 @@ module CarrotRpc
   autoload :Configuration
   autoload :Error
   autoload :Exception
+  autoload :Format
   autoload :HashExtensions
   autoload :RpcClient
   autoload :RpcServer

@@ -4,8 +4,6 @@ require "securerandom"
 # Let's define a naming convention here for subclasses becuase I don't want to write a Confluence doc.
 # All subclasses should have the following naming convention: <Name>RpcConsumer  ex: PostRpcConsumer
 class CarrotRpc::RpcClient
-  using CarrotRpc::HashExtensions
-
   attr_reader :channel, :server_queue, :logger
 
   extend CarrotRpc::ClientServer
@@ -18,25 +16,6 @@ class CarrotRpc::RpcClient
       @before_request = proc.first || CarrotRpc.configuration.before_request
     else
       fail ArgumentError
-    end
-  end
-
-  # Logic to process the renaming of keys in a hash.
-  # @param format [Symbol] :dasherize changes keys that have "_" to "-"
-  # @param format [Symbol] :underscore changes keys that have "-" to "_"
-  # @param format [Symbol] :skip, will not rename the keys
-  # @param data [Hash] data structure to be transformed
-  # @return [Hash] the transformed data
-  def self.format_keys(format, data)
-    case format
-    when :dasherize
-      data.rename_keys("_", "-")
-    when :underscore
-      data.rename_keys("-", "_")
-    when :none
-      data
-    else
-      data
     end
   end
 
@@ -119,14 +98,14 @@ class CarrotRpc::RpcClient
   # @param payload [Hash] response data received from the remote server.
   # @return [Hash] formatted data structure.
   def response_key_formatter(payload)
-    self.class.format_keys @config.rpc_client_response_key_format, payload
+    CarrotRpc::Format.keys @config.rpc_client_response_key_format, payload
   end
 
   # Formats keys in the request data.
   # @param payload [Hash] request data to be sent to the remote server.
   # @return [Hash] formatted data structure.
   def request_key_formatter(params)
-    self.class.format_keys @config.rpc_client_request_key_format, params
+    CarrotRpc::Format.keys @config.rpc_client_request_key_format, params
   end
 
   # A @reply_queue is deleted when the channel is closed.
@@ -137,7 +116,7 @@ class CarrotRpc::RpcClient
       params:         params,
       method:         method
     )
-    publish_message(message, correlation_id: correlation_id)
+    publish_payload(message.to_json, correlation_id: correlation_id)
   end
 
   def message(correlation_id:, method:, params:)
@@ -176,10 +155,6 @@ class CarrotRpc::RpcClient
     else
       response
     end
-  end
-
-  def publish_message(message, correlation_id:)
-    publish_payload(message.to_json, correlation_id: correlation_id)
   end
 
   def publish_payload(payload, correlation_id:)
