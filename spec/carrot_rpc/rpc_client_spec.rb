@@ -232,33 +232,6 @@ RSpec.describe CarrotRpc::RpcClient do
     end
   end
 
-  describe "#format_keys" do
-    it "dasherizes the keys" do
-      params = { foo_bar: { "baz_zam" => 1 } }
-      res = described_class.format_keys :dasherize, params
-      expect(res).to eq("foo-bar" => { "baz-zam" => 1 })
-    end
-
-    it "underscores the keys" do
-      params = { "foo-bar" => { "baz-zam" => 1 } }
-      res = described_class.format_keys :underscore, params
-      expect(res).to eq("foo_bar" => { "baz_zam" => 1 })
-    end
-
-    it "skips key formatting for skip" do
-      param_sets = [
-        { "foo-bar" => { "baz-zam" => 1 } },
-        { foo_bar: { "baz_zam" => 1 } },
-        { "foo_bar" => { "baz_zam" => 1 } }
-      ]
-
-      param_sets.each do |params|
-        res = described_class.format_keys :none, params
-        expect(res).to eq(params)
-      end
-    end
-  end
-
   describe ".response_key_formatter" do
     before :each do
       CarrotRpc.configuration.rpc_client_response_key_format = :underscore
@@ -280,7 +253,7 @@ RSpec.describe CarrotRpc::RpcClient do
       subject { described_class.new(config) }
 
       it "overwrites the default config" do
-        expect(described_class).to receive(:format_keys).with(:dasherize, payload)
+        expect(CarrotRpc::Format).to receive(:keys).with(:dasherize, payload)
         subject.response_key_formatter(payload)
       end
     end
@@ -288,7 +261,7 @@ RSpec.describe CarrotRpc::RpcClient do
     context "without a config passed" do
       subject { described_class.new }
       it "uses the default config" do
-        expect(described_class).to receive(:format_keys).with(:underscore, payload)
+        expect(CarrotRpc::Format).to receive(:keys).with(:underscore, payload)
         subject.response_key_formatter(payload)
       end
     end
@@ -315,7 +288,7 @@ RSpec.describe CarrotRpc::RpcClient do
       subject { described_class.new(config) }
 
       it "overwrites the default config" do
-        expect(described_class).to receive(:format_keys).with(:dasherize, payload)
+        expect(CarrotRpc::Format).to receive(:keys).with(:dasherize, payload)
         subject.request_key_formatter(payload)
       end
     end
@@ -323,7 +296,7 @@ RSpec.describe CarrotRpc::RpcClient do
     context "without a config passed" do
       subject { described_class.new }
       it "uses the default config" do
-        expect(described_class).to receive(:format_keys).with(:underscore, payload)
+        expect(CarrotRpc::Format).to receive(:keys).with(:underscore, payload)
         subject.request_key_formatter(payload)
       end
     end

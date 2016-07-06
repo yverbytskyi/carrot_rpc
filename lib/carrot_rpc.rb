@@ -23,10 +23,13 @@ module CarrotRpc
   autoload :Configuration
   autoload :Error
   autoload :Exception
+  autoload :Format
   autoload :HashExtensions
+  autoload :Reply
   autoload :RpcClient
   autoload :RpcServer
   autoload :ServerRunner
+  autoload :Scrub
   autoload :TaggedLog
 
   class << self

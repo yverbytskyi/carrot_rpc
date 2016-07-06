@@ -36,7 +36,12 @@ RSpec.configure do |config|
       bunny = Bunny.new
       bunny.start
       carrot_rpc_config.bunny = bunny
-      carrot_rpc_config.logger = Logger.new(log_file)
+      carrot_rpc_config.logger = CarrotRpc::TaggedLog.new(
+        logger: ActiveSupport::TaggedLogging.new(
+          Logger.new(log_file)
+        ),
+        tags: ["test"]
+      )
     end
   end
 

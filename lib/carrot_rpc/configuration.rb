@@ -2,7 +2,7 @@
 class CarrotRpc::Configuration
   attr_accessor :logger, :logfile, :loglevel, :daemonize, :pidfile, :runloop_sleep, :autoload_rails, :bunny,
                 :before_request, :rpc_client_timeout, :rpc_client_response_key_format, :rpc_client_request_key_format,
-                :server_test_mode, :client_test_mode
+                :server_test_mode, :client_test_mode, :thread_request_variable
 
   # logfile - set logger to a file. overrides rails logger.
 
@@ -21,5 +21,6 @@ class CarrotRpc::Configuration
     @rpc_client_request_key_format = :none
     @client_test_mode = false
     @server_test_mode = false
+    @thread_request_variable = nil
   end # rubocop:enable Metrics/MethodLength
 end
