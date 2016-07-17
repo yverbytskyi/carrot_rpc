@@ -40,6 +40,14 @@
 # Changelog
 All significant changes in the project are documented here.
 
+## v0.6.0
+### Enhancements
+* [#34](https://github.com/C-S-D/carrot_rpc/pull/34) - `--server_test_mode` options for `carrot_rpc` sets `CarrotRpc.configuration.server_test_mode` to `true`.  When `server_test_mode` is true, `_test` is appended to the queue name used by `CarrotRpc::RpcServer` and `CarrotRpc::RpcClient`, so that tests don't use the same queue as production or development. - [@shamil614](https://github.com/C-S-D/carrot_rpc/pull/34)
+* [#36](https://github.com/C-S-D/carrot_rpc/pull/36) - Request in thread-local variable, so it can be used for client request - [@KronicDeth](https://github.com/KronicDeth)  
+  * `carrot_rpc --thread-request VARIABLE` allows the request payload to be put in a Thread-local `VARIABLE, so that client that are invoked during an RPC server request can use parts of the request, most importantly, parts of "meta" in their own requests. This is needed to pass along ownership information for db_connection in Ecto 2.0.
+  * Tag the log with the correlation_id, as it can be filtered for then.
+  * Clarify whether a request or response is being published or received, so that server vs client logging can be distinguished.
+
 ## v0.5.1
 ### Bug Fixes
 * [#31](https://github.com/C-S-D/carrot_rpc/pull/31) - If the server does not respond to a method in the `request_message`, then return a "Method not found" JSONRPC 2.0 error instead of the server crashing with `NoMethodError` exception. - [KronicDeth)(https://github.com/KronicDeth)
