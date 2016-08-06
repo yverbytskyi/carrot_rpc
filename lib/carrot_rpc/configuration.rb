@@ -1,6 +1,6 @@
 # Global configuration for {CarrotRpc}.  Access with {CarrotRpc.configuration}.
 class CarrotRpc::Configuration
-  attr_accessor :logger, :logfile, :loglevel, :daemonize, :pidfile, :runloop_sleep, :autoload_rails, :bunny,
+  attr_accessor :logger, :logfile, :loglevel, :daemonize, :pidfile, :autoload_rails, :bunny,
                 :before_request, :rpc_client_timeout, :rpc_client_response_key_format, :rpc_client_request_key_format,
                 :server_test_mode, :client_test_mode, :thread_request_variable
 
@@ -12,7 +12,6 @@ class CarrotRpc::Configuration
     @logger = nil
     @daemonize = false
     @pidfile = nil
-    @runloop_sleep = 0
     @autoload_rails = true
     @bunny = nil
     @before_request = nil

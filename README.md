@@ -55,7 +55,6 @@ Usage: server [options]
 Process options:
     -d, --daemonize               run daemonized in the background (default: false)
         --pidfile PIDFILE         the pid filename
-    -s, --runloop_sleep VALUE     Configurable sleep time in the runloop
         --autoload_rails VALUE    loads rails env by default. Uses Rails Logger by default.
         --logfile VALUE           relative path and name for Log file. Overrides Rails logger.
         --loglevel VALUE          levels of loggin: DEBUG < INFO < WARN < ERROR < FATAL < UNKNOWN
@@ -98,7 +97,6 @@ CarrotRpc.configure do |config|
   # Don't use. Server implementation only. The values below are set via CLI:
   # config.logfile = nil
   # config.pidfile = nil
-  # config.runloop_sleep = 0
   # config.thread_request_variable = nil
 end
 ```

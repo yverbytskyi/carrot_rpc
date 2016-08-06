@@ -5,19 +5,6 @@ require "carrot_rpc/cli"
 RSpec.describe CarrotRpc::CLI do
   subject { CarrotRpc::CLI }
 
-  describe "runloop sleep" do
-    before(:each) do
-      expect(CarrotRpc.configuration).to receive_message_chain("runloop_sleep=").with(10)
-    end
-
-    it "sets the sleep value with long switch" do
-      CarrotRpc::CLI.parse_options(["--runloop_sleep=10"])
-    end
-    it "sets the sleep value with short switch" do
-      CarrotRpc::CLI.parse_options(["-s", "10"])
-    end
-  end
-
   describe "daemonize" do
     before(:each) do
       expect(CarrotRpc.configuration).to receive("daemonize=").with(true)
