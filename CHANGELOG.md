@@ -3,42 +3,54 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Changelog](#changelog)
-  - [v0.5.1](#v051)
+  - [v0.7.0](#v070)
     - [Bug Fixes](#bug-fixes)
-  - [v0.5.0](#v050)
-    - [Enhancements](#enhancements)
     - [Incompatible Changes](#incompatible-changes)
-  - [v0.4.1](#v041)
+  - [v0.6.0](#v060)
+    - [Enhancements](#enhancements)
+  - [v0.5.1](#v051)
     - [Bug Fixes](#bug-fixes-1)
-  - [v0.4.0](#v040)
+  - [v0.5.0](#v050)
     - [Enhancements](#enhancements-1)
-    - [Bug Fixes](#bug-fixes-2)
     - [Incompatible Changes](#incompatible-changes-1)
-  - [v0.3.0](#v030)
+  - [v0.4.1](#v041)
+    - [Bug Fixes](#bug-fixes-2)
+  - [v0.4.0](#v040)
     - [Enhancements](#enhancements-2)
     - [Bug Fixes](#bug-fixes-3)
-  - [v0.2.3](#v023)
+    - [Incompatible Changes](#incompatible-changes-2)
+  - [v0.3.0](#v030)
     - [Enhancements](#enhancements-3)
     - [Bug Fixes](#bug-fixes-4)
+  - [v0.2.3](#v023)
+    - [Enhancements](#enhancements-4)
+    - [Bug Fixes](#bug-fixes-5)
     - [Upgrading](#upgrading)
   - [v0.2.1](#v021)
-    - [Bug Fixes](#bug-fixes-5)
-  - [v0.2.0](#v020)
-    - [Enhancements](#enhancements-4)
     - [Bug Fixes](#bug-fixes-6)
-    - [Incompatible Changes](#incompatible-changes-2)
-  - [v0.1.2](#v012)
+  - [v0.2.0](#v020)
     - [Enhancements](#enhancements-5)
     - [Bug Fixes](#bug-fixes-7)
-  - [v0.1.1](#v011)
+    - [Incompatible Changes](#incompatible-changes-3)
+  - [v0.1.2](#v012)
     - [Enhancements](#enhancements-6)
     - [Bug Fixes](#bug-fixes-8)
-    - [Incompatible Changes](#incompatible-changes-3)
+  - [v0.1.1](#v011)
+    - [Enhancements](#enhancements-7)
+    - [Bug Fixes](#bug-fixes-9)
+    - [Incompatible Changes](#incompatible-changes-4)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Changelog
 All significant changes in the project are documented here.
+
+## v0.7.0
+### Bug Fixes
+* [#38](https://github.com/C-S-D/carrot_rpc/pull/38) - The `until quit` busy-wait loop consumes ~1 core for each instance of `carrot_rpc` as the default `sleep 0` does the minimal amount of sleep before waking up to check the boolean `quit`.  I've replaced it with an `IO.pipe` and `IO.select` that does not consume any resources while it waits. **NOTE: A Queue could not be used here because the MRI VM blocks use of Mutexes inside signal handlers to prevent deadlocks because the Mutex code is not-reentrant (i.e signal-interrupt-safe).  If a Queue is used the thread silently fails with an exception and the signal is ignored.** - [@KronicDeth](https://github.com/KronicDeth)
+
+### Incompatible Changes
+* [#38](https://github.com/C-S-D/carrot_rpc/pull/38) - Removal of the busy-wait removes the `-s` (`--runloop_sleep`) option as it is no longer needed. - [@KronicDeth](https://github.com/KronicDeth)
 
 ## v0.6.0
 ### Enhancements
