@@ -12,10 +12,6 @@ RSpec.describe CarrotRpc::Configuration do
     expect(subject.pidfile).to eq nil
   end
 
-  it "defaults runloop sleep" do
-    expect(subject.runloop_sleep).to eq 0
-  end
-
   it "defaults to load rails" do
     expect(subject.autoload_rails).to eq true
   end

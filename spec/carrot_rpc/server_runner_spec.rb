@@ -42,18 +42,12 @@ RSpec.describe CarrotRpc::ServerRunner do
       server_runner
     end
 
-    it "calls a method to trap signal messages" do
-      expect_any_instance_of(CarrotRpc::ServerRunner).to receive(:trap_signals)
-      subject
-    end
-
     context "passing params" do
       let(:args) do
-        { rails_path: File.expand_path("../../dummy", __FILE__), pidfile: "foo", runloop_sleep: 5, daemonize: true }
+        { rails_path: File.expand_path("../../dummy", __FILE__), pidfile: "foo", daemonize: true }
       end
 
       it "sets instance vars to the params passed" do
-        expect(subject.instance_variable_get(:@runloop_sleep)).to eq 5
         expect(subject.instance_variable_get(:@daemonize)).to eq true
       end
 
@@ -86,18 +80,6 @@ RSpec.describe CarrotRpc::ServerRunner do
     end
   end
 
-  describe "#runloop_sleep" do
-    context "with valid params" do
-      let(:args) { { rails_path: File.expand_path("../../dummy", __FILE__), runloop_sleep: 10 } }
-      it "can be set" do
-        expect(subject.instance_variable_get(:@runloop_sleep)).to eq 10
-      end
-    end
-    it "has default" do
-      expect(subject.instance_variable_get(:@runloop_sleep)).to eq 0
-    end
-  end
-
   describe "#daemonize?" do
     it "false by default" do
       expect(subject.daemonize?).to eq false
@@ -122,7 +104,7 @@ RSpec.describe CarrotRpc::ServerRunner do
   describe "#run!" do
     before :each do
       # setting quit flag so that runloop stops immediately
-      server_runner.shutdown("QUIT")
+      server_runner.signal.send(:receive, "QUIT")
       allow(server_runner).to receive(:run_servers)
     end
 
@@ -135,6 +117,7 @@ RSpec.describe CarrotRpc::ServerRunner do
     end
 
     it "always calls essential methods" do
+      expect(server_runner.signal).to receive(:trap)
       expect(server_runner.pid).to receive(:check)
       expect(server_runner.pid).to receive(:ensure_written)
       expect(server_runner).to receive(:run_servers)
@@ -162,7 +145,7 @@ RSpec.describe CarrotRpc::ServerRunner do
 
   describe "#stop_servers" do
     subject(:stop_servers) {
-      server_runner.stop_servers
+      server_runner.stop_servers(signal_name)
     }
 
     let(:servers) {
@@ -172,6 +155,10 @@ RSpec.describe CarrotRpc::ServerRunner do
 
         klass.new
       }
+    }
+
+    let(:signal_name) {
+      "QUIT"
     }
 
     # Callbacks

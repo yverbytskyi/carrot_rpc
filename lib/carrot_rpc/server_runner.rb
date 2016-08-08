@@ -7,11 +7,13 @@ class CarrotRpc::ServerRunner
   autoload :AutoloadRails
   autoload :Logger
   autoload :Pid
+  autoload :Signal
   autoload :Signals
 
   # Attributes
 
-  attr_reader :quit, :servers
+  attr_reader :signal,
+              :servers
 
   # @return [CarrotRpc::ServerRunner::Pid]
   attr_reader :pid
@@ -19,13 +21,13 @@ class CarrotRpc::ServerRunner
   # Methods
 
   # Instantiate the ServerRunner.
-  def initialize(rails_path: ".", pidfile: nil, runloop_sleep: 0, daemonize: false)
-    @runloop_sleep = runloop_sleep
+  def initialize(rails_path: ".", pidfile: nil, daemonize: false)
+    self.signal = CarrotRpc::ServerRunner::Signal.new
+
     @daemonize = daemonize
     @servers = []
 
     CarrotRpc::ServerRunner::AutoloadRails.conditionally_load_root(rails_path, logger: logger)
-    trap_signals
 
     @pid = CarrotRpc::ServerRunner::Pid.new(
       path:   pidfile,
@@ -35,24 +37,20 @@ class CarrotRpc::ServerRunner
 
   # Start the servers and the run loop.
   def run!
+    signal.trap
+
     pid.check
     daemonize && suppress_output if daemonize?
     pid.ensure_written
 
     # Initialize the servers. Set logger.
     run_servers
-
-    # Sleep for a split second.
-    until quit
-      sleep @runloop_sleep
-    end
-    # When runtime gets here, quit signal is received.
-    stop_servers
+    stop_servers(signal.wait)
   end
 
   # Shutdown all servers defined.
-  def stop_servers
-    logger.info "#{@siginal_name} signal received!"
+  def stop_servers(signal_name)
+    logger.info "#{signal_name} signal received!"
     @servers.each do |s|
       logger.info "Shutting Down Server Queue: #{s.server_queue.name}"
       s.channel.close
@@ -130,22 +128,9 @@ class CarrotRpc::ServerRunner
     $stdout.reopen($stderr)
   end
 
-  # Set a value to signal shutdown.
-  def shutdown(name)
-    @signal_name = name
-    @quit = true
-  end
-
-  # Handle signal events.
-  def trap_signals
-    CarrotRpc::ServerRunner::Signals.trap do |name|
-      # @note can't log from a trap context: since Ruby 2.0 traps don't allow mutexes as it could lead to a dead lock,
-      #   so `logger.info` here would return "log writing failed. can't be called from trap context"
-      shutdown(name)
-    end
-  end
-
   private
+
+  attr_writer :signal
 
   # Determine how to create logger. Config can specify log file.
   def set_logger
@@ -153,5 +138,18 @@ class CarrotRpc::ServerRunner
     CarrotRpc.configuration.logger = logger
 
     logger
+  end
+
+  def wait_for_shutdown
+    loop do
+      # Wait for quit message
+      read_ready, _write_ready, _error_ready = IO.select([shutdown_reader])
+
+      next unless read_ready.include? shutdown_reader
+
+      shutdown_reader.read_nonblock(1)
+      # When runtime gets here, quit signal is received.
+      stop_servers
+    end
   end
 end

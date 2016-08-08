@@ -34,10 +34,6 @@ module CarrotRpc::CLI
       CarrotRpc.configuration.pidfile = value
     end
 
-    option_parser.on("-s", "--runloop_sleep VALUE", Float, "Configurable sleep time in the runloop") do |value|
-      CarrotRpc.configuration.runloop_sleep = value
-    end
-
     stm_msg = "runs servers with '_test' appended to queue names." \
               "Set Rails Rack env vars to 'test' when used in conjunction with '--autoload_rails'"
     option_parser.on(" ", "--server_test_mode", stm_msg) do

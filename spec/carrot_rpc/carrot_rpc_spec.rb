@@ -8,8 +8,8 @@ RSpec.describe CarrotRpc do
 
   it "can use #configure to pass a block" do
     CarrotRpc.configure do |config|
-      config.runloop_sleep = 2000
+      config.loglevel = Logger::ERROR
     end
-    expect(CarrotRpc.configuration.runloop_sleep).to eq 2000
+    expect(CarrotRpc.configuration.loglevel).to eq Logger::ERROR
   end
 end
