@@ -3,47 +3,53 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Changelog](#changelog)
-  - [v0.7.0](#v070)
+  - [v0.7.1](#v071)
     - [Bug Fixes](#bug-fixes)
+  - [v0.7.0](#v070)
+    - [Bug Fixes](#bug-fixes-1)
     - [Incompatible Changes](#incompatible-changes)
   - [v0.6.0](#v060)
     - [Enhancements](#enhancements)
   - [v0.5.1](#v051)
-    - [Bug Fixes](#bug-fixes-1)
+    - [Bug Fixes](#bug-fixes-2)
   - [v0.5.0](#v050)
     - [Enhancements](#enhancements-1)
     - [Incompatible Changes](#incompatible-changes-1)
   - [v0.4.1](#v041)
-    - [Bug Fixes](#bug-fixes-2)
+    - [Bug Fixes](#bug-fixes-3)
   - [v0.4.0](#v040)
     - [Enhancements](#enhancements-2)
-    - [Bug Fixes](#bug-fixes-3)
+    - [Bug Fixes](#bug-fixes-4)
     - [Incompatible Changes](#incompatible-changes-2)
   - [v0.3.0](#v030)
     - [Enhancements](#enhancements-3)
-    - [Bug Fixes](#bug-fixes-4)
+    - [Bug Fixes](#bug-fixes-5)
   - [v0.2.3](#v023)
     - [Enhancements](#enhancements-4)
-    - [Bug Fixes](#bug-fixes-5)
+    - [Bug Fixes](#bug-fixes-6)
     - [Upgrading](#upgrading)
   - [v0.2.1](#v021)
-    - [Bug Fixes](#bug-fixes-6)
+    - [Bug Fixes](#bug-fixes-7)
   - [v0.2.0](#v020)
     - [Enhancements](#enhancements-5)
-    - [Bug Fixes](#bug-fixes-7)
+    - [Bug Fixes](#bug-fixes-8)
     - [Incompatible Changes](#incompatible-changes-3)
   - [v0.1.2](#v012)
     - [Enhancements](#enhancements-6)
-    - [Bug Fixes](#bug-fixes-8)
+    - [Bug Fixes](#bug-fixes-9)
   - [v0.1.1](#v011)
     - [Enhancements](#enhancements-7)
-    - [Bug Fixes](#bug-fixes-9)
+    - [Bug Fixes](#bug-fixes-10)
     - [Incompatible Changes](#incompatible-changes-4)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Changelog
 All significant changes in the project are documented here.
+
+## v0.7.1
+### Bug Fixes
+* [#40](https://github.com/C-S-D/carrot_rpc/pull/41) - Deletes Queues immediately after the last consumer is unsubscribed. Reduces memory load. API remains the same. - [@shamil614](https://github.com/C-S-D/carrot_rpc/pull/34)
 
 ## v0.7.0
 ### Bug Fixes
