@@ -49,7 +49,7 @@ class CarrotRpc::RpcClient
   def subscribe
     # Empty queue name ends up creating a randomly named queue by RabbitMQ
     # Exclusive => queue will be deleted when connection closes. Allows for automatic "cleanup".
-    @reply_queue = @channel.queue("", exclusive: true)
+    @reply_queue = @channel.queue("", exclusive: true, auto_delete: true, durable: false)
 
     # setup a hash for results with a Queue object as a value
     @results = Hash.new { |h, k| h[k] = Queue.new }
