@@ -68,7 +68,7 @@ All significant changes in the project are documented here.
 
 ## v0.5.1
 ### Bug Fixes
-* [#31](https://github.com/C-S-D/carrot_rpc/pull/31) - If the server does not respond to a method in the `request_message`, then return a "Method not found" JSONRPC 2.0 error instead of the server crashing with `NoMethodError` exception. - [KronicDeth)(https://github.com/KronicDeth)
+* [#31](https://github.com/C-S-D/carrot_rpc/pull/31) - If the server does not respond to a method in the `request_message`, then return a "Method not found" JSONRPC 2.0 error instead of the server crashing with `NoMethodError` exception. - [KronicDeth](https://github.com/KronicDeth)
 
 ## v0.5.0
 ### Enhancements
