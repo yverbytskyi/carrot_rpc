@@ -3,47 +3,53 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Changelog](#changelog)
-  - [v0.7.0](#v070)
+  - [v0.7.1](#v071)
     - [Bug Fixes](#bug-fixes)
+  - [v0.7.0](#v070)
+    - [Bug Fixes](#bug-fixes-1)
     - [Incompatible Changes](#incompatible-changes)
   - [v0.6.0](#v060)
     - [Enhancements](#enhancements)
   - [v0.5.1](#v051)
-    - [Bug Fixes](#bug-fixes-1)
+    - [Bug Fixes](#bug-fixes-2)
   - [v0.5.0](#v050)
     - [Enhancements](#enhancements-1)
     - [Incompatible Changes](#incompatible-changes-1)
   - [v0.4.1](#v041)
-    - [Bug Fixes](#bug-fixes-2)
+    - [Bug Fixes](#bug-fixes-3)
   - [v0.4.0](#v040)
     - [Enhancements](#enhancements-2)
-    - [Bug Fixes](#bug-fixes-3)
+    - [Bug Fixes](#bug-fixes-4)
     - [Incompatible Changes](#incompatible-changes-2)
   - [v0.3.0](#v030)
     - [Enhancements](#enhancements-3)
-    - [Bug Fixes](#bug-fixes-4)
+    - [Bug Fixes](#bug-fixes-5)
   - [v0.2.3](#v023)
     - [Enhancements](#enhancements-4)
-    - [Bug Fixes](#bug-fixes-5)
+    - [Bug Fixes](#bug-fixes-6)
     - [Upgrading](#upgrading)
   - [v0.2.1](#v021)
-    - [Bug Fixes](#bug-fixes-6)
+    - [Bug Fixes](#bug-fixes-7)
   - [v0.2.0](#v020)
     - [Enhancements](#enhancements-5)
-    - [Bug Fixes](#bug-fixes-7)
+    - [Bug Fixes](#bug-fixes-8)
     - [Incompatible Changes](#incompatible-changes-3)
   - [v0.1.2](#v012)
     - [Enhancements](#enhancements-6)
-    - [Bug Fixes](#bug-fixes-8)
+    - [Bug Fixes](#bug-fixes-9)
   - [v0.1.1](#v011)
     - [Enhancements](#enhancements-7)
-    - [Bug Fixes](#bug-fixes-9)
+    - [Bug Fixes](#bug-fixes-10)
     - [Incompatible Changes](#incompatible-changes-4)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Changelog
 All significant changes in the project are documented here.
+
+## v0.7.1
+### Bug Fixes
+* [#40](https://github.com/C-S-D/carrot_rpc/pull/41) - Deletes Queues immediately after the last consumer is unsubscribed. Reduces memory load. API remains the same. - [@shamil614](https://github.com/C-S-D/carrot_rpc/pull/34)
 
 ## v0.7.0
 ### Bug Fixes
@@ -62,27 +68,27 @@ All significant changes in the project are documented here.
 
 ## v0.5.1
 ### Bug Fixes
-* [#31](https://github.com/C-S-D/carrot_rpc/pull/31) - If the server does not respond to a method in the `request_message`, then return a "Method not found" JSONRPC 2.0 error instead of the server crashing with `NoMethodError` exception. - [KronicDeth)(https://github.com/KronicDeth)
+* [#31](https://github.com/C-S-D/carrot_rpc/pull/31) - If the server does not respond to a method in the `request_message`, then return a "Method not found" JSONRPC 2.0 error instead of the server crashing with `NoMethodError` exception. - [@KronicDeth](https://github.com/KronicDeth)
 
 ## v0.5.0
 ### Enhancements
-* [#25](https://github.com/C-S-D/carrot_rpc/pull/25) - [shamil614](https://github.com/shamil614)
+* [#25](https://github.com/C-S-D/carrot_rpc/pull/25) - [@shamil614](https://github.com/shamil614)
   * Timeout RpcClient requests when response is not received. 
   * Default timeout is 5 seconds.
   * Timeout is configurable.
-* [#27](https://github.com/C-S-D/carrot_rpc/pull/27) - [shamil614](https://github.com/shamil614)
+* [#27](https://github.com/C-S-D/carrot_rpc/pull/27) - [@shamil614](https://github.com/shamil614)
   * Simplify RpcClient usage.
   * Each request which goes through `RpcClient.remote_request` ultimately needs to use a unique `reply_queue` on eqch request.
   * By closing the channel and opening a new channel on each request we ensure that cleanup takes place by the deletion of the `reply_queue`.
-* [#29](https://github.com/C-S-D/carrot_rpc/pull/29) - [shamil614](https://github.com/shamil614)
+* [#29](https://github.com/C-S-D/carrot_rpc/pull/29) - [@shamil614](https://github.com/shamil614)
   * Implementations of the RpcClient need to be flexible with the key formatter.
   * Formatting can be set globally via `Configuration`, overridden via passing Configuration object upon initializing client, or redefine `response_key_formatter` `request_key_formatter` methods.
 
 ### Incompatible Changes
-* [#27](https://github.com/C-S-D/carrot_rpc/pull/27) - [shamil614](https://github.com/shamil614)
+* [#27](https://github.com/C-S-D/carrot_rpc/pull/27) - [@shamil614](https://github.com/shamil614)
   * Calling `rpc_client.start` and `rpc_client.channel.close` are no longer required when calling `rpc_client.remote_call` or the methods that call it (`index` `create`, etc).
   * Calling `rpc_client.channel.close` after `rpc_client.remote_call` will cause an Exception to be raised as the channel is already closed.
-* [#29](https://github.com/C-S-D/carrot_rpc/pull/29) - [shamil614](https://github.com/shamil614)
+* [#29](https://github.com/C-S-D/carrot_rpc/pull/29) - [@shamil614](https://github.com/shamil614)
   * Replaced hard coded key formatter in place of a configurable option. 
   * Need to set the following in config to maintain previous behavior
   ```ruby
@@ -96,39 +102,39 @@ All significant changes in the project are documented here.
 
 ## v0.4.1
 ### Bug Fixes
-* [#23](https://githb.com/C-S-D/carrot_rpc/pull/23) - [shamil614](https://github.com/shamil614)
+* [#23](https://githb.com/C-S-D/carrot_rpc/pull/23) - [@shamil614](https://github.com/shamil614)
   * Fixes errors for non-hash results being called with hash methods.
   * RPC client parses response to account for jsonrpc error object as well as jsonrpc result object.
 
 ## v0.4.0
 
 ### Enhancements
-* [#20](https://githb.com/C-S-D/carrot_rpc/pull/20) - `config.before_request` may be set with a `#call(params) :: params` that is passed the `params` and returns altered `params` that are published to the queue. - [shamil614](https://github.com/shamil614)
+* [#20](https://githb.com/C-S-D/carrot_rpc/pull/20) - `config.before_request` may be set with a `#call(params) :: params` that is passed the `params` and returns altered `params` that are published to the queue. - [@shamil614](https://github.com/shamil614)
 
 ### Bug Fixes
-* [#19](https://githb.com/C-S-D/carrot_rpc/pull/19) - [KronicDeth](http://github.com/kronicdeth)
+* [#19](https://githb.com/C-S-D/carrot_rpc/pull/19) - [@KronicDeth](http://github.com/kronicdeth)
   * Put JSONAPI errors documents into the JSONRPC error fields instead of returning as normal results as consumers, such as `Rpc.Generic.Client` are expecting all errors to be in JSONRPC's error field and not have to check if the non-error `result` contains a JSONAPI level error.  This achieves parity with the behavior in the Elixir `Rpc.Generic.Server`.
   * Scrub JSONAPI error fields that are `nil` so they don't get transmitted as `null`.  JSONAPI spec is quite clear that `null` columns shouldn't be transmitted except in the case of `null` data to signal a missing singleton resource.  This achieves compatibility with the error parsing in `Rpc.Generic.Client` in Elixir.
   
 ### Incompatible Changes
-* [#20](https://githb.com/C-S-D/carrot_rpc/pull/20) - `base_url`, which must be implemented by any RPC server that `include CarrotRpc::RpcServer::JSONAPIResources`, changes from `base_url() :: String` to `base_url(JSONAPI::OperationResult, JSONAPI::Request) :: String` - [shamil614](https://github.com/shamil614)
+* [#20](https://githb.com/C-S-D/carrot_rpc/pull/20) - `base_url`, which must be implemented by any RPC server that `include CarrotRpc::RpcServer::JSONAPIResources`, changes from `base_url() :: String` to `base_url(JSONAPI::OperationResult, JSONAPI::Request) :: String` - [@shamil614](https://github.com/shamil614)
 
 ## v0.3.0
 
 ### Enhancements
-* [#11](https://githb.com/C-S-D/carrot_rpc/pull/11) - Add CodeClimate badge to README - [thewalkingtoast](https://github.com/thewalkingtoast)
-* [#13](https://githb.com/C-S-D/carrot_rpc/pull/13) - Document `queue_name` - [shamil614](https://github.com/shamil614)
-* [#14](https://githb.com/C-S-D/carrot_rpc/pull/14) - Pass `rpc_request: true` in the `JSONAPI::Request` `context`, so resources can differentiate between API and RPC calls - [shamil614](https://github.com/shamil614)
+* [#11](https://githb.com/C-S-D/carrot_rpc/pull/11) - Add CodeClimate badge to README - [@thewalkingtoast](https://github.com/thewalkingtoast)
+* [#13](https://githb.com/C-S-D/carrot_rpc/pull/13) - Document `queue_name` - [@shamil614](https://github.com/shamil614)
+* [#14](https://githb.com/C-S-D/carrot_rpc/pull/14) - Pass `rpc_request: true` in the `JSONAPI::Request` `context`, so resources can differentiate between API and RPC calls - [@shamil614](https://github.com/shamil614)
 
 ### Bug Fixes
-* [#12](https://githb.com/C-S-D/carrot_rpc/pull/12) - Pass `request` to `render_errors` when handling exceptions in `CarrotRpc::RpcServer::JSONAPIResources` - [shamil614](https://github.com/shamil614)
-* [#15](https://githb.com/C-S-D/carrot_rpc/pull/15) - Fix argument error bug when passing block to `CarrotRpc::TaggedLog` methods by allowing either a message or a block like standard `Logger` interface - [shamil614](https://github.com/shamil614)
-* [#17](https://githb.com/C-S-D/carrot_rpc/pull/17) - New rubocop versions add new cops or deprecate old config settings, so it is not safe to have `"rubocop"` without a version in the gemspec. - [KronicDeth](http://github.com/kronicdeth)
+* [#12](https://githb.com/C-S-D/carrot_rpc/pull/12) - Pass `request` to `render_errors` when handling exceptions in `CarrotRpc::RpcServer::JSONAPIResources` - [@shamil614](https://github.com/shamil614)
+* [#15](https://githb.com/C-S-D/carrot_rpc/pull/15) - Fix argument error bug when passing block to `CarrotRpc::TaggedLog` methods by allowing either a message or a block like standard `Logger` interface - [@shamil614](https://github.com/shamil614)
+* [#17](https://githb.com/C-S-D/carrot_rpc/pull/17) - New rubocop versions add new cops or deprecate old config settings, so it is not safe to have `"rubocop"` without a version in the gemspec. - [@KronicDeth](http://github.com/kronicdeth)
 
 ## v0.2.3
 
 ### Enhancements
-* [#9](https://github.com/C-S-D/carrot_rpc/pull/9) - [KronicDeth](http://github.com/kronicdeth)
+* [#9](https://github.com/C-S-D/carrot_rpc/pull/9) - [@KronicDeth](http://github.com/kronicdeth)
   * `CarrotRpc::RpcServer` subclasses can `include CarrotRpc::RpcServer::JSONAPIResources` to get
     [`JSONAPI::ActsAsResourceController`](https://github.com/cerebris/jsonapi-resources/blob/8e85d68dfbaf9181344c7618b0b29b4cfd362034/lib/jsonapi/acts_as_resource_controller.rb)
     helper methods for processing JSONAPI requests in server methods.
@@ -147,14 +153,14 @@ All significant changes in the project are documented here.
     * `resource_klass`
 
 ### Bug Fixes
-* [#9](https://github.com/C-S-D/carrot_rpc/pull/9) - [KronicDeth](http://github.com/KronicDeth)
+* [#9](https://github.com/C-S-D/carrot_rpc/pull/9) - [@KronicDeth](http://github.com/KronicDeth)
   * `CarrotRpc::Error` was moved from the incorrect `lib/carrot_rpc/rpc_server/error.rb`
     path to the correct `lib/carrot_rpc/error.rb` path.
   * `CarrotRpc::Error::Code` was moved from the incorrect `lib/carrot_rpc/rpc_server/error/code.rb`
     path to the correct `lib/carrot_rpc/error/code.rb` path.
 
 ### Upgrading
-* [#9](https://github.com/C-S-D/carrot_rpc/pull/9) - [KronicDeth](http://github.com/KronicDeth)
+* [#9](https://github.com/C-S-D/carrot_rpc/pull/9) - [@KronicDeth](http://github.com/KronicDeth)
   * If you previously loaded `CarrotRpc::Error` directly with `require "carrot_rpc/rpc_server/error"` you now need to
     `require "carrot_rpc/error"`, which is the corrected path.  `CarrotRpc::Error` is autoloaded, so you don't need to require it.
   * If you previously loaded `CarrotRpc::Error::Code` directly with `require "carrot_rpc/rpc_server/error/code"`
@@ -165,19 +171,19 @@ All significant changes in the project are documented here.
 ## v0.2.1
 
 ### Bug Fixes
-* [#6](https://github.com/C-S-D/carrot_rpc/pull/6) - [shamil614](https://github.com/shamil614)
+* [#6](https://github.com/C-S-D/carrot_rpc/pull/6) - [@shamil614](https://github.com/shamil614)
   * Error class not loaded in RpcServer
   * RpcServer should not rename json keys
   * RpcClient dasherizes keys before serializing hash to json. Better conformity to json property naming conventions.
   * RpcClient underscores keys after receiving response from server. Better conformity to ruby naming conventions.
-* [#7](https://github.com/C-S-D/carrot_rpc/pull/7) - [shamil614](https://github.com/shamil614)
+* [#7](https://github.com/C-S-D/carrot_rpc/pull/7) - [@shamil614](https://github.com/shamil614)
   * Make sure hash keys are strings before renaming
 
 
 ## v0.2.0
 
 ### Enhancements
-* [#5](https://github.com/C-S-D/carrot_rpc/pull/5) - [KronicDeth](http://github.com/KronicDeth)
+* [#5](https://github.com/C-S-D/carrot_rpc/pull/5) - [@KronicDeth](http://github.com/KronicDeth)
   * Gems ordered and documented in gemspec and `Gemfile`
   * Temorpary (`#`) files removed from git
   * Rubocop is enabled and used on CircleCI
@@ -226,12 +232,12 @@ All significant changes in the project are documented here.
   * Semantic block delimiters, so we always think about procedural vs functional blocks to make Elixir coding easier.
 
 ### Bug Fixes
-* [#5](https://github.com/C-S-D/carrot_rpc/pull/5) - [KronicDeth](http://github.com/KronicDeth)
+* [#5](https://github.com/C-S-D/carrot_rpc/pull/5) - [@KronicDeth](http://github.com/KronicDeth)
   * `ClientServer::ClassMethods` has been moved under `CarrotRpc` namespace as `CarrotRpc::ClientServer`
   * `HashExtensions` has been moved under `CarrotRpc` namespace as `CarrotRpc::HashExtensions`
 
 ### Incompatible Changes
-* [#5](https://github.com/C-S-D/carrot_rpc/pull/5) - [KronicDeth](http://github.com/KronicDeth)
+* [#5](https://github.com/C-S-D/carrot_rpc/pull/5) - [@KronicDeth](http://github.com/KronicDeth)
   * `ClientServer::ClassMethods` renamed to `CarrotRpc::ClientServer`
   * `HashExtensions` renamed to `CarrotRpc::HashExtensions`
   * `ClientServer::ClassMethods#get_queue_name` renamed to `CarrotRpc::ClientServer#queue_name()` (no args is the reader, one argument is the writer)
@@ -239,21 +245,21 @@ All significant changes in the project are documented here.
 ## v0.1.2
 
 ### Enhancements
-* [#4](https://github.com/C-S-D/carrot_rpc/pull1) - [shamil614](https://github.com/shamil614)
+* [#4](https://github.com/C-S-D/carrot_rpc/pull1) - [@shamil614](https://github.com/shamil614)
   * Rename the keys in the parsed payload from '-' to '_'
   * Added integration specs to test functionality
   * Logging to test.log file
   * Setup for circleci integration tests to rabbitmq
 
 ### Bug Fixes
-* [#4](https://github.com/C-S-D/carrot_rpc/pull1) - [shamil614](https://github.com/shamil614)
+* [#4](https://github.com/C-S-D/carrot_rpc/pull1) - [@shamil614](https://github.com/shamil614)
   * Some require statements not properly loading modules
   * Consistent use of require vs require_relative
 
 ## v0.1.1
 
 ### Enhancements
-* [#1](https://github.com/C-S-D/carrot_rpc/pull1) - [shamil614](https://github.com/shamil614)
+* [#1](https://github.com/C-S-D/carrot_rpc/pull1) - [@shamil614](https://github.com/shamil614)
   * `CarrotRpc.configuration.bunny` can be set to custom
     [`Bunny` instance](http://www.rubydoc.info/gems/bunny/Bunny#new-class_method).
   * `CarrotRpc::RpcClient` and `CarrotRpc::RpcServer` subclasses can set their queue name with the `queue_name` class
@@ -264,7 +270,7 @@ All significant changes in the project are documented here.
     is converted to a JSON RPC error and sent back to the client.
 
 ### Bug Fixes
-* [#1](https://github.com/C-S-D/carrot_rpc/pull/1) - [shamil614](https://github.com/shamil614)
+* [#1](https://github.com/C-S-D/carrot_rpc/pull/1) - [@shamil614](https://github.com/shamil614)
   * Send `jsonrpc` key instead of incorrect `json_rpc` key in JSON RPC response messages
   * All files under `bin` are marked as gem executables instead of just `carrot_rpc`
   * Fix files not loading properly when using `carrot_rpc`
@@ -273,7 +279,7 @@ All significant changes in the project are documented here.
     `CarrotRpc::ServerRunner#run_servers` to prevent a race condition where `#start` may try to use the logger.
 
 ### Incompatible Changes
-* [#1](https://github.com/C-S-D/carrot_rpc/pull/1) - [shamil614](https://github.com/shamil614)
+* [#1](https://github.com/C-S-D/carrot_rpc/pull/1) - [@shamil614](https://github.com/shamil614)
   * `CarrotRpc.configuration.bunny` **MUST** be set to a
     [`Bunny` instance](http://www.rubydoc.info/gems/bunny/Bunny#new-class_method), usually using `Bunny.new`.
   * `CarrotRpc::RpcClient` and `CarrotRpc::RpcServer` subclasses **MUST** set their queue name with the `queue_name`
