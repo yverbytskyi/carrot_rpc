@@ -43,7 +43,7 @@ Or install it yourself as:
 ## Configuration
 There's two modes for CarrotRpc: server and client. The server is run via command line, and the client is run in your ruby application during the request / response lifecycle (like your Rails Controller).
 ### Server
-The server is configured via command line and run in it's own process.
+The server is configured via command line and run in it's own process. Note: the server process will attempt to start a connection with Bunny automatically.
 
 Carrot is easy to run via command line:
 ```bash
@@ -80,7 +80,7 @@ Clients are configured by initializing `CarrotRpc::Configuration`. The most comm
 CarrotRpc.configure do |config|
   # Required on the client to connect to RabbitMQ.
   # Bunny defaults to connecting to ENV['RABBITMQ_URL']. See Bunny docs.
-  config.bunny = Bunny.new.start
+  config.bunny = Bunny.new
   # Set the log level. Ruby Logger Docs http://ruby-doc.org/stdlib-2.2.0/libdoc/logger/rdoc/Logger.html
   config.loglevel = Logger::INFO
   # Create a new logger or use the Rails logger.
@@ -99,6 +99,45 @@ CarrotRpc.configure do |config|
   # config.logfile = nil
   # config.pidfile = nil
   # config.thread_request_variable = nil
+end
+```
+
+Depending upon your webserver of choice you'll want to make sure that the conneciton to RabbitMQ via Bunny is made after the server Process forks because Bunny immediately threads after the `start()` method.
+
+Here's an example of how to do so with Puma.
+
+```ruby
+# config/puma.rb
+
+on_worker_boot do
+  CarrotRpc.configure do |config|
+    # Each worker should have it's own connection to RabbitMQ.
+    config.bunny = Bunny.new
+  end
+  CarrotRpc.connect
+end
+```
+
+Similarly with Sidekiq
+```ruby
+# config/initializers/sidekiq.rb
+
+Sidekiq.configure_server do |config|
+  CarrotRpc.connect
+end
+```
+
+If you want to run RpcClient in the rails console, you'll want to make a connection only on Rails console start.
+```ruby
+# config/application.rb
+
+module FooApplication
+  class Application < Rails::Application
+    # Only attempt to connect with Bunny in the console!!!
+    console do
+      CarrotRpc.connect
+    end
+  end
 end
 ```
 

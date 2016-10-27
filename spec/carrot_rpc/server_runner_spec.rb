@@ -116,6 +116,11 @@ RSpec.describe CarrotRpc::ServerRunner do
       CarrotRpc.configuration.bunny = bunny
     end
 
+    it "attempts to start a conneciton with Bunny" do
+      expect(CarrotRpc).to receive(:connect)
+      server_runner.run!
+    end
+
     it "always calls essential methods" do
       expect(server_runner.signal).to receive(:trap)
       expect(server_runner.pid).to receive(:check)
