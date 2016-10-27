@@ -48,4 +48,11 @@ module CarrotRpc
   def self.configure
     yield configuration
   end
+
+  # Attempts to start a connection to the existing Bunny object.
+  # @return [Bunny::Session]
+  def self.connect
+    bunny = configuration.bunny
+    bunny.start unless bunny.open?
+  end
 end

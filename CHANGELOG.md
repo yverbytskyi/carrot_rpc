@@ -47,6 +47,12 @@
 # Changelog
 All significant changes in the project are documented here.
 
+## v0.8.0
+### Enchancements
+* Don't assume that Bunny already has a connection to RabbitMQ.
+* Attempt to start Bunny for the servers
+* This allows the implementing application to decide when to start the connection when using a forking web server
+
 ## v0.7.1
 ### Bug Fixes
 * [#40](https://github.com/C-S-D/carrot_rpc/pull/41) - Deletes Queues immediately after the last consumer is unsubscribed. Reduces memory load. API remains the same. - [@shamil614](https://github.com/C-S-D/carrot_rpc/pull/34)

@@ -37,6 +37,8 @@ class CarrotRpc::ServerRunner
 
   # Start the servers and the run loop.
   def run!
+    CarrotRpc.connect
+
     signal.trap
 
     pid.check
