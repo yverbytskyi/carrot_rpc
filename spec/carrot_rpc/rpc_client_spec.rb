@@ -10,7 +10,7 @@ RSpec.describe CarrotRpc::RpcClient do
     Class.new(CarrotRpc::RpcClient)
   }
 
-  describe "#queue_name" do
+  describe ".queue_name" do
     it "has a queue name class method" do
       client_class.queue_name "foo"
       expect(client_class.queue_name).to eq "foo"
@@ -57,7 +57,7 @@ RSpec.describe CarrotRpc::RpcClient do
     end
   end
 
-  describe "#queue_options" do
+  describe ".queue_options" do
     it "has a queue options class method" do
       client_class.queue_options durable: true
       expect(client_class.queue_options).to eq({ durable: true })

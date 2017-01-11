@@ -78,7 +78,7 @@ RSpec.describe CarrotRpc::RpcServer do
     end
   end
 
-  describe "#queue_name" do
+  describe ".queue_name" do
     let(:server_class) {
       Class.new(CarrotRpc::RpcServer)
     }
@@ -113,7 +113,7 @@ RSpec.describe CarrotRpc::RpcServer do
     end
   end
 
-  describe "#queue_options" do
+  describe ".queue_options" do
     let(:server_class) {
       Class.new(CarrotRpc::RpcServer)
     }
