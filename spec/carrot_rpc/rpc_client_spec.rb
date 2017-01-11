@@ -58,13 +58,6 @@ RSpec.describe CarrotRpc::RpcClient do
   end
 
   describe "#queue_options" do
-    def delete_queue
-      channel = CarrotRpc.configuration.bunny.create_channel
-      queue = channel.queue("foo")
-      queue.delete
-      channel.close
-    end
-
     it "has a queue options class method" do
       client_class.queue_options durable: true
       expect(client_class.queue_options).to eq({ durable: true })
