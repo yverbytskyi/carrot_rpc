@@ -19,7 +19,7 @@ class CarrotRpc::RpcServer
     @logger = config.logger
     @block = block
     queue_name = self.class.test_queue_name(self.class.queue_name, config.server_test_mode)
-    @server_queue = @channel.queue(queue_name)
+    @server_queue = @channel.queue(queue_name, self.class.queue_options)
     @exchange = @channel.default_exchange
   end
 

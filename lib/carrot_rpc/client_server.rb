@@ -23,6 +23,27 @@ module CarrotRpc::ClientServer
     end
   end
 
+  # @overload queue_options(options)
+  #
+  #   Allows for custom queue options, such as durable.
+  #
+  #   @options params [Hash] a hash of options to pass to bunny.
+  #
+  # @overload queue_options
+  #   The current queue options previously set with `#queue_options(options)`.
+  #
+  #   @return [Hash]
+  def queue_options(*args)
+    if args.length == 0
+      @queue_options || {}
+    elsif args.length == 1
+      @queue_options = args[0]
+    else
+      fail ArgumentError,
+           "queue_options(options) :: options or queue_options() :: current_options are the only ways to call queue_options"
+    end
+  end
+
   def test_queue_name(name, append_name = false)
     return name unless append_name
     if name

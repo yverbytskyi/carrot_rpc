@@ -57,6 +57,42 @@ RSpec.describe CarrotRpc::RpcClient do
     end
   end
 
+  describe "#queue_options" do
+    def delete_queue
+      channel = CarrotRpc.configuration.bunny.create_channel
+      queue = channel.queue("foo")
+      queue.delete
+      channel.close
+    end
+
+    it "has a queue options class method" do
+      client_class.queue_options durable: true
+      expect(client_class.queue_options).to eq({ durable: true })
+    end
+
+    context "during #start" do
+      let(:channel) {
+        instance_double(Bunny::Channel, default_exchange: nil)
+      }
+
+      before(:each) do
+        allow(CarrotRpc.configuration.bunny).to receive(:create_channel).and_return(channel)
+      end
+
+      it "does set options with defaults" do
+        expect(channel).to receive(:queue).with(nil, auto_delete: false, durable: true)
+        client_class.queue_options durable: true
+        client.start
+      end
+
+      it "does override auto_delete" do
+        expect(channel).to receive(:queue).with(nil, auto_delete: true)
+        client_class.queue_options auto_delete: true
+        client.start
+      end
+    end
+  end
+
   describe "#remote_call" do
     before :each do
       CarrotRpc.configuration.rpc_client_request_key_format = :dasherize
