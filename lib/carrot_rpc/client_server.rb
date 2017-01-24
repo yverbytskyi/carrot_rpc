@@ -19,8 +19,8 @@ module CarrotRpc::ClientServer
       @queue_name = args[0]
     else
       fail ArgumentError,
-        "queue_name(new_name) :: new_name or queue_name() :: current_name " \
-        "are the only ways to call queue_name"
+           "queue_name(new_name) :: new_name or queue_name() :: " \
+           "current_name are the only ways to call queue_name"
     end
   end
 
@@ -41,8 +41,8 @@ module CarrotRpc::ClientServer
       @queue_options = args[0]
     else
       fail ArgumentError,
-        "queue_options(options) :: options or queue_options() :: " \
-        "current_options are the only ways to call queue_options"
+           "queue_options(options) :: options or queue_options() :: " \
+           "current_options are the only ways to call queue_options"
     end
   end
 
