@@ -135,6 +135,7 @@ RSpec.describe CarrotRpc::RpcClient do
       # I don't feel like waiting for the default 5 seconds...do you?
       CarrotRpc.configuration.rpc_client_timeout = 0.1
       expect { client.wait_for_result("Bogus-123") }.to raise_error CarrotRpc::Exception::RpcClientTimeout
+      expect(client.instance_variable_get(:@results)).to_not have_key("Bogus-123")
     end
   end
 
