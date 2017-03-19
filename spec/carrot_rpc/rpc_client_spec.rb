@@ -60,7 +60,7 @@ RSpec.describe CarrotRpc::RpcClient do
   describe ".queue_options" do
     it "has a queue options class method" do
       client_class.queue_options durable: true
-      expect(client_class.queue_options).to eq({ durable: true })
+      expect(client_class.queue_options).to eq(durable: true)
     end
 
     context "during #start" do

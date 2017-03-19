@@ -124,11 +124,11 @@ RSpec.describe CarrotRpc::RpcServer do
 
     it "is readable by queue_options/0" do
       server_class.queue_options durable: true
-      expect(server_class.queue_options).to eq({ durable: true })
+      expect(server_class.queue_options).to eq(durable: true)
     end
 
     it "does returns empty hash as default" do
-      expect(server_class.queue_options).to eq({ })
+      expect(server_class.queue_options).to eq({})
     end
   end
 
