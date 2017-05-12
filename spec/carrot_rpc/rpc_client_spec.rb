@@ -247,44 +247,52 @@ RSpec.describe CarrotRpc::RpcClient do
 
   describe "#parse_response" do
     it "returns the result data" do
-      response = {'jsonrpc': '2.0', 'result': {'foo': 'bar'}, 'id': 1}
-      parsed_response = client.send(:parse_response,response)
+      response = { 'jsonrpc': "2.0", 'result': { 'foo': "bar" }, 'id': 1 }
+      parsed_response = client.send(:parse_response, response)
 
-      expect(parsed_response).to eq('foo': 'bar')
+      expect(parsed_response).to eq('foo': "bar")
     end
 
     it "raises an exception for an invalid method error" do
-      response = {'jsonrpc': '2.0', 'error': {'code': -32601, 'message': 'Method not found'}, 'id': 1}
-      parsed_response = client.send(:parse_response,response)
+      response = { 'jsonrpc': "2.0", 'error': { 'code': -32_601, 'message': "Method not found" }, 'id': 1 }
+      parsed_response = client.send(:parse_response, response)
 
       expect(parsed_response).to be_a(CarrotRpc::Error)
-      expect(parsed_response.code).to eq(-32601)
-      expect(parsed_response.message).to eq('Method not found')
+      expect(parsed_response.code).to eq(-32_601)
+      expect(parsed_response.message).to eq("Method not found")
     end
 
     it "raises an exception for a server error with data" do
-      response = {'jsonrpc': '2.0', 'error': {'code': -32000, 'message': 'Application specific error', 'data': {'foo': 'bar is not allowed'}}, 'id': 1}
-      parsed_response = client.send(:parse_response,response)
+      response = {
+        'jsonrpc': "2.0",
+        'error': {
+          'code': -32_000,
+          'message': "Application specific error",
+          'data': { 'foo': "bar is not allowed" }
+        },
+        'id': 1
+      }
+      parsed_response = client.send(:parse_response, response)
 
       expect(parsed_response).to be_a(CarrotRpc::Error)
-      expect(parsed_response.code).to eq(-32000)
-      expect(parsed_response.message).to eq('Application specific error')
-      expect(parsed_response.data).to eq({'foo': 'bar is not allowed'})
+      expect(parsed_response.code).to eq(-32_000)
+      expect(parsed_response.message).to eq("Application specific error")
+      expect(parsed_response.data).to eq('foo': "bar is not allowed")
     end
 
     it "raises an exception for a server error without data" do
-      response = {'jsonrpc': '2.0', 'error': {'code': -32000, 'message': 'Application specific error'}, 'id': 1}
-      parsed_response = client.send(:parse_response,response)
+      response = { 'jsonrpc': "2.0", 'error': { 'code': -32_000, 'message': "Application specific error" }, 'id': 1 }
+      parsed_response = client.send(:parse_response, response)
 
       expect(parsed_response).to be_a(CarrotRpc::Error)
-      expect(parsed_response.code).to eq(-32000)
-      expect(parsed_response.message).to eq('Application specific error')
+      expect(parsed_response.code).to eq(-32_000)
+      expect(parsed_response.message).to eq("Application specific error")
       expect(parsed_response.data).to be_nil
     end
 
     it "raises an exception for an error with no code or message" do
-      response = {'jsonrpc': '2.0', 'error': {}, 'id': 1}
-      parsed_response = client.send(:parse_response,response)
+      response = { 'jsonrpc': "2.0", 'error': {}, 'id': 1 }
+      parsed_response = client.send(:parse_response, response)
 
       expect(parsed_response).to be_a(CarrotRpc::Exception::InvalidResponse)
     end

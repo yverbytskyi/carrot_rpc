@@ -91,7 +91,7 @@ class CarrotRpc::RpcClient
 
       # If we get an exception, raise it in this thread, so the application can deal with it.
       if result.is_a? Exception
-        raise result
+        fail result
       end
 
       result
@@ -157,29 +157,28 @@ class CarrotRpc::RpcClient
       response[:result]
     # data is the key holding the error information
     elsif response.key?(:error)
-      # If we don't have a code, throw an exception.
-      unless response[:error].has_key? :code and
-          response[:error].has_key? :message
-        return CarrotRpc::Exception::InvalidResponse.new
-      end
-
-      if response[:error].has_key? :data
-        error = CarrotRpc::Error.new(
-          code: response[:error][:code],
-          message: response[:error][:message],
-          data: response[:error][:data]
-        )
-      else
-        error = CarrotRpc::Error.new(
-          code: response[:error][:code],
-          message: response[:error][:message]
-        )
-      end
-
-      error
+      parse_error_result(response)
     else
       response
     end
+  end
+
+  # Build an CarrotRpc::Error based on an error response or throw CarrotRpc::Exception::InvalidResponse if
+  # the response error itself is invalid.
+  # @param [Hash] response from rpc call
+  # @return [CarrotRpc::Error, CarrotRpc::Exception::InvalidResponse]
+  def parse_error_result(response)
+    # If we don't have a code, throw an exception.
+    unless response[:error].key?(:code) &&
+           response[:error].key?(:message)
+      return CarrotRpc::Exception::InvalidResponse.new
+    end
+
+    CarrotRpc::Error.new(
+      code: response[:error][:code],
+      data: response[:error].key?(:data) ? response[:error][:data] : nil,
+      message: response[:error][:message]
+    )
   end
 
   def publish_payload(payload, correlation_id:)
