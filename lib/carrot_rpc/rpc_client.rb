@@ -88,6 +88,12 @@ class CarrotRpc::RpcClient
       # the receiving thread won't be able to find the correlation_id in @results
       result = @results[correlation_id].pop
       @results.delete correlation_id # remove item from hash. prevents memory leak.
+
+      # If we get an exception, raise it in this thread, so the application can deal with it.
+      if result.is_a? Exception
+        fail result
+      end
+
       result
     end
   ensure
@@ -151,10 +157,28 @@ class CarrotRpc::RpcClient
       response[:result]
     # data is the key holding the error information
     elsif response.key?(:error)
-      response[:error][:data]
+      parse_error_result(response)
     else
       response
     end
+  end
+
+  # Build an CarrotRpc::Error based on an error response or throw CarrotRpc::Exception::InvalidResponse if
+  # the response error itself is invalid.
+  # @param [Hash] response from rpc call
+  # @return [CarrotRpc::Error, CarrotRpc::Exception::InvalidResponse]
+  def parse_error_result(response)
+    # If we don't have a code, throw an exception.
+    unless response[:error].key?(:code) &&
+           response[:error].key?(:message)
+      return CarrotRpc::Exception::InvalidResponse.new
+    end
+
+    CarrotRpc::Error.new(
+      code: response[:error][:code],
+      data: response[:error].key?(:data) ? response[:error][:data] : nil,
+      message: response[:error][:message]
+    )
   end
 
   def publish_payload(payload, correlation_id:)
