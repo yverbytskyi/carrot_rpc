@@ -40,7 +40,8 @@ class CarrotRpc::RpcClient
 
     queue_name = self.class.test_queue_name(self.class.queue_name, @config.client_test_mode)
     # auto_delete => false keeps the queue around until RabbitMQ restarts or explicitly deleted
-    @server_queue = @channel.queue(queue_name, auto_delete: false)
+    options = { auto_delete: false }.merge(self.class.queue_options)
+    @server_queue = @channel.queue(queue_name, options)
 
     # Setup a direct exchange.
     @exchange = @channel.default_exchange
