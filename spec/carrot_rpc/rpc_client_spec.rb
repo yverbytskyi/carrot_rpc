@@ -212,24 +212,12 @@ RSpec.describe CarrotRpc::RpcClient do
         queue_name "foo"
 
         # Instance Methods
-        
+
         def index(_params)
           {
             "quixx-foos" => [
-              "foo-baz" => {
-                "biz-baz" => {
-                  "super-duper" => "groovy-burritos"
-                },
-                "fizz-buzz" => "baz",
-                "foo-bar" => "biz"
-              },
-              "foo-bax" => {
-                "biz-baz" => {
-                  "super-duper" => "groovy-tacos"
-                },
-                "fizz-buzz" => "baz",
-                "foo-bar" => "biz"
-              }
+              "foo-baz" => sample_object,
+              "foo-bax" => sample_object
             ]
           }
         end
@@ -243,6 +231,18 @@ RSpec.describe CarrotRpc::RpcClient do
               "fizz-buzz" => "baz",
               "foo-bar" => "biz"
             }
+          }
+        end
+
+        private
+
+        def sample_object
+          {
+            "biz-baz" => {
+              "super-duper" => "groovy-burritos"
+            },
+            "fizz-buzz" => "baz",
+            "foo-bar" => "biz"
           }
         end
       end
@@ -274,7 +274,7 @@ RSpec.describe CarrotRpc::RpcClient do
       after(:each) do
         CarrotRpc.configuration.rpc_client_response_key_format = :none
       end
-      
+
       # lets
 
       let(:index_result) do
@@ -289,7 +289,7 @@ RSpec.describe CarrotRpc::RpcClient do
             },
             "foo_bax" => {
               "biz_baz" => {
-                "super_duper" => "groovy-tacos"
+                "super_duper" => "groovy-burritos"
               },
               "fizz_buzz" => "baz",
               "foo_bar" => "biz"
@@ -315,7 +315,7 @@ RSpec.describe CarrotRpc::RpcClient do
       it "parses the payload from json to hash and changes '-' to '_' in the nested keys for index response" do
         expect(client.index({})).to eq index_result
       end
-      
+
       it "parses the payload from json to hash and changes '-' to '_' in the keys show response" do
         expect(client.show({})).to eq show_result
       end

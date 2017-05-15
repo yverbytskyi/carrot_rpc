@@ -5,7 +5,7 @@ module CarrotRpc::HashExtensions
     # @param [String] find the text to look for in a keys
     # @param [String] replace the text to replace the found text
     # @return [Hash] a new hash
-    def rename_keys(find, replace, new_hash = {})
+    def rename_keys(find, replace, new_hash = {}) # rubocop:disable Metrics/MethodLength
       each do |k, v|
         new_key = k.to_s.gsub(find, replace)
 
@@ -19,6 +19,6 @@ module CarrotRpc::HashExtensions
       end
 
       new_hash
-    end
+    end # rubocop:enable Metrics/MethodLength
   end
 end
