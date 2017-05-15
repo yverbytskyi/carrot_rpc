@@ -212,12 +212,33 @@ RSpec.describe CarrotRpc::RpcClient do
         queue_name "foo"
 
         # Instance Methods
+        
+        def index(_params)
+          {
+            "quixx-foos" => [
+              "foo-baz" => {
+                "biz-baz" => {
+                  "super-duper" => "groovy-burritos"
+                },
+                "fizz-buzz" => "baz",
+                "foo-bar" => "biz"
+              },
+              "foo-bax" => {
+                "biz-baz" => {
+                  "super-duper" => "groovy-tacos"
+                },
+                "fizz-buzz" => "baz",
+                "foo-bar" => "biz"
+              }
+            ]
+          }
+        end
 
         def show(_params)
           {
             "foo-baz" => {
               "biz-baz" => {
-                "super-duper" => "grovy"
+                "super-duper" => "groovy-enchiladas"
               },
               "fizz-buzz" => "baz",
               "foo-bar" => "biz"
@@ -253,13 +274,35 @@ RSpec.describe CarrotRpc::RpcClient do
       after(:each) do
         CarrotRpc.configuration.rpc_client_response_key_format = :none
       end
+      
       # lets
 
-      let(:result) do
+      let(:index_result) do
+        {
+          "quixx_foos" => [
+            "foo_baz" => {
+              "biz_baz" => {
+                "super_duper" => "groovy-burritos"
+              },
+              "fizz_buzz" => "baz",
+              "foo_bar" => "biz"
+            },
+            "foo_bax" => {
+              "biz_baz" => {
+                "super_duper" => "groovy-tacos"
+              },
+              "fizz_buzz" => "baz",
+              "foo_bar" => "biz"
+            }
+          ]
+        }
+      end
+
+      let(:show_result) do
         {
           "foo_baz" => {
             "biz_baz" => {
-              "super_duper" => "grovy"
+              "super_duper" => "groovy-enchiladas"
             },
             "fizz_buzz" => "baz",
             "foo_bar" => "biz"
@@ -269,8 +312,12 @@ RSpec.describe CarrotRpc::RpcClient do
 
       # Callbacks
 
-      it "parses the payload from json to hash and changes '-' to '_' in the keys" do
-        expect(client.show({})).to eq result
+      it "parses the payload from json to hash and changes '-' to '_' in the nested keys for index response" do
+        expect(client.index({})).to eq index_result
+      end
+      
+      it "parses the payload from json to hash and changes '-' to '_' in the keys show response" do
+        expect(client.show({})).to eq show_result
       end
     end
   end
