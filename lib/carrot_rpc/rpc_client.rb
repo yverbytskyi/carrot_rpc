@@ -87,7 +87,6 @@ class CarrotRpc::RpcClient
       # and this must happend before the `Hash.delete` or
       # the receiving thread won't be able to find the correlation_id in @results
       result = @results[correlation_id].pop
-      @results.delete correlation_id # remove item from hash. prevents memory leak.
 
       # If we get an exception, raise it in this thread, so the application can deal with it.
       if result.is_a? Exception
@@ -97,6 +96,7 @@ class CarrotRpc::RpcClient
       result
     end
   ensure
+    @results.delete correlation_id # remove item from hash. prevents memory leak.
     @channel.close
   end
 
