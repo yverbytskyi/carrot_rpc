@@ -11,6 +11,7 @@
     - [Writing Servers](#writing-servers)
     - [Writing Clients](#writing-clients)
       - [Using request threading in clients](#using-request-threading-in-clients)
+    - [Custom Queue Options](#custom-queue-options)
       - [Errors](#errors)
     - [Support for JSONAPI::Resources](#support-for-jsonapiresources)
   - [Development](#development)
