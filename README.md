@@ -11,6 +11,7 @@
     - [Writing Servers](#writing-servers)
     - [Writing Clients](#writing-clients)
       - [Using request threading in clients](#using-request-threading-in-clients)
+      - [Errors](#errors)
     - [Support for JSONAPI::Resources](#support-for-jsonapiresources)
   - [Development](#development)
   - [Contributing](#contributing)
@@ -260,6 +261,9 @@ The following overrides the default CarrotRpc auto_delete option, and sets durab
     queue_options auto_delete: true, durable: true
   end
 ```
+
+#### Errors
+If a JSON-RPC error is returned, a CarrotRpc::Error exception is raised with the appropriate attributes set. If a malformed JSON-RPC error is returned (i.e. code or message are missing), an CarrotRpc::Exception::InvalidResponse exception is raised.
 
 ### Support for JSONAPI::Resources
 In the case that you're writing an application that uses the `jsonapi-resources` gem and you want the `RpcServer` to have the same functionality, then we got you covered. All you need to do is import a few modules. See [jsonapi-resources](https://github.com/cerebris/jsonapi-resources) for details on how to implement resources for your models.
