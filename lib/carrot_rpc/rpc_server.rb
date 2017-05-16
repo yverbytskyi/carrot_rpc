@@ -93,7 +93,7 @@ class CarrotRpc::RpcServer
 
   def setup_queue(config)
     queue_name = self.class.test_queue_name(self.class.queue_name, config.server_test_mode)
-    @server_queue = @channel.queue(queue_name)
+    @server_queue = @channel.queue(queue_name, self.class.queue_options)
   end
 
   def thread_request(request_message:)

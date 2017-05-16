@@ -11,6 +11,7 @@
     - [Writing Servers](#writing-servers)
     - [Writing Clients](#writing-clients)
       - [Using request threading in clients](#using-request-threading-in-clients)
+    - [Custom Queue Options](#custom-queue-options)
       - [Errors](#errors)
     - [Support for JSONAPI::Resources](#support-for-jsonapiresources)
   - [Development](#development)
@@ -248,6 +249,18 @@ class ProfileClient < CarrotRpc::RpcClient
     end
   }
 end
+```
+
+### Custom Queue Options
+By default, client queues are defined with `auto_delete: false`, and server queues are defined with no parameters, so use the Bunny/RabbitMQ defaults. These can be customised by calling the `queue_options` class method to add to or override these options on either a RpcClient or RpcServer subclass. This method takes any queue parameter accepted by Bunny.
+Care should be taken when setting these options, as CarrotRPC does not attempt to fix mistakes here. The defaults are typically what you want.
+
+The following overrides the default CarrotRpc auto_delete option, and sets durable to true:
+```ruby
+  class CarClient < CarrotRpc::RpcClient
+    queue_name "car_queue"
+    queue_options auto_delete: true, durable: true
+  end
 ```
 
 #### Errors
