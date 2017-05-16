@@ -55,7 +55,10 @@ All significant changes in the project are documented here.
 
 ## v1.0.0
 ### Incompatible Changes
-* [#53](https://github.com/C-S-D/carrot_rpc/pull/53) - Rename keys for any hashes inside arrays. Fixes issue [#35](https://github.com/C-S-D/carrot_rpc/issues/35) - [@thewalkingtoast](https://github.com/thewalkingtoast)
+* [#48](https://github.com/C-S-D/carrot_rpc/pull/48) - Remove queue for correlation_id when RpcClient#wait_for_result raises an exception. -[@nward](https://github.com/nward)
+* [#50](https://github.com/C-S-D/carrot_rpc/pull/50) - Raise an exception for error responses to let consuming application handle response. -[@nward](https://github.com/nward)
+* [#52](https://github.com/C-S-D/carrot_rpc/pull/52) - Allow custom queue options to be set -[@nward](https://github.com/nward)
+* [#53](https://github.com/C-S-D/carrot_rpc/pull/53) - Rename keys for any hashes inside arrays. Fixes issue [#35](https://github.com/C-S-D/carrot_rpc/issues/35) -[@thewalkingtoast](https://github.com/thewalkingtoast)
 
 ## v0.8.1
 ### Enhancements
