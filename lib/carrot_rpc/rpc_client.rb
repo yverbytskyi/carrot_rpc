@@ -70,16 +70,25 @@ class CarrotRpc::RpcClient
   # @param remote_method [String, Symbol] the method to be called on current receiver
   # @param params [Hash] the arguments for the method being called.
   # @return [Object] the result of the method call.
+  #
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def remote_call(remote_method, params)
     start
     subscribe
     correlation_id = SecureRandom.uuid
-    logger.with_correlation_id(correlation_id) do
-      params = self.class.before_request.call(params) if self.class.before_request
-      publish(correlation_id: correlation_id, method: remote_method, params: request_key_formatter(params))
-      wait_for_result(correlation_id)
+    extra = { correlation_id: correlation_id }
+
+    ActiveSupport::Notifications.instrument("client.#{server_queue}.remote_call", extra: extra) do
+      logger.with_correlation_id(correlation_id) do
+        params = self.class.before_request.call(params) if self.class.before_request
+        publish(correlation_id: correlation_id, method: remote_method, params: request_key_formatter(params))
+        wait_for_result(correlation_id)
+      end
     end
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   def wait_for_result(correlation_id)
     # Should be good to timeout here because we're blocking in the main thread here.
