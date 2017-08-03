@@ -79,7 +79,7 @@ class CarrotRpc::RpcClient
     correlation_id = SecureRandom.uuid
     extra = { correlation_id: correlation_id }
 
-    ActiveSupport::Notifications.instrument("client.#{server_queue}.remote_call", extra: extra) do
+    ActiveSupport::Notifications.instrument("client.#{server_queue.name}.remote_call", extra: extra) do
       logger.with_correlation_id(correlation_id) do
         params = self.class.before_request.call(params) if self.class.before_request
         publish(correlation_id: correlation_id, method: remote_method, params: request_key_formatter(params))
