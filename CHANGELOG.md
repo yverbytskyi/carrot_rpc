@@ -3,48 +3,50 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Changelog](#changelog)
+  - [v1.1.0](#v110)
+    - [Enhancements](#enhancements)
   - [v1.0.0](#v100)
     - [Incompatible Changes](#incompatible-changes)
   - [v0.8.1](#v081)
-    - [Enhancements](#enhancements)
-  - [v0.8.0](#v080)
     - [Enhancements](#enhancements-1)
+  - [v0.8.0](#v080)
+    - [Enhancements](#enhancements-2)
   - [v0.7.1](#v071)
     - [Bug Fixes](#bug-fixes)
   - [v0.7.0](#v070)
     - [Bug Fixes](#bug-fixes-1)
     - [Incompatible Changes](#incompatible-changes-1)
   - [v0.6.0](#v060)
-    - [Enhancements](#enhancements-2)
+    - [Enhancements](#enhancements-3)
   - [v0.5.1](#v051)
     - [Bug Fixes](#bug-fixes-2)
   - [v0.5.0](#v050)
-    - [Enhancements](#enhancements-3)
+    - [Enhancements](#enhancements-4)
     - [Incompatible Changes](#incompatible-changes-2)
   - [v0.4.1](#v041)
     - [Bug Fixes](#bug-fixes-3)
   - [v0.4.0](#v040)
-    - [Enhancements](#enhancements-4)
+    - [Enhancements](#enhancements-5)
     - [Bug Fixes](#bug-fixes-4)
     - [Incompatible Changes](#incompatible-changes-3)
   - [v0.3.0](#v030)
-    - [Enhancements](#enhancements-5)
+    - [Enhancements](#enhancements-6)
     - [Bug Fixes](#bug-fixes-5)
   - [v0.2.3](#v023)
-    - [Enhancements](#enhancements-6)
+    - [Enhancements](#enhancements-7)
     - [Bug Fixes](#bug-fixes-6)
     - [Upgrading](#upgrading)
   - [v0.2.1](#v021)
     - [Bug Fixes](#bug-fixes-7)
   - [v0.2.0](#v020)
-    - [Enhancements](#enhancements-7)
+    - [Enhancements](#enhancements-8)
     - [Bug Fixes](#bug-fixes-8)
     - [Incompatible Changes](#incompatible-changes-4)
   - [v0.1.2](#v012)
-    - [Enhancements](#enhancements-8)
+    - [Enhancements](#enhancements-9)
     - [Bug Fixes](#bug-fixes-9)
   - [v0.1.1](#v011)
-    - [Enhancements](#enhancements-9)
+    - [Enhancements](#enhancements-10)
     - [Bug Fixes](#bug-fixes-10)
     - [Incompatible Changes](#incompatible-changes-5)
 
@@ -52,6 +54,14 @@
 
 # Changelog
 All significant changes in the project are documented here.
+
+## v1.1.0
+
+### Enhancements
+* [#55](https://github.com/C-S-D/carrot_rpc/pull/55) - [@shamil614](https://github.com/shamil614)
+  * `ActiveSupport::Notifications` to enable universal metrics gathering
+    * `client.SERVER_QUEUE.remote_call` will include `correlation_id` of request
+    * `server.SERVER_QUEUE.consume` will include `correlation_id` of request
 
 ## v1.0.0
 ### Incompatible Changes
