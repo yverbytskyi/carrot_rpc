@@ -5,6 +5,7 @@
 - [Changelog](#changelog)
   - [v1.1.0](#v110)
     - [Enhancements](#enhancements)
+    - [Bug Fixes](#bug-fixes)
   - [v1.0.0](#v100)
     - [Incompatible Changes](#incompatible-changes)
   - [v0.8.1](#v081)
@@ -12,42 +13,42 @@
   - [v0.8.0](#v080)
     - [Enhancements](#enhancements-2)
   - [v0.7.1](#v071)
-    - [Bug Fixes](#bug-fixes)
-  - [v0.7.0](#v070)
     - [Bug Fixes](#bug-fixes-1)
+  - [v0.7.0](#v070)
+    - [Bug Fixes](#bug-fixes-2)
     - [Incompatible Changes](#incompatible-changes-1)
   - [v0.6.0](#v060)
     - [Enhancements](#enhancements-3)
   - [v0.5.1](#v051)
-    - [Bug Fixes](#bug-fixes-2)
+    - [Bug Fixes](#bug-fixes-3)
   - [v0.5.0](#v050)
     - [Enhancements](#enhancements-4)
     - [Incompatible Changes](#incompatible-changes-2)
   - [v0.4.1](#v041)
-    - [Bug Fixes](#bug-fixes-3)
+    - [Bug Fixes](#bug-fixes-4)
   - [v0.4.0](#v040)
     - [Enhancements](#enhancements-5)
-    - [Bug Fixes](#bug-fixes-4)
+    - [Bug Fixes](#bug-fixes-5)
     - [Incompatible Changes](#incompatible-changes-3)
   - [v0.3.0](#v030)
     - [Enhancements](#enhancements-6)
-    - [Bug Fixes](#bug-fixes-5)
+    - [Bug Fixes](#bug-fixes-6)
   - [v0.2.3](#v023)
     - [Enhancements](#enhancements-7)
-    - [Bug Fixes](#bug-fixes-6)
+    - [Bug Fixes](#bug-fixes-7)
     - [Upgrading](#upgrading)
   - [v0.2.1](#v021)
-    - [Bug Fixes](#bug-fixes-7)
+    - [Bug Fixes](#bug-fixes-8)
   - [v0.2.0](#v020)
     - [Enhancements](#enhancements-8)
-    - [Bug Fixes](#bug-fixes-8)
+    - [Bug Fixes](#bug-fixes-9)
     - [Incompatible Changes](#incompatible-changes-4)
   - [v0.1.2](#v012)
     - [Enhancements](#enhancements-9)
-    - [Bug Fixes](#bug-fixes-9)
+    - [Bug Fixes](#bug-fixes-10)
   - [v0.1.1](#v011)
     - [Enhancements](#enhancements-10)
-    - [Bug Fixes](#bug-fixes-10)
+    - [Bug Fixes](#bug-fixes-11)
     - [Incompatible Changes](#incompatible-changes-5)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -62,6 +63,14 @@ All significant changes in the project are documented here.
   * `ActiveSupport::Notifications` to enable universal metrics gathering
     * `client.SERVER_QUEUE.remote_call` will include `correlation_id` of request
     * `server.SERVER_QUEUE.consume` will include `correlation_id` of request
+* [#56](https://github.com/C-S-D/carrot_rpc/pull/56) - [@KronicDeth](https://gitub.com/KronicDeth)
+  * Match client log tags to server log tags.
+    * Client tags will start with `client` as server tags start with `server`. 
+    * When available, it will have `server_queue=SERVER_QUEUE_NAME`.
+    * Finally, it will always have `correlation_id=CORRELATION_ID`.
+
+### Bug Fixes
+* [#56](https://github.com/C-S-D/carrot_rpc/pull/56) - `client.SERVER_QUEUE_NAME.remote_call` `ActiveSupport::Notification` was using the server queue object instead of name, so it interpolated as `#<...>`. - [@KronicDeth](https://gitub.com/KronicDeth)
 
 ## v1.0.0
 ### Incompatible Changes
