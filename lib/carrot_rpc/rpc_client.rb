@@ -76,16 +76,17 @@ class CarrotRpc::RpcClient
   def remote_call(remote_method, params)
     start
     subscribe
+    server_queue_name = server_queue.name
     correlation_id = SecureRandom.uuid
     extra = { correlation_id: correlation_id }
 
-    ActiveSupport::Notifications.instrument("client.#{server_queue}.remote_call", extra: extra) do
-      logger.with_correlation_id(correlation_id) do
+    ActiveSupport::Notifications.instrument("client.#{server_queue_name}.remote_call", extra: extra) {
+      logger.tagged("client", "server_queue=#{server_queue_name}", "correlation_id=#{correlation_id}") {
         params = self.class.before_request.call(params) if self.class.before_request
         publish(correlation_id: correlation_id, method: remote_method, params: request_key_formatter(params))
         wait_for_result(correlation_id)
-      end
-    end
+      }
+    }
   end
   # rubocop:enable Metrics/AbcSize
   # rubocop:enable Metrics/MethodLength
@@ -147,15 +148,17 @@ class CarrotRpc::RpcClient
   private
 
   def consume(_delivery_info, properties, payload)
-    logger.with_correlation_id(properties[:correlation_id]) do
+    correlation_id = properties[:correlation_id]
+
+    logger.tagged("client", "correlation_id=#{correlation_id}") {
       logger.debug "Receiving response: #{payload}"
 
       response = JSON.parse(payload).with_indifferent_access
 
       result = parse_response(response)
       result = response_key_formatter(result).with_indifferent_access if result.is_a? Hash
-      @results[properties[:correlation_id]].push(result)
-    end
+      @results[correlation_id].push(result)
+    }
   end
 
   # Logic to find the data from the RPC response.
