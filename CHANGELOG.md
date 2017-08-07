@@ -56,6 +56,14 @@
 # Changelog
 All significant changes in the project are documented here.
 
+## v1.2.0
+
+### Enhancements
+* [#57](https://github.com/C-S-D/carrot_rpc/pull/57) - Regression test to prevent rename_keys being called on `String` - [@KronicDeth](https://gitub.com/KronicDeth)
+
+### Bug Fixes
+* [#57](https://github.com/C-S-D/carrot_rpc/pull/57) - Only rename key in values that are `Array`s or `Hash`es. - [@KronicDeth](https://gitub.com/KronicDeth)
+
 ## v1.1.0
 
 ### Enhancements
