@@ -23,7 +23,7 @@ module CarrotRpc::HashExtensions
     # @param [String] find the text to look for in a keys
     # @param [String] replace the text to replace the found text
     # @return [Hash] a new hash
-    def rename_keys(find, replace, new_hash = {})
+    def rename_keys(find, replace, new_hash = self.class.new)
       each do |k, v|
         new_key = k.to_s.gsub(find, replace)
 
