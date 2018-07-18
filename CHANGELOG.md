@@ -61,6 +61,10 @@
 # Changelog
 All significant changes in the project are documented here.
 
+## master
+* [#60](https://github.com/C-S-D/carrot_rpc/pull/60) Drop support for Ruby 2.2 and add support for Ruby 2.5. Update tested versions of Ruby 2.3 and Ruby 2.4.
+* [#61](https://github.com/C-S-D/carrot_rpc/pull/61) Upgrade Yard dependency and Rubocop dependency to fix reported CVEs.
+
 ## v1.2.1
 
 ### Bug Fixes
