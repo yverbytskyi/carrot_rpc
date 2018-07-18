@@ -43,9 +43,9 @@ Gem::Specification.new do |spec|
   # Unit test framework
   spec.add_development_dependency "rspec"
   # Style-checker
-  spec.add_development_dependency "rubocop", "~> 0.36.0"
+  spec.add_development_dependency "rubocop", "~> 0.49.1"
   # Documentation
-  spec.add_development_dependency "yard", "~> 0.8"
+  spec.add_development_dependency "yard", "~> 0.9.11"
 
   spec.required_ruby_version = "~> 2.2"
 end
