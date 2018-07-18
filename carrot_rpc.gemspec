@@ -47,5 +47,5 @@ Gem::Specification.new do |spec|
   # Documentation
   spec.add_development_dependency "yard", "~> 0.8"
 
-  spec.required_ruby_version = "~> 2.2"
+  spec.required_ruby_version = "~> 2.3"
 end
