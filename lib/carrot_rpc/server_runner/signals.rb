@@ -3,7 +3,7 @@ module CarrotRpc::ServerRunner::Signals
   # CONSTANTS
 
   # The name of the signals to trap.
-  NAMES = %w(HUP INT QUIT TERM).freeze
+  NAMES = %w[HUP INT QUIT TERM].freeze
 
   # Traps all {NAMES}.
   #

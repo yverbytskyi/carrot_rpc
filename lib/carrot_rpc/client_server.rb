@@ -13,14 +13,14 @@ module CarrotRpc::ClientServer
   #
   #   @return [String]
   def queue_name(*args)
-    if args.length == 0
+    if args.empty?
       @queue_name
     elsif args.length == 1
       @queue_name = args[0]
     else
-      fail ArgumentError,
-           "queue_name(new_name) :: new_name or queue_name() :: " \
-           "current_name are the only ways to call queue_name"
+      raise ArgumentError,
+            "queue_name(new_name) :: new_name or queue_name() :: " \
+            "current_name are the only ways to call queue_name"
     end
   end
 
@@ -35,14 +35,14 @@ module CarrotRpc::ClientServer
   #
   #   @return [Hash]
   def queue_options(*args)
-    if args.length == 0
+    if args.empty?
       @queue_options || {}
     elsif args.length == 1
       @queue_options = args[0]
     else
-      fail ArgumentError,
-           "queue_options(options) :: options or queue_options() :: " \
-           "current_options are the only ways to call queue_options"
+      raise ArgumentError,
+            "queue_options(options) :: options or queue_options() :: " \
+            "current_options are the only ways to call queue_options"
     end
   end
 
@@ -51,7 +51,7 @@ module CarrotRpc::ClientServer
     if name
       "#{name}_test"
     else
-      fail CarrotRpc::Exception::InvalidQueueName
+      raise CarrotRpc::Exception::InvalidQueueName
     end
   end
 end

@@ -64,9 +64,9 @@ class CarrotRpc::ServerRunner
   # Find and require all servers in the app/servers dir.
   # @param dirs [Array] directories relative to root of host application where RpcServers can be loaded
   # @return [Array] of RpcServers loaded and initialized
-  def run_servers(dirs: %w(app servers))
+  def run_servers(dirs: %w[app servers])
     files = server_files(dirs)
-    fail "No servers found!" if files.empty?
+    raise "No servers found!" if files.empty?
 
     # Load each server defined in the project dir
     files.each do |file|
@@ -107,7 +107,6 @@ class CarrotRpc::ServerRunner
   end
 
   # attr_reader doesn't allow adding a `?` to the method name, so I think this is a false positive
-  # rubocop:disable Style/TrivialAccessors
 
   # Attribute to determine when to daemonize the process.
   def daemonize?

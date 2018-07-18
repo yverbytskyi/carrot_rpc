@@ -135,7 +135,7 @@ RSpec.describe CarrotRpc::RpcClient do
     end
 
     it "passes params to Proc before making a remote call" do
-      client_class.before_request proc { |params| params.merge(meta: "foo") }
+      client_class.before_request(proc { |params| params.merge(meta: "foo") })
       params = { data: { name: "foo" } }
       method = :foo_method
       random_id = SecureRandom.uuid
@@ -174,10 +174,10 @@ RSpec.describe CarrotRpc::RpcClient do
       exception = StandardError.new("Bogus error")
       client.instance_variable_get(:@results)["Bogus-123"].push exception
 
-      expect { client.wait_for_result("Bogus-123") }.to raise_error {|error|
+      expect { client.wait_for_result("Bogus-123") }.to(raise_error { |error|
         expect(error).to be_a(StandardError)
         expect(error.message).to eq("Bogus error")
-      }
+      })
     end
   end
 
