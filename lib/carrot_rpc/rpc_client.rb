@@ -10,12 +10,12 @@ class CarrotRpc::RpcClient
   include CarrotRpc::ClientActions
 
   def self.before_request(*proc)
-    if proc.length == 0
+    if proc.empty?
       @before_request
     elsif proc.length == 1
       @before_request = proc.first || CarrotRpc.configuration.before_request
     else
-      fail ArgumentError
+      raise ArgumentError
     end
   end
 
@@ -101,7 +101,7 @@ class CarrotRpc::RpcClient
 
       # If we get an exception, raise it in this thread, so the application can deal with it.
       if result.is_a? Exception
-        fail result
+        raise result
       end
 
       result

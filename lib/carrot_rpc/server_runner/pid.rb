@@ -18,7 +18,7 @@ class CarrotRpc::ServerRunner::Pid
   # @return [:dead] if `pid` is `0`
   # @return (see number_error_check_status)
   def self.number_status(pid)
-    if pid == 0
+    if pid.zero?
       :dead
     else
       number_error_check_status(pid)
