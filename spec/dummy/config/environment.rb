@@ -24,7 +24,6 @@ module Rails
   end
 
   class Application
-    def self.eager_load!
-    end
+    def self.eager_load!; end
   end
 end

@@ -202,7 +202,7 @@ RSpec.describe CarrotRpc::ServerRunner do
     end
 
     it "loads the servers" do
-      servers = subject.run_servers(dirs: %w(spec dummy app servers))
+      servers = subject.run_servers(dirs: %w[spec dummy app servers])
       expect(servers.first.class).to eq(FooServer)
     end
   end

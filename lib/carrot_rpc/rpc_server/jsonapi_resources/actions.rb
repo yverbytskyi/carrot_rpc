@@ -100,9 +100,9 @@ module CarrotRpc::RpcServer::JSONAPIResources::Actions
     unknown_name_set = given_name_set - NAME_SET
 
     unless unknown_name_set.empty?
-      fail ArgumentError,
-           "#{unknown_name_set.to_a.sort.to_sentence} are not elements of known actions " \
-           "(#{NAME_SET.to_a.sort.to_sentence})"
+      raise ArgumentError,
+            "#{unknown_name_set.to_a.sort.to_sentence} are not elements of known actions " \
+            "(#{NAME_SET.to_a.sort.to_sentence})"
     end
   end
 end
